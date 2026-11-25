@@ -272,10 +272,13 @@ Agents read `backlog.jsonl` with XML-free line queries. They read a work item fi
 
 When `brevio wts start` seeds the intent package, WTS maps the work item as follows:
 
-1. Sections 1, 3, 4, and 5 become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
-2. Section 6 informs `01_solution_strategy.html`.
-3. Section 7 becomes the sub-intents in `02_intent_decomposition.html`.
-4. Section 10 carries into the open questions of the intent specification.
+1. Sections 1 and 2 become `00_intent_spec.html`.
+2. Section 10 carries into the open questions of the intent specification.
+3. Sections 3, 4, and 5 seed the invariants, boundary envelope, and evidence requirements of `01_solution_strategy.html`.
+   The `Autonomy Tier` row becomes the `autonomy-tier` tag of the strategy.
+4. Section 6 informs the design in `01_solution_strategy.html`.
+5. Section 7 becomes the sub-intents in `02_intent_decomposition.html`. If Section 7 lists one milestone, the
+   decomposition uses the `light` layout.
 
 ---
 
@@ -297,6 +300,7 @@ When `brevio wts start` seeds the intent package, WTS maps the work item as foll
 
 | Date       | Version | Description                                                                                                                                  | Source |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------|:-------|
+| 2026-11-25 | 0.3.2   | Updated the intent package mapping: invariants, boundary envelope, evidence, and the autonomy tier seed the solution strategy. One milestone selects the light layout. | TOPIC-007 |
 | 2026-11-04 | 0.3.1   | Removed `SDK/API` from the domain list. | TOPIC-004 |
 | 2026-11-04 | 0.3.0   | Removed the REST API from the interface statement, the domain list, and the operations statement. | Removal of the REST API |
 | 2026-11-01 | 0.2.0   | Linked to the project manager parent. Added the `Epic` and `Implements` fields, the dependency edge consistency check, and the epic and requirement traceability rows. | TOPIC-006 |

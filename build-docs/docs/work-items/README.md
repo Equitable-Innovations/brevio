@@ -88,12 +88,14 @@ Work items decompose execution into a three-tier hierarchy:
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Tier 1 (Intent Package):** Declares the macro intent, the system invariants, and the evidence requirements. It also
-  holds the solution strategy, the sub-intent DAG, the central ledger, the master verification harness, the final
-  summary, the review findings, and the planning conversation telemetry.
+- **Tier 1 (Intent Package):** Holds three accepted planning documents. The intent specification records the intent in
+  the originator's words. The solution strategy declares the requirements, invariants, evidence requirements, and design.
+  The intent decomposition is the implementation plan. Tier 1 also holds the central ledger, the master verification
+  harness, the final summary, the review findings, and the planning conversation telemetry.
 - **Tier 2 (Sub-Intents):** Partitions the intent into verifiable milestones (for example an authentication schema or a
   token service). Each sub-intent defines prerequisites, invariant constraints, a manifest of intent units, and a
-  verification gate.
+  verification gate. An intent with one milestone uses the light path and writes no Tier 2 documents. See
+  [Light Path](#light-path).
 - **Tier 3 (Intent Units):** The atomic unit of agent execution. Each unit declares a goal, a required target scope,
   invariants, reference anchors, and a verification contract. The agent produces a git diff that satisfies the unit.
 
@@ -106,7 +108,9 @@ Every intent, sub-intent, and unit progresses through a deterministic lifecycle.
 
 ```mermaid
 flowchart TD
-    Declared([Declared]) --> Formulating[Intent Formulation]
+    Declared([Declared]) --> Acceptance{Intent Acceptance}
+    Acceptance -->|Turned Down| Closed([Closed])
+    Acceptance -->|Accepted| Formulating[Strategy and Plan Formulation]
     Formulating --> Feasibility{Intent Feasibility Gate}
     Feasibility -->|Infeasible or Ambiguous| Formulating
     Feasibility -->|Feasible| Converging[Autonomous Convergence Loop]
@@ -130,7 +134,8 @@ flowchart TD
 | State            | Applies To             | Meaning                                                                                                   |
 |:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------------------|
 | `declared`       | Intent, sub-intent, unit | The intent is registered with raw objectives and desired outcomes.                                      |
-| `formulating`    | Intent                 | The agent and the originator author the strategy, the invariants, and the sub-intent DAG.                 |
+| `closed`         | Intent                 | The product owner turned the intent down. The state is terminal.                                          |
+| `formulating`    | Intent                 | The product owner accepted the intent. The agent writes the solution strategy and, after its acceptance, the intent decomposition. |
 | `converging`     | Intent, sub-intent, unit | The agent synthesizes solutions, generates diffs, and tests them against invariants.                    |
 | `verified`       | Intent, sub-intent, unit | The item passed all deterministic verification and invariant checks.                                    |
 | `drift_detected` | Sub-intent, unit       | The output satisfies the tests but violates a declared invariant or boundary, or the diff leaves the target scope. The item returns to `converging` after targeted remediation. |
@@ -140,6 +145,10 @@ flowchart TD
 
 1. **Feasibility Gate:** No sub-intent or unit may enter `converging` until `03_intent_verification.html` records a
    `validation-verdict` of `pass` for the feasibility check.
+   - **Strategy Acceptance Gate:** The decomposition pass cannot start until `01_solution_strategy.html` is accepted.
+     The strategy cannot be accepted while a flagged concern is `open`.
+   - **Plan Acceptance Gate:** No unit can enter `converging` until `02_intent_decomposition.html` is accepted. The
+     adversarial plan review must pass first.
 2. **Sub-Intent Dependency Guard:** Sub-intent N+1 is blocked until sub-intent N is `verified` and its
    `sub_intent_verification.html` records `pass`.
 3. **Unit Dependency Guard:** An agent cannot begin a unit until every unit in its `dependsOn` array is `verified`.
@@ -183,7 +192,7 @@ invariant holds and with a non-zero code when the invariant is broken.
 
 ### Autonomy Tiers
 
-Each intent declares an `autonomy-tier` in `00_intent_spec.html` and in the ledger. The default tier is `propose`.
+Each intent declares an `autonomy-tier` in `01_solution_strategy.html` and in the ledger. The default tier is `propose`.
 
 | Tier                 | What the agent does                                                                          |
 |:---------------------|:---------------------------------------------------------------------------------------------|
@@ -194,6 +203,19 @@ Each intent declares an `autonomy-tier` in `00_intent_spec.html` and in the ledg
 
 The agent can act up to the production gate and cannot pass it. A named human authorizes each production release. The
 agent has no direct path to the main branch.
+
+### Risk Class & Approvers
+
+The originator sets a `risk-class` in `00_intent_spec.html`. The value is `routine` or `high`. The solution strategy and
+the decomposition copy it. The risk class names the approvers of each planning document:
+
+| Document                       | `routine`     | `high`                              |
+|:-------------------------------|:--------------|:------------------------------------|
+| `00_intent_spec.html`          | Product owner | Product owner and tech lead         |
+| `01_solution_strategy.html`    | Product owner | Product owner and tech lead         |
+| `02_intent_decomposition.html` | Engineer      | Tech lead or architect              |
+
+Each accepted document records `accepted-by` and `accepted-at`. The ledger records each acceptance as a `human` gate.
 
 ### Separation of Duties
 
@@ -225,9 +247,9 @@ document, and two project-level documents.
 
 | # | Document Name                | Target Filename                       | Format | Purpose & Canonical Specification                                                                                                                                                                                  |
 |:--|:-----------------------------|:--------------------------------------|:-------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1 | **Intent Specification**     | `00_intent_spec.html`                 | XHTML  | Declares the intent in the originator's words, the system invariants, the boundary envelope, the evidence requirements, the autonomy tier, and open questions. <br/>- Detailed Spec: [`intent-specification.md`](intent-specification.md) |
-| 2 | **Solution Strategy**        | `01_solution_strategy.html`           | XHTML  | Defines the solution hypothesis, the invariant preservation strategy, contract and schema changes, agent tooling, flagged concerns, and micro-ADRs. <br/>- Detailed Spec: [`solution-strategy.md`](solution-strategy.md) |
-| 3 | **Intent Decomposition**     | `02_intent_decomposition.html`        | XHTML  | Details the sub-intent DAG, dependency graph, parallelizable branches, and protected resource registry. <br/>- Detailed Spec: [`intent-decomposition.md`](intent-decomposition.md)                                  |
+| 1 | **Intent Specification**     | `00_intent_spec.html`                 | XHTML  | Records the intent in the originator's words: problem, proposed outcome, affected users and systems, constraints, and open questions. Frozen at acceptance. <br/>- Detailed Spec: [`intent-specification.md`](intent-specification.md) |
+| 2 | **Solution Strategy**        | `01_solution_strategy.html`           | XHTML  | The requirements and design spec: requirements, system invariants, boundary envelope, evidence requirements, autonomy tier, solution hypothesis, contract changes, flagged concerns, and micro-ADRs. <br/>- Detailed Spec: [`solution-strategy.md`](solution-strategy.md) |
+| 3 | **Intent Decomposition**     | `02_intent_decomposition.html`        | XHTML  | The implementation plan: plan view, component, schema, and agent tooling changes, sub-intent DAG, protected resource registry, risk catalog, and plan interrogation. <br/>- Detailed Spec: [`intent-decomposition.md`](intent-decomposition.md) |
 | 4 | **Intent Ledger**            | `03_intent_ledger.json`               | JSON   | Central convergence state machine, DAG scheduling data, gate verdicts, approver identities, and relational graph of files and artifacts. <br/>- Detailed Spec: [`intent-ledger.md`](intent-ledger.md)                |
 | 5 | **Intent Verification**      | `03_intent_verification.html`         | XHTML  | Master verification harness: feasibility check, end-to-end tests, property tests, performance audits, and invariant monitors that certify the whole intent. <br/>- Detailed Spec: [`intent-verification.md`](intent-verification.md) |
 | 6 | **Intent Summary**           | `04_intent_summary.html`              | XHTML  | Post-convergence synthesis of intent satisfaction, invariant compliance, diff statistics, and convergence duration. <br/>- Detailed Spec: [`intent-summary.md`](intent-summary.md)                                   |
@@ -285,9 +307,9 @@ Work items follow strict naming conventions under `.brevio/work_items/`:
         ├── lessons.html                            # Project-Level Lessons Log
         │
         └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-            ├── 00_intent_spec.html                 # Declared Intent, Invariants & Evidence Requirements
-            ├── 01_solution_strategy.html           # Solution Hypothesis & Invariant Preservation Strategy
-            ├── 02_intent_decomposition.html        # Sub-Intent DAG & Protected Resource Registry
+            ├── 00_intent_spec.html                 # Originator's Intent (Frozen at Acceptance)
+            ├── 01_solution_strategy.html           # Requirements, Invariants, Evidence & Design
+            ├── 02_intent_decomposition.html        # Implementation Plan & Sub-Intent DAG
             ├── 03_intent_ledger.json               # Central State Machine, DAG & Unit Index
             ├── 03_intent_verification.html         # Feasibility Check & Master Verification Harness
             ├── 04_intent_summary.html              # Overall Work Item Convergence Summary
@@ -334,6 +356,28 @@ Work items follow strict naming conventions under `.brevio/work_items/`:
   `sub_intent_01_auth_schema`).
 - **Unit Directories:** `unit_{NNN}_{kebab-case-slug}` with three-digit zero padding (for example
   `unit_001_password_hashing`).
+
+### Light Path
+
+An intent that delivers one milestone uses the light path. `02_intent_decomposition.html` carries `layout="light"` and
+lists the units directly. The work item has no `sub_intents/` directory. The unit directories sit under `units/` at the
+work item root:
+
+```
+{YYYYMMDDTHHMMSSZ}_{work_item_slug}/
+├── 00_intent_spec.html
+├── 01_solution_strategy.html
+├── 02_intent_decomposition.html
+├── 03_intent_ledger.json
+├── ...
+└── units/
+    └── unit_001_{slug}/
+        ├── intent_unit_spec.html
+        └── ...
+```
+
+The ledger keeps one sub-intent entry with no sub-intent document paths. The intent verification serves as the
+sub-intent gate.
 
 ---
 
@@ -447,6 +491,7 @@ ledger and do not traverse the filesystem.
 ```
 
 - `writer` and `approver` must name different identities.
+- `state` can also be `closed`. `riskClass` and `layout` copy the values from the planning documents.
 - `targetScope` is required for every unit. It lists file paths or globs.
 - `originRef` links an intent that began from a finding or an alert. `externalRef` holds the ID of a record in a legacy
   tracking system.
@@ -540,7 +585,7 @@ lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
 
 | Document Category           | Target Files                                                                              | Key Custom Metadata Attributes                                                                                                                   | XPath Lookup Utility                                      |
 |:----------------------------|:------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------|
-| **Intent Core**             | `00_intent_spec.html`<br/>`01_solution_strategy.html`<br/>`02_intent_decomposition.html` | `intent-id`<br/>`invariants-hash`<br/>`autonomy-tier`<br/>`origin-ref`<br/>`external-ref`<br/>`estimated-sub-intents`                            | `/html/head/meta[@name='invariants-hash']/@content`       |
+| **Intent Core**             | `00_intent_spec.html`<br/>`01_solution_strategy.html`<br/>`02_intent_decomposition.html` | `intent-id`<br/>`risk-class`<br/>`accepted-by`<br/>`accepted-at`<br/>`invariants-hash`<br/>`autonomy-tier`<br/>`prompt-ref`<br/>`origin-ref`<br/>`external-ref`<br/>`layout`<br/>`plan-files` | `/html/head/meta[@name='accepted-by']/@content`           |
 | **Sub-Intent Level**        | `sub_intent_spec.html`<br/>`sub_intent_verification.html`<br/>`sub_intent_summary.html`   | `sub-intent-sequence`<br/>`blocking`<br/>`validation-verdict (pass/fail)`<br/>`total-units`<br/>`verified-units`                                 | `/html/head/meta[@name='validation-verdict']/@content`    |
 | **Unit Level**              | `intent_unit_spec.html`<br/>`verification.html`<br/>`summary.html`                        | `unit-sequence`<br/>`unit-category (db, api, ui, test)`<br/>`target-files`<br/>`protected-files`<br/>`test-exit-code`<br/>`evidence-verdict`<br/>`pr-link`<br/>`diff-ref` | `/html/head/meta[@name='convergence-status']/@content` |
 | **Review**                  | `07_review_findings.html`<br/>`review_policy.html`                                        | `review-pass`<br/>`severity-important-count`<br/>`severity-nit-count`<br/>`approved-by`                                                          | `//meta[@name='severity-important-count']/@content`       |
@@ -599,6 +644,11 @@ procedural walkthrough.
   //section[@id='flagged-concerns']//md-list-item
   ```
 
+- **Extracting the Plan View from the Intent Decomposition:**
+  ```xpath2
+  //section[@id='plan-view']
+  ```
+
 ---
 
 ## Stage Handoffs, Origin & Lessons Loop
@@ -609,17 +659,18 @@ Each stage ends when a document is committed and accepted. The accepted document
 
 | Stage     | Artifact                                                              | Trigger for the next stage                                                       |
 |:----------|:----------------------------------------------------------------------|:---------------------------------------------------------------------------------|
-| Plan      | `00_intent_spec.html` in state `declared`                             | Acceptance moves the intent to `formulating` and starts the strategy pass.       |
-| Design    | `01_solution_strategy.html`                                           | Acceptance starts the decomposition pass.                                        |
-| Build     | `02_intent_decomposition.html`, `intent_unit_spec.html`, `intent.diff` | Acceptance of the decomposition moves the intent to `converging`.                |
+| Plan      | `00_intent_spec.html` in state `declared`                             | Acceptance moves the intent to `formulating` and starts the strategy pass. A turned-down intent moves to `closed`. |
+| Design    | `01_solution_strategy.html`                                           | Acceptance with zero open concerns starts the decomposition pass.               |
+| Build     | `02_intent_decomposition.html`, `intent_unit_spec.html`, `intent.diff` | Acceptance of the decomposition and a feasibility `pass` move the intent to `converging`. |
 | Test      | `verification.html`, `03_intent_verification.html`                    | A `pass` verdict moves the item to `verified`.                                   |
 | Deploy    | `07_review_findings.html`, release authorization                      | A named human approves the release and moves the intent to `settled`.            |
 | Maintain  | A finding or an alert                                                 | The finding becomes a new intent in state `declared` with an `origin-ref` value. |
 
 - A ledger state change is the trigger. A non-interactive job can run the next stage when the trigger fires.
-- A human accepts or rejects each artifact at a gate. The ledger records the approver and a timestamp.
-- The solution strategy lists flagged concerns, one owner per concern. The originator resolves each concern with its
-  owner before the intent moves to `converging`.
+- A human accepts or rejects each artifact at a gate. The ledger records the approver and a timestamp. The risk class
+  names the approver role. See [Risk Class & Approvers](#risk-class--approvers).
+- The solution strategy lists flagged concerns, one policy owner per concern. The product owner resolves each concern
+  with its owner before the strategy is accepted, so engineering never plans against an open concern.
 - `brevio` and the originating system can be separate. `brevio` accepts a finding as a new `declared` intent and does not
   run detection of production metrics.
 
@@ -635,9 +686,9 @@ An intent can start from a person, a ticket, or an alert. The originator states 
 - Constraints.
 - Open questions.
 
-The agent adds the system invariants, the boundary envelope, and the evidence requirements during `formulating`. The
-solution strategy answers each open question or carries it forward. The MCP server lets a person without git
-experience declare an intent.
+The intent holds no design content, and it is frozen at acceptance. During `formulating`, the solution strategy adds the
+requirements, the system invariants, the boundary envelope, and the evidence requirements. The strategy also answers each
+open question or carries it forward. The MCP server lets a person without git experience declare an intent.
 
 ### Source of Truth
 
@@ -672,8 +723,9 @@ Work item documents establish an unbroken line of custody from declared intent t
 
 ```mermaid
 graph TD
-    INTENT["Evidence Requirement: EV-001<br/>(00_intent_spec.html)"] -->|" implements-req "| STRATEGY["Solution Strategy: Component Model<br/>(01_solution_strategy.html)"]
-    STRATEGY -->|" implements-req "| SUB["Sub-Intent 1: Auth Schema<br/>(sub_intent_spec.html)"]
+    INTENT["Intent: Problem and Outcome<br/>(00_intent_spec.html)"] -->|" parent-doc-id "| STRATEGY["Evidence Requirement: EV-001<br/>(01_solution_strategy.html)"]
+    STRATEGY -->|" implements-req "| DECOMP["Plan View: Files and Proof<br/>(02_intent_decomposition.html)"]
+    DECOMP -->|" implements-req "| SUB["Sub-Intent 1: Auth Schema<br/>(sub_intent_spec.html)"]
     SUB -->|" parent-doc-id "| UNIT["Unit 001: Create Tables<br/>(intent_unit_spec.html)"]
     UNIT -->|" produces patch "| DIFF["Intent Diff: Code Changes<br/>(intent.diff)"]
     DIFF -->|" verified by "| VER["Unit Verification: Command Output<br/>(verification.html)"]
@@ -695,9 +747,11 @@ graph TD
 
 ## Rules & Constraints
 
-1. **Current State Design:** All documents represent the active, current-state specification. They must not contain
-   references to past iterations, rejected alternatives, or deprecated decisions. Historical deliberations are recorded
-   in [`topics/`](../../../topics/README.md).
+1. **Current State Design:** This specification and the current-state sections of generated documents describe only the
+   active design. They must not contain references to past iterations, rejected alternatives, or deprecated decisions.
+   Historical deliberations about this specification are recorded in [`topics/`](../../../topics/README.md). Two
+   sections of generated documents are exempt: the micro-ADRs in `01_solution_strategy.html` and the plan interrogation
+   in `02_intent_decomposition.html`. Both record the options not chosen.
 2. **Strict XHTML Conformance:** All `.html` files must parse as valid XML (`xmlns="http://www.w3.org/1999/xhtml"`).
    Self-closing tags (`<meta .../>`, `<input .../>`), escaped entities (`&amp;`), and quoted attributes are mandatory.
 3. **Mandatory Universal Baseline:** Every XHTML document must contain the universal baseline metadata tags (`doc-id`,
@@ -719,6 +773,11 @@ graph TD
 12. **Production Gate:** An agent must not release to production. A named human authorizes each production release.
 13. **Revision Tracking:** Document revision history is tracked exclusively in the `## Revisions` table at the bottom
     of each document.
+14. **Frozen Intent:** After acceptance, `00_intent_spec.html` does not change. A change needs a new acceptance record.
+15. **Accepted Planning Documents:** Each of `00`, `01`, and `02` records `accepted-by` and `accepted-at`. The approvers
+    match the risk class.
+16. **Plan Matches Units:** The `plan-files` list in `02_intent_decomposition.html` equals the union of the unit Target
+    Scopes. The merged diff is compared against it.
 
 ---
 
@@ -726,6 +785,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                                                     | Source                           |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.0   | Aligned the planning documents with the intent, spec, and plan artifacts: the intent is the originator's proto-spec and is frozen at acceptance, the solution strategy is the requirements and design spec, and the decomposition is the implementation plan with a plan view and interrogation. Added the `closed` state, risk class approvers, strategy and plan acceptance gates, the light path, and the rule 1 exemption. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Rebuilt the domain around declarative intent: intent-driven hierarchy, convergence state machine, invariant enforcement levels, autonomy tiers, confidence gates, review and lessons documents, intent ledger schema, metadata tags, and renamed document catalog (20 types). | TOPIC-005                        |
 | 2026-09-06 | 0.3.0   | Integrated Task Diff (`task.diff` / `task-diff.md`) into Tier 3 catalog, ledger paths, metadata matrix, and traceability graph.                                                                                                                                                 | Work Item Architecture Alignment |
 | 2026-09-05 | 0.2.0   | Established comprehensive architectural specification: 3-tier hierarchy, lifecycle state machine, full 16-document catalog, state ledger schema, XPath query patterns, and bi-directional traceability.                                                                          | Work Item Architecture Alignment |

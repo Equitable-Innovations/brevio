@@ -91,9 +91,9 @@ documents:
 .brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-        ├── 00_intent_spec.html                # Requirements & Checklists
-        ├── 01_solution_strategy.html                 # Technical Architecture & Micro-ADRs
-        ├── 02_intent_decomposition.html         # Multi-Sub-Intent Roadmap & Risk Strategy
+        ├── 00_intent_spec.html                # Originator's Intent (Frozen at Acceptance)
+        ├── 01_solution_strategy.html                 # Requirements, Invariants, Evidence & Design
+        ├── 02_intent_decomposition.html         # Implementation Plan & Sub-Intent DAG
         ├── 03_intent_ledger.json       # State Machine & Unit Dependency DAG
         ├── 03_intent_verification.html             # Pre-Execution Plan Gating Verdict
         ├── 04_intent_summary.html                # Execution Rollup Summary
@@ -155,7 +155,7 @@ dependency-sound.
 |:------------------------------------------------|:----------------------------------------------------------------------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Plan First-Pass Approval Rate (FPSR)**        | Passing `03_intent_verification.html` on first validation run                                     | $100\%$ ($1.0$)            | Evaluates whether the initial plan satisfied all feasibility, security, and architectural checks without requiring rework turns.                            |
 | **Specification Churn Ratio**                   | $\frac{\text{Revised Plan Section Lines}}{\text{Net Accepted Plan Lines}}$                    | $\le 1.15$                 | High churn indicates the planner vacillated between architectures or hallucinated APIs that required extensive revision before passing validation.          |
-| **Requirement Traceability Coverage**           | $\frac{\text{Mapped Requirement IDs}}{\text{Total Itemized Requirement IDs}} \times 100\%$    | $100\%$                    | Verifies that every requirement defined in `00_intent_spec.html` (`EV-###`) is assigned to at least one unit in `02_intent_decomposition.html`.            |
+| **Requirement Traceability Coverage**           | $\frac{\text{Mapped Requirement IDs}}{\text{Total Itemized Requirement IDs}} \times 100\%$    | $100\%$                    | Verifies that every requirement defined in `01_solution_strategy.html` (`EV-###`) is assigned to at least one unit in `02_intent_decomposition.html`.            |
 | **Dependency DAG Soundness**                    | Graph validation boolean & cycle count                                                        | Cycles: `0`, Orphaned: `0` | Evaluates that unit dependencies declared in `03_intent_ledger.json` form a valid Directed Acyclic Graph with balanced breadth and depth.           |
 | **Deterministic Command Density** *(Suggested)* | $\frac{\text{Units with Exact Shell Verifications}}{\text{Total Planned Units}} \times 100\%$ | $100\%$                    | Verifies that 100% of planned units declare explicit verification shell commands with expected exit codes (`0`) rather than subjective manual review steps. |
 | **Edge Case Density** *(Suggested)*             | $\frac{\text{Total Itemized Edge Cases (EC-###)}}{\text{Total Planned Units}}$                | $\ge 2.0$ edge cases/unit  | Confirms the planning agents anticipated negative paths and boundary hazards prior to implementation.                                                       |
@@ -683,7 +683,7 @@ The plan metrics file integrates directly into the work item's bi-directional li
 
 ```mermaid
 graph TD
-    REQ["Requirements<br/>(00_intent_spec.html)"] --> PLAN["Intent Decomposition<br/>(02_intent_decomposition.html)"]
+    REQ["Requirements<br/>(01_solution_strategy.html)"] --> PLAN["Intent Decomposition<br/>(02_intent_decomposition.html)"]
     PLAN --> VAL["Intent Verification<br/>(03_intent_verification.html)"]
     VAL -->|" validation verdict "| METRICS["Plan Metrics<br/>(06_intent_conversation_metrics.json)"]
     METRICS -->|" metricsRollup.planning "| LEDGER["State Ledger<br/>(03_intent_ledger.json)"]
@@ -723,6 +723,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                | Source                 |
 |:-----------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------|
+| 2026-11-25 | 1.2.0 | Evidence requirements now come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 1.1.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Intent Conversation Metrics (`06_intent_conversation_metrics.json`) establishing the 4-layer telemetry framework, JSON schema, session log contract, and jq analysis patterns. | Feature Specification  |
 | 2026-08-30 | 0.1.0   | Initial baseline stub in metadata definition.                                                                                                                                                              | Architecture Alignment |

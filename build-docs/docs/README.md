@@ -155,9 +155,9 @@ The [project manager](../project-mgr/README.md) adds a fifth set of documents. T
 
 - **Purpose:** Provide an end-to-end audit trail of each work item. The documents declare the intent, the solution strategy, the sub-intent decomposition, and the individual units. They also record the automated verification, review findings, conversation logs, and telemetry.
 - **Key Artifacts:**
-  - `00_intent_spec.html`: Declared intent, system invariants, boundary envelope, evidence requirements, and autonomy tier.
-  - `01_solution_strategy.html`: Solution hypothesis, invariant preservation strategy, contract changes, and flagged concerns.
-  - `02_intent_decomposition.html`: Sub-intent DAG, dependency graph, and protected resource registry.
+  - `00_intent_spec.html`: The originator's intent: problem, proposed outcome, affected users and systems, constraints, and open questions. Frozen at acceptance.
+  - `01_solution_strategy.html`: Requirements and design: requirements, system invariants, boundary envelope, evidence requirements, autonomy tier, contract changes, and flagged concerns.
+  - `02_intent_decomposition.html`: Implementation plan: plan view, component and schema changes, sub-intent DAG, protected resource registry, and plan interrogation.
   - `03_intent_ledger.json`: Central convergence state machine tracking unit states, gate verdicts, approvers, and file links.
   - `03_intent_verification.html`: Feasibility verification and the master verification suite.
   - `04_intent_summary.html`: Post-convergence summary and final metrics.
@@ -407,6 +407,7 @@ All documents under `.brevio/` are plain text (XHTML, JSON, JSONL, CSS) designed
 | 2026-11-04 | 0.8.0 | Replaced the OpenAPI placeholder with the specified layout, artifacts, query example, and graph node. | TOPIC-003 |
 | 2026-11-04 | 0.7.0 | Removed the REST API subsystem from the architecture diagram, the subsystem alignment list, and the subsystem integration matrix. | Build Docs Harmonization |
 | 2026-11-02 | 0.6.0 | Removed the Report & Telemetry domain from the taxonomy, inventory, runtime layout, and metadata examples. The taxonomy now has four domains. | Build Docs Harmonization |
+| 2026-11-25 | 0.5.1 | Updated the roles of the intent specification, solution strategy, and intent decomposition in the Work Items artifact list. | TOPIC-007 |
 | 2026-11-01 | 0.5.0 | Added the `project-mgr` domain value, the `.brevio/project-mgr/` and `.brevio/wts/` runtime layout, and the project manager row in the subsystem matrix. | TOPIC-006 |
 | 2026-10-31 | 0.4.0 | Rebuilt the Work Items domain inventory, runtime layout, query patterns, traceability graph, and subsystem matrix around declarative intent. | TOPIC-005 |
 | 2026-09-06 | 0.3.0 | Added `task.diff` (Task Diff) specification to Work Items domain artifact inventory and directory layout. | Work Item Architecture Alignment |

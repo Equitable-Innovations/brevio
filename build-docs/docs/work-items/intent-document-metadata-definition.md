@@ -56,7 +56,10 @@ These tags can appear on any document in the work item. The document tables belo
 
 | Tag                  | Definition                                                                                                      |
 |:---------------------|:----------------------------------------------------------------------------------------------------------------|
-| `convergence-status` | `declared` \| `formulating` \| `converging` \| `verified` \| `drift_detected` \| `settled`                       |
+| `convergence-status` | `declared` \| `closed` \| `formulating` \| `converging` \| `verified` \| `drift_detected` \| `settled`          |
+| `risk-class`         | `routine` \| `high`. Names the approver role of each planning document.                                         |
+| `accepted-by`        | Comma-delimited identities that accepted a planning document. Empty until acceptance.                           |
+| `accepted-at`        | ISO timestamp of the acceptance. Empty until acceptance.                                                        |
 | `evidence-verdict`   | `pass` \| `fail` \| `warn` \| `pending`. Result of the evidence commands for the document scope.                |
 | `invariants-hash`    | `sha256:` hash of the invariant set in force when the document was written                                      |
 | `autonomy-tier`      | `observe` \| `propose` \| `change-with-review` \| `scoped-automation`                                           |
@@ -78,10 +81,11 @@ These tags can appear on any document in the work item. The document tables belo
 | `priority`           | `low` \| `medium` \| `high` \| `critical`                                         |
 | `business-impact`    | Summary of domain scope (for example `security`, `infrastructure`, `core-feature`) |
 | `author`             | Entity who stated the intent (for example `human:j.ortiz`, `agent:intake@v1.0`)   |
-| `autonomy-tier`      | Autonomy tier of the intent. The default is `propose`.                            |
-| `invariants-hash`    | Hash of the invariant set                                                         |
-| `invariant-count`    | Total count of invariant IDs in the body (for example `3`)                        |
-| `evidence-count`     | Total count of evidence requirement IDs in the body (for example `5`)             |
+| `convergence-status` | Current intent state                                                              |
+| `risk-class`         | `routine` \| `high`, set by the originator                                        |
+| `accepted-by`        | Product owner. For a `high` risk class, also a tech lead.                         |
+| `accepted-at`        | Timestamp of the acceptance                                                       |
+| `question-count`     | Total count of open question IDs in the body (for example `2`)                    |
 | `origin-ref`         | Optional origin reference                                                         |
 | `external-ref`       | Optional legacy record reference                                                  |
 
@@ -91,15 +95,19 @@ These tags can appear on any document in the work item. The document tables belo
 |:-----------------------|:------------------------------------------------------------------------------------------------------------|
 | `doc-type`             | solution-strategy                                                                                           |
 | `parent-doc-id`        | Points to Intent Specification `doc-id`                                                                     |
-| `implements-req`       | Comma-delimited list of evidence requirement IDs covered (for example `EV-001,EV-002,EV-003`)               |
-| `invariants-hash`      | Hash of the invariant set that the strategy preserves                                                       |
-| `open-concerns`        | Count of flagged concerns with status `open`                                                                |
+| `autonomy-tier`        | Autonomy tier of the intent. The default is `propose`.                                                      |
+| `risk-class`           | Copied from the Intent Specification                                                                        |
+| `invariants-hash`      | Hash of the invariant set in the `invariants` section                                                       |
+| `requirement-count`    | Total count of requirement IDs (for example `4`)                                                            |
+| `invariant-count`      | Total count of invariant IDs (for example `3`)                                                              |
+| `evidence-count`       | Total count of evidence requirement IDs (for example `5`)                                                   |
+| `open-concerns`        | Count of flagged concerns with status `open`. Must be `0` at acceptance.                                    |
 | `architectural-domain` | Scope (for example `backend-service`, `database`, `full-stack`)                                             |
 | `target-frameworks`    | Tech stack dependencies (for example `spring-boot`,`postgresql`,`jwt`)                                      |
-| `assigned-agents`      | Comma-delimited list of assigned agents (for example `agent:backend-engineer,agent:security-auditor`)       |
-| `required-skills`      | Comma-delimited list of required skills (for example `skill:spring-boot-jwt-auth,skill:owasp-verification`) |
-| `ai-tools`             | Comma-delimited list of MCP tools and servers (for example `mcp:db-inspector,mcp:ast-grep,cli:brevio`)        |
-| `new-ai-components`    | Comma-delimited list of new AI components (for example `skill:spring-boot-jwt-auth`)                        |
+| `accepted-by`          | Product owner. For a `high` risk class, also a tech lead.                                                   |
+| `accepted-at`          | Timestamp of the acceptance                                                                                 |
+| `generated-by`         | Identity of the agent that wrote the strategy                                                               |
+| `prompt-ref`           | Hash of the prompt that produced the strategy                                                               |
 | `policy-versions`      | Policy skills and versions in force                                                                         |
 
 ### Intent Decomposition (`02_intent_decomposition.html`)
@@ -109,11 +117,20 @@ These tags can appear on any document in the work item. The document tables belo
 | `doc-type`             | intent-decomposition                                               |
 | `parent-doc-id`        | Points to Solution Strategy `doc-id`                               |
 | `implements-req`       | Comma-delimited list of evidence requirement IDs                   |
-| `total-sub-intents`    | Total sub-intent count (for example `3`)                           |
+| `risk-class`           | Copied from the Solution Strategy                                  |
+| `layout`               | `full` \| `light`                                                  |
+| `total-sub-intents`    | Total sub-intent count (for example `3`). `1` for `light`.         |
 | `estimated-unit-count` | Total projected units across all sub-intents (for example `12`)    |
 | `parallel-branches`    | Count of branches that can converge in parallel (for example `1`)  |
+| `plan-files`           | Union of the Target Scopes of all units                            |
 | `protected-files`      | Paths and globs in the Protected Resource Registry                 |
 | `ledger-path`          | Relative path to the ledger (for example `03_intent_ledger.json`)  |
+| `accepted-by`          | Engineer. For a `high` risk class, a tech lead or architect.       |
+| `accepted-at`          | Timestamp of the acceptance                                        |
+| `assigned-agents`      | Comma-delimited list of assigned agents                            |
+| `required-skills`      | Comma-delimited list of required skills                            |
+| `ai-tools`             | Comma-delimited list of MCP tools and servers                      |
+| `new-ai-components`    | Comma-delimited list of new AI components                          |
 
 ### Intent Verification (`03_intent_verification.html`)
 
@@ -352,4 +369,5 @@ Raw unified git diff file capturing code modifications created during unit conve
 
 | Date       | Version | Description                                                                                                                                                                                        | Source    |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 1.2.0   | Added `risk-class`, `accepted-by`, `accepted-at`, and the `closed` status. Moved the autonomy tier and the invariant and evidence counts from the intent specification to the solution strategy. Moved the agent tooling tags to the intent decomposition. Added `prompt-ref`, `layout`, and `plan-files`. | TOPIC-007 |
 | 2026-10-31 | 1.1.0   | Renamed the metadata set to the intent-based document set. Added cross-cutting intent tags, evidence and invariant tags, gate and identity tags, review findings, review policy, and lessons log tags. | TOPIC-005 |

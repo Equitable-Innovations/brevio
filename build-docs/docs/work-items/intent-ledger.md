@@ -138,8 +138,8 @@ sub-intent and unit objects reference them.
   "description": "Authoritative state machine, dependency DAG, gate record, and relational index for a brevio work item.",
   "type": "object",
   "required": [
-    "$schema", "schemaVersion", "ledgerVersion", "intentId", "state", "autonomyTier",
-    "executionMode", "timestamps", "metricsRollup", "subIntents"
+    "$schema", "schemaVersion", "ledgerVersion", "intentId", "state", "autonomyTier", "riskClass",
+    "layout", "executionMode", "timestamps", "metricsRollup", "subIntents"
   ],
   "properties": {
     "$schema": {"type": "string", "format": "uri"},
@@ -152,6 +152,16 @@ sub-intent and unit objects reference them.
     "intentId": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z_[a-z0-9_]+$"},
     "state": {"$ref": "#/$defs/intentState"},
     "autonomyTier": {"$ref": "#/$defs/autonomyTier"},
+    "riskClass": {
+      "type": "string",
+      "enum": ["routine", "high"],
+      "description": "Risk class from 00_intent_spec.html. Names the approver role of each planning document."
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["full", "light"],
+      "description": "full for the three-tier layout. light for a one-milestone intent with units at the work item root."
+    },
     "originRef": {"type": ["string", "null"], "description": "Finding or alert that created this intent."},
     "externalRef": {"type": ["string", "null"], "description": "ID of a record in a legacy tracking system."},
     "executionMode": {
@@ -166,6 +176,7 @@ sub-intent and unit objects reference them.
       "properties": {
         "declaredAt": {"type": "string", "format": "date-time"},
         "convergingAt": {"type": ["string", "null"], "format": "date-time"},
+        "closedAt": {"type": ["string", "null"], "format": "date-time"},
         "updatedAt": {"type": "string", "format": "date-time"},
         "settledAt": {"type": ["string", "null"], "format": "date-time"}
       }
@@ -189,7 +200,7 @@ sub-intent and unit objects reference them.
     },
     "gates": {
       "type": "array",
-      "description": "Stage gates for the whole intent (feasibility, strategy acceptance, release authorization).",
+      "description": "Stage gates for the whole intent (intent acceptance, strategy acceptance, plan review, plan acceptance, feasibility, release authorization).",
       "items": {"$ref": "#/$defs/gate"}
     },
     "subIntents": {
@@ -210,10 +221,11 @@ sub-intent and unit objects reference them.
           "paths": {
             "type": "object",
             "required": ["spec", "verification", "summary"],
+            "description": "Each value is null when the intent layout is light.",
             "properties": {
-              "spec": {"type": "string"},
-              "verification": {"type": "string"},
-              "summary": {"type": "string"}
+              "spec": {"type": ["string", "null"]},
+              "verification": {"type": ["string", "null"]},
+              "summary": {"type": ["string", "null"]}
             }
           },
           "units": {
@@ -304,7 +316,7 @@ sub-intent and unit objects reference them.
   "$defs": {
     "intentState": {
       "type": "string",
-      "enum": ["declared", "formulating", "converging", "verified", "settled"]
+      "enum": ["declared", "closed", "formulating", "converging", "verified", "settled"]
     },
     "itemState": {
       "type": "string",
@@ -357,6 +369,8 @@ units:
   "intentId": "20260830T170936Z_user_auth_service",
   "state": "converging",
   "autonomyTier": "propose",
+  "riskClass": "high",
+  "layout": "full",
   "originRef": null,
   "externalRef": "JIRA-4821",
   "executionMode": "sequential",
@@ -378,8 +392,11 @@ units:
     "totalDurationMs": 103400
   },
   "gates": [
-    {"name": "feasibility", "type": "deterministic", "verdict": "pass", "approver": null, "decidedAt": "2026-08-30T17:44:00Z"},
-    {"name": "strategy-acceptance", "type": "human", "verdict": "pass", "approver": "human:j.ortiz", "decidedAt": "2026-08-30T17:43:00Z"}
+    {"name": "intent-acceptance", "type": "human", "verdict": "pass", "approver": "human:product-owner,human:tech-lead", "decidedAt": "2026-08-30T17:14:22Z"},
+    {"name": "strategy-acceptance", "type": "human", "verdict": "pass", "approver": "human:product-owner,human:tech-lead", "decidedAt": "2026-08-30T17:43:00Z"},
+    {"name": "plan-review", "type": "adversarial", "verdict": "pass", "approver": null, "decidedAt": "2026-08-30T17:43:30Z"},
+    {"name": "plan-acceptance", "type": "human", "verdict": "pass", "approver": "human:tech-lead", "decidedAt": "2026-08-30T17:44:00Z"},
+    {"name": "feasibility", "type": "deterministic", "verdict": "pass", "approver": null, "decidedAt": "2026-08-30T17:44:30Z"}
   ],
   "subIntents": [
     {
@@ -517,8 +534,10 @@ Every intent, sub-intent, and unit transitions through a deterministic, enforced
 ```mermaid
 stateDiagram-v2
     [*] --> declared: Registered
+    declared --> closed: Intent turned down (intent only)
+    closed --> [*]
     declared --> formulating: Intent accepted (intent only)
-    formulating --> converging: Feasibility gate = pass
+    formulating --> converging: Strategy and plan accepted, feasibility gate = pass
     declared --> converging: All dependsOn verified (sub-intent, unit)
     converging --> verified: Verification verdict = pass and invariants hold
     converging --> drift_detected: Tests pass but invariant or scope broken
@@ -530,7 +549,8 @@ stateDiagram-v2
 | State            | Scope                     | Description                                                                | Trigger Condition                                                                                          |
 |:-----------------|:--------------------------|:---------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
 | `declared`       | Intent, sub-intent, unit  | Registered in the ledger. A sub-intent or unit that is `declared` with all `dependsOn` items `verified` is ready for dispatch. | Initial state on creation.                                                    |
-| `formulating`    | Intent                    | The strategy, invariants, and DAG are being authored.                      | A human accepts `00_intent_spec.html`.                                                                      |
+| `closed`         | Intent                    | The product owner turned the intent down. The state is terminal.           | The `intent-acceptance` gate records `fail`.                                                                |
+| `formulating`    | Intent                    | The solution strategy and then the intent decomposition are being authored and accepted. | The `intent-acceptance` gate records `pass`.                                                   |
 | `converging`     | Intent, sub-intent, unit  | An agent is synthesizing a solution and testing it against invariants.     | The feasibility gate passes (intent) or a worker claims the item (`brevio work-item unit start`).            |
 | `verified`       | Intent, sub-intent, unit  | The item passed all deterministic verification and invariant checks.       | The verification suite exits with code `0`, the verdict is `pass`, and every invariant command exits `0`.  |
 | `drift_detected` | Sub-intent, unit          | The output satisfies tests but violates an invariant, or the diff leaves the `targetScope`. | An invariant command exits non-zero, or `intent.diff` contains a path outside `targetScope`. |
@@ -540,8 +560,9 @@ stateDiagram-v2
 
 | From State       | Allowed Target States            | Enforced Guards                                                                                                                                  |
 |:-----------------|:---------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
-| `declared`       | `formulating` (intent), `converging` | An intent moves to `converging` only after the feasibility gate passes. A sub-intent or unit moves to `converging` only if every ID in `dependsOn` is `verified` and no `hold` is present. |
-| `formulating`    | `converging`                     | Requires `03_intent_verification.html` feasibility verdict `pass` and zero `open` flagged concerns.                                              |
+| `declared`       | `formulating`, `closed` (intent), `converging` (sub-intent, unit) | The `intent-acceptance` gate decides between `formulating` and `closed`. A sub-intent or unit moves to `converging` only if every ID in `dependsOn` is `verified` and no `hold` is present. |
+| `closed`         | *(terminal)*                     | A closed intent is locked. A restart needs a new intent.                                                                                         |
+| `formulating`    | `converging`                     | Requires `pass` on the `strategy-acceptance`, `plan-review`, `plan-acceptance`, and `feasibility` gates. The `strategy-acceptance` gate requires zero `open` flagged concerns. |
 | `converging`     | `verified`, `drift_detected`     | File changes must belong to `targetScope`. `verified` requires verdict `pass`, exit code `0`, and a literal command output in `verification.html`. |
 | `drift_detected` | `converging`                     | Entering `converging` increments `retries` and dispatches a targeted remediation payload.                                                        |
 | `verified`       | `settled` (intent only)          | Verified items are immutable. Re-opening a verified item needs an explicit ledger revision event.                                                |
@@ -585,6 +606,18 @@ new verification check, or a note for the project instructions. A human accepts 
   changes files on a branch for human review. `scoped-automation` runs pre-approved actions within a declared scope.
 - **Production gate:** The ledger never records a production release without a named human approver on the
   `release-authorization` gate.
+- **Planning gates:** The `riskClass` names the approvers of the `intent-acceptance`, `strategy-acceptance`, and
+  `plan-acceptance` gates:
+
+  | Gate                  | `routine`     | `high`                       |
+  |:----------------------|:--------------|:-----------------------------|
+  | `intent-acceptance`   | Product owner | Product owner and tech lead  |
+  | `strategy-acceptance` | Product owner | Product owner and tech lead  |
+  | `plan-acceptance`     | Engineer      | Tech lead or architect       |
+
+  The `plan-review` gate is `adversarial`. It must record `pass` before the `plan-acceptance` gate can record a verdict.
+- **Light layout:** If `layout` is `light`, the ledger holds one sub-intent. Its `paths` values are `null`, and its unit
+  paths start with `units/`.
 
 ---
 
@@ -657,7 +690,8 @@ graph LR
 
 ### 7.1. Evidence Traceability (`implementsReq`)
 
-Every unit lists the evidence requirement IDs from [`00_intent_spec.html`](intent-specification.md) that it satisfies:
+Every unit lists the evidence requirement IDs from [`01_solution_strategy.html`](solution-strategy.md) that it
+satisfies:
 
 - Enables instant calculation of evidence completion percentages.
 - Shows which units must run again if an evidence requirement changes.
@@ -865,6 +899,9 @@ graph TD
 8. **Named Approver on Holds:** Every `hold` and every failed gate must name a human approver.
 9. **No Historical Deliberation:** The ledger contains only facts, states, paths, metrics, and relationships. Narrative
    discussion belongs in [`05_intent_conversation_summary.html`](intent-conversation-summary.md).
+10. **Planning Gates Before Convergence:** No unit can leave `declared` until the `plan-acceptance` gate records `pass`.
+11. **Approvers Match Risk Class:** Each planning gate approver must match the role that `riskClass` names.
+12. **Light Layout Has One Sub-Intent:** If `layout` is `light`, `subIntents` has exactly one entry.
 
 ---
 
@@ -872,6 +909,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                                              | Source    |
 |:-----------|:--------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 1.2.0   | Added the `closed` intent state, `riskClass`, `layout`, `closedAt`, the `intent-acceptance`, `plan-review`, and `plan-acceptance` gates with risk class approvers, and the light layout with null sub-intent paths. Evidence IDs now come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 1.1.0   | Replaced the implementation ledger with the intent ledger: convergence state machine, holds, gates, writer and approver identities, autonomy tier, required `targetScope`, `originRef` and `externalRef`, sub-intent and unit hierarchy, and `brevio work-item` CLI commands. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for the Work Item Ledger (`03_implementation_ledger.json`) establishing the 7-state lifecycle, parallel/sequential execution modes, execution waves, DAG resolution, context slicing protocol, concurrency controls, and full relational graph schema. | Feature Specification |
 | 2026-08-30 | 0.1.0   | Initial baseline JSON schema stub. | Initial Specification |

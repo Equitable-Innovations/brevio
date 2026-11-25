@@ -5,8 +5,8 @@ work item lifecycle in `brevio`. It aggregates all completed sub-intents, atomic
 and cumulative token telemetry into an executive completion report that certifies feature delivery and authorizes pull
 request submission.
 
-The intent summary provides the macro-level audit trail proving that evidence requirements from `00_intent_spec.html` and
-architectural designs from `01_solution_strategy.html` were faithfully and safely implemented.
+The intent summary provides the macro-level audit trail proving that the evidence requirements and the design in
+`01_solution_strategy.html` were faithfully and safely implemented.
 
 This document serves a dual purpose:
 
@@ -167,7 +167,7 @@ Executive summary certifying work item completion:
 
 ### 3.3. Evidence Fulfillment & Traceability Verification
 
-Audits delivery of each business requirement from `00_intent_spec.html`:
+Audits delivery of each evidence requirement from `01_solution_strategy.html`:
 
 | Evidence ID | Evidence Description                      | Delivering Sub-Intent       | Delivering Units       | Verification Verdict | RFC 2119 Level |
 |:----------|:-------------------------------------------|:-----------------------|:-----------------------|:---------------------|:---------------|
@@ -270,5 +270,6 @@ Downstream CI/CD pipelines, release note generators, and CLI commands extract hi
 
 | Date       | Version | Description                                                                                                                                                                                            | Source                           |
 |:-----------|:--------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.3.0 | Evidence requirements now come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 0.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.1.0   | Initial canonical intent summary specification (`04_intent_summary.html`) establishing work item executive synthesis, requirement traceability audits, sub-intent rollups, cumulative diffs, and XPath queries. | [Work Item Documents](README.md) |

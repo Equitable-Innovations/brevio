@@ -3,8 +3,8 @@
 The **Intent Conversation Summary Document** (`05_intent_conversation_summary.html`) is the authoritative Tier 1
 post-planning narrative synthesis in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It distills
 the multi-agent LLM dialogue, architectural debates, trade-off analyses, and alignment rounds that produced the
-requirements ([
-`00_intent_spec.html`](intent-specification.md)), technical
+intent ([
+`00_intent_spec.html`](intent-specification.md)), the requirements and technical
 design ([
 `01_solution_strategy.html`](solution-strategy.md)), and
 implementation roadmap ([
@@ -82,9 +82,9 @@ artifacts:
 .brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-        ├── 00_intent_spec.html                # Requirements & Checklists
-        ├── 01_solution_strategy.html                 # Technical Architecture & Micro-ADRs
-        ├── 02_intent_decomposition.html         # Multi-Sub-Intent Roadmap & Risk Strategy
+        ├── 00_intent_spec.html                # Originator's Intent (Frozen at Acceptance)
+        ├── 01_solution_strategy.html                 # Requirements, Invariants, Evidence & Design
+        ├── 02_intent_decomposition.html         # Implementation Plan & Sub-Intent DAG
         ├── 03_intent_ledger.json       # State Machine & Unit Dependency DAG
         ├── 03_intent_verification.html             # Pre-Execution Plan Gating Verdict
         ├── 04_intent_summary.html                # Execution Rollup Summary
@@ -100,7 +100,7 @@ artifacts:
 - **Runtime:** Fully static, runnable directly in modern browsers via local filesystem (`file://`) or served locally via
   the `brevio` CLI.
 - **Paired Artifacts:**
-    - Requirements: [
+    - Intent Specification: [
       `00_intent_spec.html`](intent-specification.md)
     - Solution Strategy: [
       `01_solution_strategy.html`](solution-strategy.md)
@@ -451,6 +451,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                          | Source                |
 |:-----------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------|
+| 2026-11-25 | 1.2.0 | Updated the roles of the intent specification and the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 1.1.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Intent Conversation Summary (`05_intent_conversation_summary.html`) establishing the decision log schema, high-level metrics scorecard, LLM conversation performance evaluation, and AI component improvement framework. | Feature Specification |
 | 2026-08-30 | 0.1.0   | Initial baseline stub in document catalog.                                                                                                                                                                                                           | Initial Specification |

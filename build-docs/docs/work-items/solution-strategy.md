@@ -1,14 +1,19 @@
 # Solution Strategy Document Definition
 
-The Solution Strategy Document (`01_solution_strategy.html`) is the authoritative architectural specification in the
-`brevio` work item lifecycle. It translates the declared intent, invariants, and evidence requirements in
-`00_intent_spec.html` into a solution hypothesis: component and module boundaries, schema and contract changes, an
-invariant preservation strategy, AI components and agent tooling, flagged concerns, micro-architectural decision records
-(ADRs), and an evidence traceability matrix.
+The Solution Strategy Document (`01_solution_strategy.html`) is the requirements and design specification in the `brevio`
+work item lifecycle. An agent writes it from the accepted `00_intent_spec.html`, under the organization's skills for
+brand, security, compliance, and UX. It declares what the solution must do: the requirements, the system invariants, the
+boundary envelope, the evidence requirements, and the autonomy tier. It also declares the design: the solution
+hypothesis, interface and contract changes, flagged concerns, and micro-architectural decision records (ADRs). An
+evidence traceability matrix links the two parts.
+
+The product owner reviews and accepts the strategy, but does not write it. The strategy names no source files, symbols,
+or schema statements. That detail belongs to the [Intent Decomposition](intent-decomposition.md)
+(`02_intent_decomposition.html`), which engineers plan against the accepted strategy.
 
 This document serves a dual purpose:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
+1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page that uses Material Design 3 Web
    Components (`@material/web` / **M3**) and inline diagrams without requiring client-side bundlers or build steps.
 2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for token-efficient decomposition and convergence agents.
@@ -22,21 +27,19 @@ This document serves a dual purpose:
 3. [Required Sections & M3 (Material Web) Component Structure](#3-required-sections--m3-material-web-component-structure)
     - 3.1. [Document Header & Metadata Bar](#31-document-header--metadata-bar)
     - 3.2. [Solution Hypothesis & Architecture Diagram](#32-solution-hypothesis--architecture-diagram)
-    - 3.3. [Invariant Preservation Strategy](#33-invariant-preservation-strategy)
-    - 3.4. [Component & Module Changes](#34-component--module-changes)
-    - 3.5. [Data Model & Schema Changes](#35-data-model--schema-changes)
-    - 3.6. [Interface & Contract Changes](#36-interface--contract-changes)
-    - 3.7. [AI Components & Agent Tooling Specification](#37-ai-components--agent-tooling-specification)
-        - 3.7.1. [Assigned & Required Agents](#371-assigned--required-agents)
-        - 3.7.2. [Required Skills & Knowledge Packages](#372-required-skills--knowledge-packages)
-        - 3.7.3. [AI Coding Tools & MCP Servers](#373-ai-coding-tools--mcp-servers)
-        - 3.7.4. [New AI Components Specification](#374-new-ai-components-specification)
-    - 3.8. [Flagged Concerns](#38-flagged-concerns)
-    - 3.9. [Technical Decisions & Trade-offs (Micro-ADRs)](#39-technical-decisions--trade-offs-micro-adrs)
-    - 3.10. [Evidence Traceability Matrix](#310-evidence-traceability-matrix)
-4. [Token Optimization & XPath Query Patterns](#4-token-optimization--xpath-query-patterns)
-5. [Rules & Constraints](#5-rules--constraints)
-6. [Revisions](#6-revisions)
+    - 3.3. [Requirements](#33-requirements)
+    - 3.4. [System Invariants & Preservation](#34-system-invariants--preservation)
+    - 3.5. [Boundary Envelope](#35-boundary-envelope)
+    - 3.6. [Evidence Requirements](#36-evidence-requirements)
+    - 3.7. [Open Question Resolution](#37-open-question-resolution)
+    - 3.8. [Interface & Contract Changes](#38-interface--contract-changes)
+    - 3.9. [Flagged Concerns](#39-flagged-concerns)
+    - 3.10. [Technical Decisions & Trade-offs (Micro-ADRs)](#310-technical-decisions--trade-offs-micro-adrs)
+    - 3.11. [Evidence Traceability Matrix](#311-evidence-traceability-matrix)
+4. [Authoring & Acceptance](#4-authoring--acceptance)
+5. [Token Optimization & XPath Query Patterns](#5-token-optimization--xpath-query-patterns)
+6. [Rules & Constraints](#6-rules--constraints)
+7. [Revisions](#7-revisions)
 
 ---
 
@@ -58,15 +61,13 @@ specification:
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
   via the `brevio` CLI.
-- **Authoring:** One agent session can author `00_intent_spec.html` and `01_solution_strategy.html`. A human accepts
-  each document separately.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `01_solution_strategy.html` begins with universal baseline `<meta>` tags, strategy-specific tags, AI component and
-tooling declarations, and the Material Web ES module importmap loader:
+Every `01_solution_strategy.html` begins with universal baseline `<meta>` tags, strategy-specific tags, provenance tags,
+and the Material Web ES module importmap loader:
 
 ```xhtml
 
@@ -87,19 +88,23 @@ tooling declarations, and the Material Web ES module importmap loader:
 
     <!-- Strategy Domain Metadata -->
     <meta name="parent-doc-id" content="WI-20260830T170936Z:00:SPEC"/>
-    <meta name="implements-req" content="EV-001,EV-002"/>
+    <meta name="autonomy-tier" content="propose"/> <!-- observe | propose | change-with-review | scoped-automation -->
+    <meta name="risk-class" content="high"/> <!-- routine | high -->
     <meta name="invariants-hash" content="sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
+    <meta name="requirement-count" content="4"/>
+    <meta name="invariant-count" content="3"/>
+    <meta name="evidence-count" content="3"/>
+    <meta name="open-concerns" content="0"/>
     <meta name="architectural-domain"
           content="backend-service"/> <!-- backend-service | database | full-stack | cli | core-lib -->
     <meta name="target-frameworks" content="spring-boot,postgresql,jwt,argon2"/>
-    <meta name="open-concerns" content="1"/>
+    <meta name="accepted-by" content="human:product-owner,human:tech-lead"/> <!-- empty until accepted -->
+    <meta name="accepted-at" content="2026-08-30T17:43:00Z"/> <!-- empty until accepted -->
 
-    <!-- AI Components & Tooling Metadata -->
-    <meta name="assigned-agents" content="agent:backend-engineer,agent:security-auditor"/>
-    <meta name="required-skills" content="skill:spring-boot-jwt-auth,skill:owasp-verification"/>
-    <meta name="ai-tools" content="mcp:db-inspector,mcp:ast-grep,cli:brevio"/>
-    <meta name="new-ai-components" content="skill:spring-boot-jwt-auth,agent:auth-regression-tester"/>
-    <meta name="policy-versions" content="secure-api-review@1.2.0"/>
+    <!-- Provenance Metadata -->
+    <meta name="generated-by" content="agent:strategy-author@v1.0"/>
+    <meta name="prompt-ref" content="sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"/>
+    <meta name="policy-versions" content="secure-api-review@1.2.0,brand-guidelines@3.0.1"/>
 
     <!-- M3 / Material Web Assets -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
@@ -120,198 +125,172 @@ tooling declarations, and the Material Web ES module importmap loader:
 </head>
 ```
 
-### AI Component Header Metadata Contracts
+### Provenance Metadata Contracts
 
-| Metadata Tag        | Scope                 | Purpose                                                                                      | Example                                                   |
-|:--------------------|:----------------------|:---------------------------------------------------------------------------------------------|:----------------------------------------------------------|
-| `assigned-agents`   | Work Item / Strategy  | Comma-delimited list of agent types or identifiers assigned to converge units in this intent | `agent:backend-engineer,agent:security-auditor`           |
-| `required-skills`   | Work Item / Strategy  | Comma-delimited list of skill identifiers required to execute changes                        | `skill:spring-boot-jwt-auth,skill:owasp-verification`     |
-| `ai-tools`          | Work Item / Strategy  | Comma-delimited list of MCP servers and CLI tools available to agents during convergence     | `mcp:db-inspector,mcp:ast-grep,cli:brevio`                  |
-| `new-ai-components` | Work Item / Strategy  | Comma-delimited list of newly authored or configured AI assets introduced by this strategy   | `skill:spring-boot-jwt-auth,agent:auth-regression-tester` |
-| `policy-versions`   | Work Item / Strategy  | Comma-delimited list of policy skills and their versions in force when the strategy was written | `secure-api-review@1.2.0`                              |
+| Metadata Tag      | Purpose                                                                                     | Example                                    |
+|:------------------|:--------------------------------------------------------------------------------------------|:-------------------------------------------|
+| `generated-by`    | Identity of the agent that wrote the strategy                                               | `agent:strategy-author@v1.0`               |
+| `prompt-ref`      | `sha256:` hash of the prompt that produced the strategy                                     | `sha256:2c26...e7ae`                       |
+| `policy-versions` | Comma-delimited policy skills and the versions that were in force for the strategy pass     | `secure-api-review@1.2.0`                  |
 
 ---
 
 ## 3. Required Sections & M3 (Material Web) Component Structure
 
-The Solution Strategy document contains 10 standardized sections. Each section combines semantic XHTML elements with
+The Solution Strategy document contains 11 standardized sections. Each section combines semantic XHTML elements with
 Material Design 3 Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes
 (`data-*`) for targeted XPath queries.
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the work item identifier, strategy title, status, parent intent reference, architectural
-domain, target frameworks, assigned agents, and evidence coverage count.
+Anchors the document with the work item identifier, strategy title, status, and parent intent reference. It also shows
+the autonomy tier, the risk class, the open concern count, the evidence count, and the acceptance record.
 
 ### 3.2. Solution Hypothesis & Architecture Diagram
 
-Section id: `solution-hypothesis`. Outlines the high-level engineering approach, boundary scope, and visual module
-interaction flow using an inline SVG or Mermaid diagram. Establishes the technical boundary between new components,
-modified services, external integrations, and AI agent touchpoints. Answers each open question from
-`00_intent_spec.html` or carries the question forward.
+Section id: `solution-hypothesis`. Outlines the high-level approach and the module interaction flow, using an inline SVG
+or Mermaid diagram. Shows the boundary between new components, changed services, external integrations, and AI agent
+touchpoints. It names components and services, not files or classes.
 
-### 3.3. Invariant Preservation Strategy
+### 3.3. Requirements
 
-Section id: `invariant-preservation`. For each invariant (`INV-###`) in `00_intent_spec.html`, states how the proposed
-architecture keeps the invariant true. Each entry names the invariant ID, the components at risk, the protective
-mechanism, and the enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`). The section also lists the
-paths that agents must not touch, which feed the Protected Resource Registry in `02_intent_decomposition.html`.
+Section id: `requirements`. States the behavior and the user-facing outcome that the solution delivers. Each requirement
+is an `md-list-item` with a `data-requirement-id` attribute (for example `REQ-001`) and a `data-source` attribute. The
+source names the section of `00_intent_spec.html` that the requirement comes from (for example `proposed-outcome`). A
+requirement that applies a brand, security, compliance, or UX policy names the policy skill and its version.
 
-### 3.4. Component & Module Changes
+### 3.4. System Invariants & Preservation
 
-Specifies all source code components, modules, services, repositories, and handlers modified or created for this work
-item. For each module, defines the file path, responsibility, class and symbol names, and change type (`create`,
-`modify`, `deprecate`).
+Section id: `invariants`. Each invariant is an `md-list-item` with a `data-invariant-id` attribute (for example
+`INV-001`), a `data-class` attribute, and a `data-level` attribute. Each entry records:
 
-### 3.5. Data Model & Schema Changes
+- A description of the condition that must hold.
+- A shell command. If the invariant holds, the command exits with code `0`.
+- The enforcement level: `advisory`, `build-gate`, `ci-gate`, or `human-gate`.
+- The class: `must-preserve`, `do-not-touch`, `performance-budget`, or `security-boundary`.
+- The components at risk and the protective mechanism that keeps the invariant true.
 
-Captures database migrations, DDL structures, new tables, altered columns, indexing strategies, and data transfer
-objects (DTOs). Includes exact schema snippets and entity relationship mappings.
+A `do-not-touch` invariant feeds the Protected Resource Registry in `02_intent_decomposition.html`.
 
-### 3.6. Interface & Contract Changes
+### 3.5. Boundary Envelope
 
-Specifies public APIs, REST endpoints, CLI commands, or cross-module RPC interfaces. Combines HTTP method chips (`GET`,
-`POST`, `PUT`, `DELETE`), URL path definitions, request parameters, JSON schema contracts, and response status examples.
+Section id: `boundary-envelope`. Lists the capabilities that are in scope and the capabilities that are strictly out of
+scope (`data-scope="in"` or `data-scope="out"`). Lists the constraints that bind the solution, for example the
+authentication method that the intent must reuse. Every constraint in `00_intent_spec.html` appears here with its
+`data-constraint-id`.
 
-### 3.7. AI Components & Agent Tooling Specification
+### 3.6. Evidence Requirements
 
-In `brevio`, the solution strategy treats the AI agent ecosystem as a first-class architectural layer. This section
-specifies the exact AI agents, skills, and coding tools participating in the convergence, as well as any **new AI
-components** that must be engineered or configured to deliver the change.
+Section id: `evidence-requirements`. Each evidence requirement has these parts:
 
-Decomposition agents (`02_intent_decomposition.html`) and unit workers query this section via XPath to configure
-workers, provision specialized skills, bind MCP servers, and schedule creation units for new AI assets before dependent
-code units converge.
+- A `data-evidence-id` attribute (for example `EV-001`).
+- The requirement IDs that it proves.
+- A description of the observable outcome.
+- A verification command with a pass or fail result.
 
-#### 3.7.1. Assigned & Required Agents
+Downstream documents bind to these identifiers through the `implements-req` tag. If any evidence requirement has no
+`pass` verdict, the intent cannot move to `settled`.
 
-Specifies each agent type participating in the convergence, its architectural role, model tier, and operational bounds:
+### 3.7. Open Question Resolution
 
-- **Agent Identifier & Role:** Formal agent designation (for example `agent:backend-engineer`,
-  `agent:database-specialist`, `agent:security-auditor`, `agent:code-reviewer`).
-- **Topology & Delegation:** Hierarchy position (primary worker, verification subagent, or orchestrator) and inter-agent
-  communication permissions.
-- **Model Tier & Reasoning Profile:** Model tier requirement (`pro` for complex refactoring and ADRs, `flash` for
-  targeted file edits, `flash_lite` for quick searches), temperature settings, and reasoning effort.
-- **Permissions & Workspace Mode:** Workspace isolation mode (`inherit`, `branch`, `share`), allowed file modification
-  paths, and command execution privileges. Each agent holds the least permissions that it needs.
-- **Identity Role:** Whether the agent writes units or approves units. The writer identity and the approver identity of a
-  unit must differ.
+Section id: `open-question-resolution`. Lists every `data-question-id` from `00_intent_spec.html`. Each entry has a
+`data-status` attribute:
 
-#### 3.7.2. Required Skills & Knowledge Packages
+- `resolved`: The entry records the answer.
+- `carried-forward`: The entry names the owner and the document or stage that answers the question.
 
-Specifies the existing skill packages and domain instructions that agents must load before converging units:
+### 3.8. Interface & Contract Changes
 
-- **Skill Identifier:** Canonical skill name (for example `skill:spring-boot-jwt-auth`, `skill:owasp-verification`).
-- **Source Location:** Path to the skill bundle (for example `.agents/skills/jwt-auth/SKILL.md` or harness builtin).
-- **Activation Scope & Triggers:** The sub-intents or unit categories that require this skill.
-- **Key Provided Procedures:** Concrete guidelines, code patterns, or validation steps loaded into the agent context.
-- **Enforcement Note:** A skill is advisory. A policy that must always hold also needs a `build-gate` or `ci-gate`
-  invariant.
+Section id: `interface-changes`. Specifies public APIs, REST endpoints, CLI commands, or cross-module RPC interfaces.
+Combines HTTP method chips (`GET`, `POST`, `PUT`, `DELETE`), URL path definitions, request parameters, JSON schema
+contracts, and response status examples.
 
-#### 3.7.3. AI Coding Tools & MCP Servers
-
-Details the Model Context Protocol (MCP) servers, CLI tools, AST analyzers, and testing sidecars available to agents:
-
-- **Server / Tool Identifier:** Formal tool provider (for example `mcp:db-inspector`, `mcp:ast-grep`, `cli:brevio`,
-  `tool:mvn-test`).
-- **Available Operations:** Specific functions exposed to the agent (for example `inspect_schema`, `execute_query`,
-  `find_references`).
-- **Access Level & Guardrails:** Read-only versus mutating commands, token budget limits, output truncation policies, and
-  XPath filter rules.
-
-#### 3.7.4. New AI Components Specification
-
-When the change introduces new AI capabilities or requires authoring new AI components to converge or maintain the
-feature, this subsection formally architects them. New AI components must converge in prerequisite units before
-downstream units rely on them:
-
-1. **New Custom Subagents:**
-    - **Name & Purpose:** Unique subagent name (for example `agent:auth-regression-tester`) and target problem domain.
-    - **System Prompt Specification:** Core instruction persona, behavioral rules, forbidden actions, and structured
-      output contract.
-    - **Tool Access Manifest:** Explicit array of permitted tools and MCP capabilities.
-    - **Model Tier & Workspace Mode:** Execution model profile and workspace isolation mode (`inherit`, `branch`,
-      `share`).
-
-2. **New Custom Skills:**
-    - **Skill Identifier & Directory:** Path under `.agents/skills/{skill-slug}/`.
-    - **`SKILL.md` Specification:** YAML frontmatter (`name`, `description`), procedural instructions, and execution
-      checklists.
-    - **Bundled Resources:** Associated helper scripts in `scripts/`, reference templates in `references/`, and asset
-      files.
-    - **Target Consumer Agents:** Which agents invoke the new skill and under what conditions.
-
-3. **New MCP Tools & Sidecars:**
-    - **Tool Name & Namespace:** Unique MCP tool identifier.
-    - **JSON Schema Contract:** Exact input argument schemas with property types, descriptions, and required fields.
-    - **Output Format:** Return MIME type and structured response schema.
-    - **Handler Implementation File:** Source file path implementing the tool logic.
-
-4. **New Hook Templates, Guardrails & Evaluation Rubrics:**
-    - Hook templates that enforce `build-gate` invariants, with the hook scope (project settings or managed settings).
-    - Automated LLM-as-a-judge evaluation prompts, scoring rubrics, and invariant assertions for unit verification in
-      `verification.html`.
-
-### 3.8. Flagged Concerns
+### 3.9. Flagged Concerns
 
 Section id: `flagged-concerns`. Lists each area of concern that the strategy pass found, for example two policies that
-contradict each other. Each concern is an `md-list-item` with a `data-concern-id` attribute, a description, a named
-owner, and a status (`open`, `resolved`). The originator resolves each concern with its owner before the intent moves to
-`converging`.
+contradict each other. Each concern is an `md-list-item` with a `data-concern-id` attribute and a description. It also
+names the policy skills involved, the policy owner, and a status (`open`, `resolved`). Before the strategy is accepted,
+the product owner resolves each concern with its policy owner.
 
-### 3.9. Technical Decisions & Trade-offs (Micro-ADRs)
+### 3.10. Technical Decisions & Trade-offs (Micro-ADRs)
 
 Section id: `technical-decisions`. Documents isolated architectural and technical decisions made specifically for this
-work item. Each micro-ADR records:
+work item. Each micro-ADR is an `md-outlined-card` with a `data-adr-id` attribute (for example `ADR-001`) and records:
 
 - Context and problem statement.
 - Decision taken.
+- Options not chosen, with the reason for each.
 - Trade-offs (pros and cons).
 - Impact on downstream convergence and agent workflows.
 
-### 3.10. Evidence Traceability Matrix
+### 3.11. Evidence Traceability Matrix
 
-Centralizes cross-referencing between evidence requirement IDs (`EV-###`), invariant IDs (`INV-###`), and the technical
-components, database schemas, interfaces, micro-ADRs, and **AI components** specified in this document:
+Section id: `evidence-traceability`. Cross-references each evidence requirement ID (`EV-###`) with the requirements,
+invariants, interfaces, and micro-ADRs in this document:
 
-| Evidence ID | Invariants | Target Components / Classes     | Data Schema Changes | Interface / Contract      | Micro-ADR | Assigned Agent           | Required / New Skill         |
-|:------------|:-----------|:--------------------------------|:--------------------|:--------------------------|:----------|:-------------------------|:-----------------------------|
-| `EV-001`    | `INV-001`  | `AuthService`, `JwtProvider`    | `users`, `tokens`   | `POST /api/v1/auth/login` | `ADR-001` | `agent:backend-engineer` | `skill:spring-boot-jwt-auth` |
-| `EV-002`    | `INV-002`  | `SecurityConfig`, `TokenFilter` | -                   | `Bearer <token>` Header   | `ADR-002` | `agent:security-auditor` | `skill:owasp-verification`   |
+| Evidence ID | Requirements | Invariants | Interface / Contract      | Micro-ADR |
+|:------------|:-------------|:-----------|:--------------------------|:----------|
+| `EV-001`    | `REQ-001`    | `INV-001`  | `POST /api/v1/auth/login` | `ADR-001` |
+| `EV-002`    | `REQ-002`    | `INV-002`  | `Bearer <token>` Header   | `ADR-002` |
 
----
-
-## 4. Token Optimization & XPath Query Patterns
-
-Decomposition agents (`02_intent_decomposition.html`) and unit workers query specific architectural units using exact
-XPath 1.0/2.0 expressions. This eliminates full-document ingestion, minimizing token overhead and reducing model
-hallucinations.
-
-| Extraction Objective            | XPath Query Pattern                                                    |
-|:--------------------------------|:-----------------------------------------------------------------------|
-| Invariant preservation entries  | `//section[@id='invariant-preservation']//md-list-item`                |
-| Open concerns                   | `//section[@id='flagged-concerns']//md-list-item[@data-status='open']` |
-| Micro-ADRs                      | `//section[@id='technical-decisions']//md-outlined-card`               |
-| Assigned agents                 | `/html/head/meta[@name='assigned-agents']/@content`                    |
-| Units that touch a component    | `//section[@id='component-changes']//*[@data-path]`                    |
+`02_intent_decomposition.html` extends this traceability down to components, sub-intents, and units.
 
 ---
 
-## 5. Rules & Constraints
+## 4. Authoring & Acceptance
 
-1. Every invariant in `00_intent_spec.html` must appear in the Invariant Preservation Strategy section.
-2. Every evidence requirement must appear in the Evidence Traceability Matrix.
-3. The intent cannot leave `formulating` while a flagged concern has the status `open`.
-4. The strategy declares goals, boundaries, and contracts. It must not contain step-by-step edit instructions.
-5. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+1. The acceptance of `00_intent_spec.html` starts the strategy pass. A non-interactive job can run it.
+2. An agent reads `00_intent_spec.html` with the organization's policy skills loaded and writes the strategy. The agent
+   flags every concern, especially where two policies contradict each other.
+3. The product owner reviews the strategy against the intent. Does it solve the stated problem? Does it answer or carry
+   forward every open question?
+4. The product owner resolves each flagged concern with its policy owner.
+5. The product owner accepts the strategy. If `risk-class` is `high`, a tech lead accepts it too. `brevio` records
+   `accepted-by` and `accepted-at`.
+6. The acceptance starts the decomposition pass.
 
 ---
 
-## 6. Revisions
+## 5. Token Optimization & XPath Query Patterns
+
+Decomposition agents (`02_intent_decomposition.html`) and unit workers query specific sections using exact XPath 1.0/2.0
+expressions. This eliminates full-document ingestion, minimizing token overhead and reducing model hallucinations.
+
+| Extraction Objective            | XPath Query Pattern                                                                 |
+|:--------------------------------|:------------------------------------------------------------------------------------|
+| Requirements                    | `//section[@id='requirements']//md-list-item`                                       |
+| All invariants                  | `//section[@id='invariants']//md-list-item`                                         |
+| Invariants that block edits     | `//section[@id='invariants']//md-list-item[@data-level='build-gate']`               |
+| Evidence requirements           | `//section[@id='evidence-requirements']//md-list-item`                              |
+| Out-of-scope capabilities       | `//section[@id='boundary-envelope']//*[@data-scope='out']`                          |
+| Carried-forward questions       | `//section[@id='open-question-resolution']//*[@data-status='carried-forward']`      |
+| Open concerns                   | `//section[@id='flagged-concerns']//md-list-item[@data-status='open']`              |
+| Micro-ADRs                      | `//section[@id='technical-decisions']//md-outlined-card`                            |
+| Autonomy tier                   | `/html/head/meta[@name='autonomy-tier']/@content`                                   |
+
+---
+
+## 6. Rules & Constraints
+
+1. Every requirement must name its source section in `00_intent_spec.html`.
+2. Every constraint and every open question in `00_intent_spec.html` must appear in this document.
+3. Every invariant must have a shell command and an enforcement level.
+4. Every evidence requirement must be a command with a pass or fail result and must appear in the Evidence Traceability
+   Matrix.
+5. The `invariants-hash` tag must match a hash of the `invariants` section. A change to an invariant updates the hash.
+6. The strategy cannot be accepted while a flagged concern has the status `open`.
+7. The strategy names components, services, and contracts. It must not name source files, classes, symbols, or schema
+   statements, and it must not contain step-by-step edit instructions.
+8. The acceptance record must name the product owner. If `risk-class` is `high`, it must also name a tech lead.
+9. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+
+---
+
+## 7. Revisions
 
 | Date       | Version | Description                                                                                                                                                                                                                                                          | Source                           |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.0   | Made the strategy the requirements and design specification. Added requirements, open question resolution, `prompt-ref`, `risk-class`, and the acceptance record. Took the invariants, boundary envelope, evidence requirements, and autonomy tier from the intent specification. Moved component, schema, and agent tooling detail to the intent decomposition. Concerns now block acceptance. Micro-ADRs record options not chosen. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Replaced the technical design with the solution strategy: solution hypothesis, invariant preservation strategy, flagged concerns, hook templates, writer and approver identity roles, and evidence traceability matrix.                                              | TOPIC-005                        |
 | 2026-09-06 | 0.3.0   | Added AI Components & Agent Tooling specification (assigned agents, required skills, AI coding tools/MCP servers, and new AI components architecture), updated header metadata contract, traceability matrix, XPath patterns, and complete XHTML reference template. | Work Item Architecture Alignment |
 | 2026-09-06 | 0.2.0   | Removed the XHTML snippets as the UI defined ones generated in the initial draft were junk.                                                                                                                                                                          | [Work Item Documents](README.md) |

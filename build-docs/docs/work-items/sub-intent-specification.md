@@ -58,7 +58,7 @@ Each sub-intent specification resides in its isolated milestone directory under 
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
-            └── phase_{NN}_{phase_slug}/
+            └── sub_intent_{NN}_{sub_intent_slug}/
                 ├── sub_intent_spec.html             # Authoritative Sub-Intent Specification
                 ├── sub_intent_verification.html       # Sub-Intent Verification Gate
                 ├── sub_intent_summary.html          # Sub-Intent Execution Rollup
@@ -67,6 +67,8 @@ Each sub-intent specification resides in its isolated milestone directory under 
 ```
 
 - **File Name:** `sub_intent_spec.html`
+- **Light Path:** An intent with `layout="light"` has no sub-intent specification. Section `sub-intent-breakdown` of
+  `02_intent_decomposition.html` holds the unit manifest in the format of Section 3.5.
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
@@ -251,5 +253,6 @@ Downstream unit planners, subagents, and orchestrators query targeted fragments 
 
 | Date       | Version | Description                                                                                                                                                                                           | Source                           |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.3.0 | Added the light path, where the intent decomposition holds the unit manifest. Corrected the sub-intent directory name in the layout. | TOPIC-007 |
 | 2026-10-31 | 0.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.1.0   | Initial canonical sub-intent specification (`sub_intent_spec.html`) detailing the 4-dimension execution paradigm, sequential atomic unit manifest, context constraints, referenced patterns, and XPath queries. | [Work Item Documents](README.md) |

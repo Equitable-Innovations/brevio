@@ -196,23 +196,32 @@ All document templates inherit a standard XHTML shell:
 
 #### A. Intent Specification Template (`00_intent_spec.html`)
 
-- **Header Section:** Displays convergence status, autonomy tier, priority, author, and invariant and evidence counts via
-  chips.
-- **Declared Intent Card:** The originator's statement of the problem, the proposed outcome, and the affected systems.
-- **Invariant List:** One `md-list-item` per invariant with its shell command and an enforcement level chip.
-- **Evidence Cards:** One `<md-outlined-card>` per evidence requirement ID with its verification command and verdict.
+- **Header Section:** Displays convergence status, risk class, priority, author, and the acceptance record via chips.
+- **Intent Cards:** One card each for the problem, the proposed outcome, and the affected users and systems, in the
+  originator's words.
+- **Constraint List:** One `md-list-item` per constraint, with an out-of-scope chip where it applies.
+- **Open Question List:** One `md-list-item` per question with its owner.
 
 #### B. Solution Strategy Template (`01_solution_strategy.html`)
 
+- **Header Section:** Displays autonomy tier, risk class, open concern count, and the acceptance record via chips.
 - **Solution Hypothesis:** Visual diagrams, topology overviews, and component interaction maps.
-- **Invariant Preservation Table:** For each invariant, the protective mechanism and its enforcement level.
-- **Component & Schema Models:** Entity relationship tables, schema definitions, and interface specifications.
-- **Flagged Concerns:** Concern list with owner and status chips.
-- **Decision Records:** Micro-ADR cards.
+- **Requirement List:** One `md-list-item` per requirement with its source section.
+- **Invariant List:** One `md-list-item` per invariant with its shell command, enforcement level chip, and protective
+  mechanism.
+- **Evidence Cards:** One `<md-outlined-card>` per evidence requirement ID with its verification command and verdict.
+- **Open Question Resolution:** Each question from the intent with a `resolved` or `carried-forward` chip.
+- **Interface Specifications:** Endpoint and contract cards.
+- **Flagged Concerns:** Concern list with policy owner and status chips.
+- **Decision Records:** Micro-ADR cards, including the options not chosen.
 
 #### C. Intent Decomposition & Ledger Template (`02_intent_decomposition.html`, `03_intent_ledger.json`)
 
-- **Convergence Overview:** Sub-intent DAG, overall progress bar (`md-linear-progress`), and parallel branches.
+- **Plan View:** Files that change, order of work, risks, and proof in one panel.
+- **Component & Schema Models:** Entity relationship tables, schema definitions, and module change cards.
+- **Plan Interrogation:** Cards for what can break, the riskiest step, and the options not chosen.
+- **Convergence Overview:** Sub-intent DAG, overall progress bar (`md-linear-progress`), and parallel branches. For the
+  `light` layout, the unit list replaces the DAG.
 - **Sub-Intent Roadmap Table:** Sequence, gating criteria, estimates, and unit summaries.
 - **Protected Resource Registry:** List of protected paths and frozen contracts.
 - **Ledger Tree View:** Interactive state machine showing real-time unit state, holds, gate verdicts, approver names, and
@@ -382,6 +391,7 @@ that builds or serves templates, the bundled distribution assets, and the produc
 | 2026-11-04 | 0.7.0   | Added the navigation tree and the state display rules to the Wiki template. | TOPIC-002 |
 | 2026-11-04 | 0.6.0   | Removed the SDK & API domain from the navigation rail, the domain integration table, and the template list. | TOPIC-004 |
 | 2026-11-04 | 0.5.0   | Removed the local server from the static page statement and the offline viewing principle. | Removal of the REST API |
+| 2026-11-25 | 0.4.1   | Updated the intent specification, solution strategy, and intent decomposition templates to the new document roles: intent cards, requirements, open question resolution, plan view, and plan interrogation. | TOPIC-007 |
 | 2026-11-01 | 0.4.0   | Added the project manager presentation mode and the templates for the PRD, FSD, epics, milestones, traceability matrix, and dependency graph. | TOPIC-006 |
 | 2026-10-31 | 0.3.0   | Renamed work item templates to the intent-based document set. Added convergence, autonomy tier, and enforcement level chips and the review and lessons templates. | TOPIC-005 |
 | 2026-09-05 | 0.2.0   | Updated specification scope to clarify documentation-only purpose, detail M3 UI components, integrate with `build-docs/docs`, and define domain document templates. | [Build Docs UI Requirements](README.md) |

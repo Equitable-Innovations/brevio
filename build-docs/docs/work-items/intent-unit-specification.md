@@ -72,6 +72,10 @@ Each unit specification resides inside its dedicated unit directory within its p
                         └── metrics.json            # Token Consumption & Cost Telemetry
 ```
 
+For an intent with `layout="light"`, the unit directory sits under `units/` at the work item root:
+`.brevio/work_items/{intent-id}/units/unit_{NNN}_{unit_slug}/`. The `parent-doc-id` tag then points to the Intent
+Decomposition `doc-id`.
+
 - **File Name:** `intent_unit_spec.html`
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
@@ -236,12 +240,15 @@ Section id: `unit-constraints`. Optional constraints that change how the agent w
 
 ### 3.8. Acceptance Criteria Checklist
 
-Centralizes checklist items marked with `data-criteria-id` for verification against `verification.html`:
+Section id: `acceptance-criteria`. Lists checklist items marked with `data-criteria-id`. Each criterion is a statement
+and a command with a pass or fail result. `verification.html` records the output of each command:
 
-- `AC-001`: Migration file exists at `src/main/resources/db/migration/V1__init_auth.sql`.
-- `AC-002`: `users` table schema satisfies all EV-001 column requirements.
-- `AC-003`: `refresh_tokens` foreign key references `users(id)` with cascade delete.
-- `AC-004`: Migration applies cleanly on a fresh database instance with exit code 0.
+| Criterion | Statement                                                                 | Command                                                          |
+|:----------|:--------------------------------------------------------------------------|:-----------------------------------------------------------------|
+| `AC-001`  | The migration file exists.                                                | `test -f src/main/resources/db/migration/V1__init_auth.sql`      |
+| `AC-002`  | The `users` table schema meets all EV-001 column requirements.            | `mvn test -Dtest=UserMigrationTest#testUsersColumns`             |
+| `AC-003`  | The `refresh_tokens` foreign key references `users(id)` with cascade delete. | `mvn test -Dtest=UserMigrationTest#testCascadeDelete`         |
+| `AC-004`  | The migration applies on a fresh database instance.                       | `mvn flyway:clean flyway:migrate`                                |
 
 ---
 
@@ -302,6 +309,7 @@ Converging agents, subagents, and tools query precise subsections of the unit sp
 
 | Date       | Version | Description                                                                                                                                                                                                                 | Source                           |
 |:-----------|:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.4.0   | Made each acceptance criterion a command with a pass or fail result. Added the light path unit location. Evidence requirement IDs come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 0.3.0   | Replaced step-by-step instructions with the unit goal, required target scope, invariants with enforcement levels, reference anchors, verification contract, and optional unit constraints. | TOPIC-005 |
 | 2026-09-06 | 0.2.0   | Added `intent.diff` to unit directory layout and artifact catalog.                                                                                                                                                            | [Work Item Documents](README.md) |
 | 2026-09-06 | 0.1.0   | Initial canonical unit specification (`intent_unit_spec.html`) detailing the 4-dimension paradigm (explicit context, atomic granularity, deterministic validation, upfront edge cases), verification commands, and XPath patterns. | [Work Item Documents](README.md) |

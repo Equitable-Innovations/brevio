@@ -121,7 +121,7 @@ pass, and tags each finding with its pass. The default passes are:
 |:-------------|:--------------------------------------------------------------------------------------------------------------|
 | `bugs`       | Logic errors, broken edge cases, and subtle regressions.                                                      |
 | `security`   | Injection risks, authentication gaps, and personal data in logs.                                              |
-| `compliance` | The change matches `00_intent_spec.html`, `02_intent_decomposition.html`, the unit target scope, and the design principles. |
+| `compliance` | The change matches `01_solution_strategy.html`, the plan view in `02_intent_decomposition.html`, the unit target scope, and the design principles. |
 
 The policy can add passes. Each added pass needs a name, a scope, and an owner.
 
@@ -193,4 +193,5 @@ The ledger records a sampled audit of automated approvals.
 
 | Date       | Version | Description                                                                                                                                       | Source    |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 0.2.0   | The compliance pass compares the change with the solution strategy and the plan view. | TOPIC-007 |
 | 2026-10-31 | 0.1.0   | Initial specification of the project-level review policy: passes, severity definitions, nit cap, skip list, approval rules, and reviewer modes. | TOPIC-005 |

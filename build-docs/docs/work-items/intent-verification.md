@@ -6,8 +6,8 @@ exhaustive verification criteria, test suites, deterministic command assertions,
 proven in order for the work item to be certified as `settled` and ready for pull request merge. It also checks that
 every declared system invariant holds.
 
-While [`00_intent_spec.html`](intent-specification.md)
-defines *what* outcome, invariants, and evidence must be achieved, and [
+While [`01_solution_strategy.html`](solution-strategy.md)
+defines *what* requirements, invariants, and evidence must be achieved, and [
 `02_intent_decomposition.html`](intent-decomposition.md)
 defines *how* the execution is partitioned into milestones, `03_intent_verification.html` defines *how the implemented code
 will be proven correct*. It guarantees that code delivery is not subjective, but verified through deterministic
@@ -94,9 +94,9 @@ artifacts:
 .brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-        ├── 00_intent_spec.html                # Intent, Invariants & Evidence Requirements
-        ├── 01_solution_strategy.html                 # Solution Strategy & Micro-ADRs
-        ├── 02_intent_decomposition.html         # Sub-Intent DAG & Protected Resource Registry
+        ├── 00_intent_spec.html                # Originator's Intent (Frozen at Acceptance)
+        ├── 01_solution_strategy.html                 # Requirements, Invariants, Evidence & Design
+        ├── 02_intent_decomposition.html         # Implementation Plan & Sub-Intent DAG
         ├── 03_intent_ledger.json       # Convergence State Machine & Unit DAG
         ├── 03_intent_verification.html             # Authoritative Intent Verification Gate
         ├── 04_intent_summary.html                # Final Work Item Execution Summary
@@ -224,7 +224,7 @@ Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit d
 Anchors the document with the work item identification, verification stage badge (`feasibility` or
 `final-completion-verdict`), validation verdict chip (`pass`, `fail`, `warn`), test pass gauge, blocking issue counter,
 and navigation links back to [
-`00_intent_spec.html`](intent-specification.md) and [
+`01_solution_strategy.html`](solution-strategy.md) and [
 `02_intent_decomposition.html`](intent-decomposition.md).
 
 
@@ -235,8 +235,8 @@ complete" means for the work item:
 
 - **Definition of Done (DoD):** Explicit checklist of mandatory conditions that must be met before coding is certified
   complete:
-    1. 100% of evidence requirements and acceptance criteria in [
-       `00_intent_spec.html`](intent-specification.md) pass
+    1. 100% of evidence requirements in [
+       `01_solution_strategy.html`](solution-strategy.md) and all unit acceptance criteria pass
        automated verification.
     2. All Tier 2 Sub-Intent Verifications ([
        `sub_intent_verification.html`](sub-intent-verification.md))
@@ -253,11 +253,11 @@ complete" means for the work item:
 
 ### 3.3. Evidence & Acceptance Criteria Verification Matrix
 
-The authoritative 1:1 traceability registry mapping every evidence requirement ID and acceptance criterion from [
-`00_intent_spec.html`](intent-specification.md) to concrete
+The authoritative 1:1 traceability registry mapping every evidence requirement ID from [
+`01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion to concrete
 verification commands, automated test assertions, and pass/fail evidence:
 
-- **Completeness Invariant:** If any evidence requirement ID from `00_intent_spec.html` is absent from this matrix,
+- **Completeness Invariant:** If any evidence requirement ID from `01_solution_strategy.html` is absent from this matrix,
   `03_intent_verification.html` fails the feasibility check with `blocking-issues-count >= 1`.
 
 ### 3.4. Multi-Level Testing Pyramid & Verification Command Suites
@@ -296,7 +296,7 @@ deterministic output parsing rules:
 Verifies that the code meets architectural, security, and maintainability baselines, and that every declared invariant
 holds:
 
-- **Invariant Monitors:** One row per invariant (`INV-###`) from `00_intent_spec.html`. Each row lists the shell command,
+- **Invariant Monitors:** One row per invariant (`INV-###`) from `01_solution_strategy.html`. Each row lists the shell command,
   the enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`), the exit code, and the literal output.
   A non-zero exit code on a `ci-gate` invariant blocks a `pass` verdict. A `human-gate` invariant holds the ledger state
   until the named approver signs.
@@ -398,7 +398,7 @@ The intent verification document anchors the entire verification lifecycle from 
 
 ```mermaid
 graph TD
-    REQ["00_intent_spec.html<br/>(Evidence Requirements, Invariants & Acceptance Criteria)"] -->|" 1:1 Traceability "| VAL["03_intent_verification.html<br/>(Master Verification Spec & Completion Gate)"]
+    REQ["01_solution_strategy.html<br/>(Requirements, Invariants & Evidence Requirements)"] -->|" 1:1 Traceability "| VAL["03_intent_verification.html<br/>(Master Verification Spec & Completion Gate)"]
     PLAN["02_intent_decomposition.html<br/>(Sub-Intent DAG, Protected Resources & Edge Cases)"] -->|" Test Pyramid & Gates "| VAL
     VAL -->|" Feasibility Gate: PASS "| LEDGER["03_intent_ledger.json<br/>(Unlocks Sub-Intent 1 Execution)"]
 
@@ -428,8 +428,8 @@ graph TD
 
 ## 6. Rules & Constraints
 
-1. **100% Evidence Coverage Invariant:** Every evidence requirement and acceptance criterion defined in [
-   `00_intent_spec.html`](intent-specification.md) must
+1. **100% Evidence Coverage Invariant:** Every evidence requirement defined in [
+   `01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion must
    have a corresponding entry in the Evidence & Acceptance Criteria Verification Matrix. Zero unverified
    evidence requirements are permitted.
 2. **Deterministic Command Execution:** All automated test entries must specify exact, runnable terminal commands with
@@ -438,7 +438,8 @@ graph TD
 3. **Dual-Stage Lifecycle Preservation:** The document must record both its feasibility baseline and its final
    completion verdict. The transition from `feasibility` to `final-completion-verdict` must reflect actual executed test
    runs.
-   3a. **Invariant Coverage:** Every invariant in `00_intent_spec.html` must have a row in the Invariant Monitors table.
+   3a. **Invariant Coverage:** Every invariant in `01_solution_strategy.html` must have a row in the Invariant Monitors
+   table.
    3b. **Evidence Integrity:** Each verdict must cite the literal command output.
 4. **Zero-Tolerance Defect Gating:** Any failing test, unresolved blocker, or unapproved mandatory manual check strictly
    prevents `validation-verdict` from reaching `pass`. A failed gate must name a human approver.
@@ -456,6 +457,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                                                                     | Source                |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------|
+| 2026-11-25 | 1.2.0   | Evidence requirements and invariants now come from the solution strategy. Acceptance criteria come from the unit specifications. | TOPIC-007 |
 | 2026-10-31 | 1.1.0   | Renamed to Intent Verification. Replaced the pre-execution stage with the feasibility stage, mapped evidence requirements and invariants to commands, added invariant monitors, gate types, and literal-output evidence. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Canonical specification for Intent Verification (`03_intent_verification.html`) establishing the dual-stage lifecycle, 1:1 requirements verification matrix, multi-level testing pyramid, non-functional quality gates, sub-intent/unit roll-up audits, manual sign-off protocols, and XPath query patterns. | Feature Specification |
 | 2026-08-30 | 0.1.0   | Initial baseline stub in document catalog.                                                                                                                                                                                                                                                      | Initial Specification |
