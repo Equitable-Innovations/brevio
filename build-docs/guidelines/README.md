@@ -1,6 +1,6 @@
 # Programming Guidelines
 
-This directory lists the programming guidelines that apply to the code of `tosh`. Each guideline is one short rule.
+This directory lists the programming guidelines that apply to the code of `brevio`. Each guideline is one short rule.
 When two guidelines conflict, the guideline that comes earlier in this list wins.
 
 ## Guidelines

@@ -1,4 +1,4 @@
-# WORK-ITEM-001: Go Project Skeleton and `tosh init` Command
+# WORK-ITEM-001: Go Project Skeleton and `brevio init` Command
 
 | Metadata | Value |
 | :--- | :--- |
@@ -23,19 +23,19 @@
 
 ## 1. Declared Intent
 
-- **Desired outcome**: The repository holds a Go project that builds the `tosh` binary. The command `tosh init` creates the `.tosh/` directory in the project that starts to use `tosh`.
-- **Affected users and systems**: Developers and agents that adopt `tosh` in a project. The `tosh` repository, which holds no code today.
-- **Motivation**: Every other command needs a binary and a `.tosh/` directory. This is the first code in the repository, so it sets the layout that later work items build on.
+- **Desired outcome**: The repository holds a Go project that builds the `brevio` binary. The command `brevio init` creates the `.brevio/` directory in the project that starts to use `brevio`.
+- **Affected users and systems**: Developers and agents that adopt `brevio` in a project. The `brevio` repository, which holds no code today.
+- **Motivation**: Every other command needs a binary and a `.brevio/` directory. This is the first code in the repository, so it sets the layout that later work items build on.
 
 ---
 
 ## 2. Context & Background
 
 ### 2.1 Problem Description
-The repository holds only specifications. No Go module, no binary, and no command exists. A project cannot start to use `tosh` because nothing creates `.tosh/`.
+The repository holds only specifications. No Go module, no binary, and no command exists. A project cannot start to use `brevio` because nothing creates `.brevio/`.
 
 ### 2.2 Background & Motivation
-The [CLI specification](../build-docs/cli/README.md) defines the command tree, the global flags, the exit codes, and the behavior of `tosh init`. The command creates `.tosh/` and `.tosh/tosh.config.json`. If `.tosh/` already exists, the command makes no change, prints a message, and exits with code `2`. The file `tosh.config.json` defines no keys in this version.
+The [CLI specification](../build-docs/cli/README.md) defines the command tree, the global flags, the exit codes, and the behavior of `brevio init`. The command creates `.brevio/` and `.brevio/brevio.config.json`. If `.brevio/` already exists, the command makes no change, prints a message, and exits with code `2`. The file `brevio.config.json` defines no keys in this version.
 
 ---
 
@@ -57,17 +57,17 @@ Conditions that must hold before, during, and after convergence. Each command ex
 ## 4. Boundary Envelope
 
 ### In Scope
-- [ ] A Go module `github.com/Equitable-Innovations/tosh`, which targets Go 1.26, with the `cobra` library and a `cmd/tosh` entry point.
+- [ ] A Go module `github.com/Equitable-Innovations/brevio`, which targets Go 1.26, with the `cobra` library and a `cmd/brevio` entry point.
 - [ ] A root command with the global flags `--root`, `--format`, `--quiet`, and `--help`.
 - [ ] The exit code table from the CLI specification.
-- [ ] The command `tosh init`, which creates `.tosh/` and an empty `.tosh/tosh.config.json`.
-- [ ] Go unit tests for `tosh init` and the root command.
+- [ ] The command `brevio init`, which creates `.brevio/` and an empty `.brevio/brevio.config.json`.
+- [ ] Go unit tests for `brevio init` and the root command.
 - [ ] A GitHub Actions workflow that runs `go build`, `go vet`, and `go test`.
 
 ### Out of Scope
-- Real behavior for any command other than `tosh init`. Later work items add it.
+- Real behavior for any command other than `brevio init`. Later work items add it.
 - Empty stub commands for the other groups in the command tree. Later work items add each group with its real behavior.
-- The `tosh assets install` logic.
+- The `brevio assets install` logic.
 - The MCP server.
 - Release packaging and distribution of the binary.
 
@@ -86,8 +86,8 @@ Conditions that must hold before, during, and after convergence. Each command ex
 
 | ID | Observable Outcome | Verification Command |
 | :--- | :--- | :--- |
-| `EV-001` | In an empty directory, `tosh init` creates `.tosh/` and `.tosh/tosh.config.json` and exits with code `0`. | `go build -o bin/tosh ./cmd/tosh && d=$(mktemp -d) && ./bin/tosh init --root "$d" && test -f "$d/.tosh/tosh.config.json"` |
-| `EV-002` | In a directory that holds `.tosh/`, `tosh init` changes no file, prints a message, and exits with code `2`. | `d=$(mktemp -d) && ./bin/tosh init --root "$d" && ./bin/tosh init --root "$d"; test $? -eq 2` |
+| `EV-001` | In an empty directory, `brevio init` creates `.brevio/` and `.brevio/brevio.config.json` and exits with code `0`. | `go build -o bin/brevio ./cmd/brevio && d=$(mktemp -d) && ./bin/brevio init --root "$d" && test -f "$d/.brevio/brevio.config.json"` |
+| `EV-002` | In a directory that holds `.brevio/`, `brevio init` changes no file, prints a message, and exits with code `2`. | `d=$(mktemp -d) && ./bin/brevio init --root "$d" && ./bin/brevio init --root "$d"; test $? -eq 2` |
 | `EV-003` | All Go tests pass. | `go test ./...` |
 
 ---
@@ -96,19 +96,19 @@ Conditions that must hold before, during, and after convergence. Each command ex
 
 ### 6.1 Architecture & References
 - **Specifications**: [`build-docs/cli/README.md`](../build-docs/cli/README.md) (command tree, global flags, exit codes, setup commands).
-- **Affected Packages / Files**: `go.mod`, `cmd/tosh/`, `internal/cli/`, `internal/initcmd/`, and `.github/workflows/ci.yml`.
-- **Data Models / Schemas**: `.tosh/` directory and `.tosh/tosh.config.json` (an empty JSON object).
+- **Affected Packages / Files**: `go.mod`, `cmd/brevio/`, `internal/cli/`, `internal/initcmd/`, and `.github/workflows/ci.yml`.
+- **Data Models / Schemas**: `.brevio/` directory and `.brevio/brevio.config.json` (an empty JSON object).
 
 ### 6.2 Token Optimization & Performance
-`tosh init` writes two small items and prints one line. It does not read any existing document.
+`brevio init` writes two small items and prints one line. It does not read any existing document.
 
 ---
 
 ## 7. Candidate Sub-Intents
 
-- [ ] **SI-1**: Go module, `cmd/tosh` entry point, and root command with global flags and exit codes
+- [ ] **SI-1**: Go module, `cmd/brevio` entry point, and root command with global flags and exit codes
   - Depends on: none
-- [ ] **SI-2**: `tosh init` creates `.tosh/` and `tosh.config.json`, with the exit code `2` rule
+- [ ] **SI-2**: `brevio init` creates `.brevio/` and `brevio.config.json`, with the exit code `2` rule
   - Depends on: SI-1
 - [ ] **SI-3**: Unit tests and GitHub Actions workflow
   - Depends on: SI-2
@@ -128,7 +128,7 @@ Conditions that must hold before, during, and after convergence. Each command ex
 ## 9. Dependencies & Blockers
 
 - **Prerequisites**: None.
-- **Enables**: Every later work item that adds a `tosh` command.
+- **Enables**: Every later work item that adds a `brevio` command.
 - **External Dependencies**: Go toolchain and the `cobra` library.
 
 ---
@@ -146,5 +146,5 @@ Conditions that must hold before, during, and after convergence. Each command ex
 ## 11. Activity Log & Notes
 
 - **2026-11-04** (@samsassin): Work item created and placed into `PLANNED`.
-- **2026-11-04** (@samsassin): Answered the open questions. Go 1.26, GitHub Actions, no stub commands. The module path is `github.com/Equitable-Innovations/tosh` to match the git remote. Removed SI-3 and `EV-003` and renumbered the rest.
+- **2026-11-04** (@samsassin): Answered the open questions. Go 1.26, GitHub Actions, no stub commands. The module path is `github.com/Equitable-Innovations/brevio` to match the git remote. Removed SI-3 and `EV-003` and renumbered the rest.
 - **2026-11-04** (@samsassin): PLANNED -> DONE. Override confirmed: skipped standard progression. All invariants and evidence requirements pass.

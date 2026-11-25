@@ -1,7 +1,7 @@
 # Sub-Intent Summary Document Definition
 
 The Sub-Intent Summary Document (`sub_intents/{sub_intent_id}/sub_intent_summary.html`) is the authoritative Tier 2 milestone rollup in the
-`tosh` work item lifecycle. It synthesizes the execution outcomes, duration, git commit links, file touchpoints, and
+`brevio` work item lifecycle. It synthesizes the execution outcomes, duration, git commit links, file touchpoints, and
 token consumption metrics for a completed sub-intent before authorizing handoff to subsequent sub-intents or final work item
 closure.
 
@@ -13,16 +13,16 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) displaying milestone achievement scorecards, unit execution tables, aggregated
    diff metrics, and resource charts without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for automated state ledger synchronization, downstream sub-intent unblocking, and intent-level rollups.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Summaries
 
-In `tosh`, sub-intent summaries evaluate milestone completion against the four foundational dimensions:
+In `brevio`, sub-intent summaries evaluate milestone completion against the four foundational dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Sub-Intent Summary Manifestation                                                                                                                 |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Summary Manifestation                                                                                                                 |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Aggregates all modified files across units, audits compliance against sub-intent and global "do not touch" manifests, and captures git commit ranges.   |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Compiles an exhaustive unit execution scorecard, verifying that each atomic sub-unit completed cleanly without dangling or uncommitted changes.    |
@@ -54,7 +54,7 @@ In `tosh`, sub-intent summaries evaluate milestone completion against the four f
 Each sub-intent summary document resides alongside its specification and validation documents in the sub-intent directory:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -70,7 +70,7 @@ Each sub-intent summary document resides alongside its specification and validat
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Equitable-Innovations/tosh/internal/initcmd"
+	"github.com/Equitable-Innovations/brevio/internal/initcmd"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 // build the same command tree.
 func NewRootCommand(env Env) *cobra.Command {
 	root := &cobra.Command{
-		Use:   "tosh",
+		Use:   "brevio",
 		Short: "Token Optimized Software Harness",
 		// The Printer prints every error, so cobra stays silent.
 		SilenceErrors: true,

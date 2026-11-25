@@ -1,6 +1,6 @@
 # Intent Specification Document Definition
 
-The Intent Specification Document (`00_intent_spec.html`) is the authoritative entry-point specification in the `tosh`
+The Intent Specification Document (`00_intent_spec.html`) is the authoritative entry-point specification in the `brevio`
 work item lifecycle. It declares the desired outcome in the originator's own words, the system invariants that must hold,
 the boundary envelope, the evidence requirements that settle the intent, the autonomy tier, and the open questions.
 
@@ -8,7 +8,7 @@ This document serves a dual purpose:
 
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) without requiring any client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for token-efficient agent ingestion.
 
 ---
@@ -36,7 +36,7 @@ This document serves a dual purpose:
 The intent specification resides at the root of the work item directory:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {work-item-id}/
         └── 00_intent_spec.html
@@ -46,7 +46,7 @@ The intent specification resides at the root of the work item directory:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 
@@ -156,7 +156,7 @@ intent that began from a finding or an alert, and the `external-ref` value for a
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Agents operating in `tosh` query specific subsections using standard XPath 1.0/2.0 without loading entire documents,
+Agents operating in `brevio` query specific subsections using standard XPath 1.0/2.0 without loading entire documents,
 preserving LLM context and minimizing costs.
 
 | Extraction Objective      | XPath Query Pattern                                                  |

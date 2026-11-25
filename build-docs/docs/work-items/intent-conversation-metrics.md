@@ -1,11 +1,11 @@
 # Intent Conversation Metrics Document Definition
 
 The **Intent Conversation Metrics Document** (`06_intent_conversation_metrics.json`) is the authoritative Tier 1 telemetry
-record in the **Token Optimized Software Harness (`tosh`)** work item lifecycle. It aggregates token consumption, model
+record in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It aggregates token consumption, model
 latencies, tool invocations, context accumulation, and pre-execution validation outcomes across the entire planning
 sub-intent before implementation begins.
 
-In `tosh`, token optimization cannot be measured in isolation; premature token pruning during planning that causes
+In `brevio`, token optimization cannot be measured in isolation; premature token pruning during planning that causes
 under-specified requirements, hallucinated schemas, or ambiguous units creates compounding multi-turn repair loops
 during execution, dramatically increasing aggregate compute.
 
@@ -14,7 +14,7 @@ This document serves a dual purpose:
 1. **Human & Platform Interface:** Provides structured, auditable telemetry for engineering managers, platform teams,
    and developers to benchmark planning models, track API expenditures, identify multi-agent debate bottlenecks, and
    assess planning efficiency.
-2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `tosh` CLI and
+2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `brevio` CLI and
    evaluation runners to dynamically adjust context-injection budgets, refine system prompts, and optimize prompt
    caching strategies across future work items.
 
@@ -22,7 +22,7 @@ This document serves a dual purpose:
 
 ## Core Planning Paradigm: The 4-Layer Planning Telemetry Framework
 
-To extract actionable signals from planning session transcripts, `tosh` organizes planning conversation telemetry across
+To extract actionable signals from planning session transcripts, `brevio` organizes planning conversation telemetry across
 four distinct analytical layers:
 
 ```mermaid
@@ -88,7 +88,7 @@ The plan conversation metrics file resides at the root of the work item director
 documents:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
         ├── 00_intent_spec.html                # Requirements & Checklists
@@ -183,7 +183,7 @@ The following JSON Schema governs the structure and validation of `06_intent_con
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://tosh.dev/schemas/work-items/plan-conversation-metrics.schema.json",
+  "$id": "https://brevio.dev/schemas/work-items/plan-conversation-metrics.schema.json",
   "title": "PlanConversationMetrics",
   "description": "Authoritative Tier 1 planning conversation metrics and telemetry record.",
   "type": "object",
@@ -635,7 +635,7 @@ To compute these metrics deterministically, the planning session logger writes a
 
 ## 5. Token Optimization, Analysis Patterns & CLI / jq Queries
 
-The `tosh` CLI and CI/CD pipelines use deterministic `jq` queries against `06_intent_conversation_metrics.json` and
+The `brevio` CLI and CI/CD pipelines use deterministic `jq` queries against `06_intent_conversation_metrics.json` and
 `plan_conversation.jsonl` to detect planning inefficiencies:
 
 ### 5.1. Detecting Runaway Context Accumulation Rate
@@ -713,7 +713,7 @@ graph TD
 3. **Prefix Stability Enforcement:** System prompts and static guidelines must be ordered first in prompts to maximize
    `cacheReadHitRatePct`. Ephemeral session messages must never precede cached system blocks.
 4. **Tool Redundancy Ceiling:** Any planning session exhibiting `toolCallRedundancyRatePct > 10%` must trigger a lint
-   warning in `tosh plan validate` to flag defective tool usage loops.
+   warning in `brevio plan validate` to flag defective tool usage loops.
 5. **Universal Traceability:** 100% of functional requirements (`EV-###`) must be accounted for in the
    `requirementTraceabilityPct` metric before planning closure.
 

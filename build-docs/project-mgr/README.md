@@ -1,6 +1,6 @@
 # Project Manager (project-mgr)
 
-The project manager (`project-mgr`) is the part of `tosh` that manages a project from product requirements to released work. It has two parts. Product Management holds the requirements, the plan, and the release gates. The [Work Tracking System (WTS)](wts/README.md) holds the work items and their lifecycle.
+The project manager (`project-mgr`) is the part of `brevio` that manages a project from product requirements to released work. It has two parts. Product Management holds the requirements, the plan, and the release gates. The [Work Tracking System (WTS)](wts/README.md) holds the work items and their lifecycle.
 
 Product Management defines what the product must do and how the system must behave. WTS tracks the units of work that deliver it. The two parts connect through traceability links, so each requirement leads to the work items and the evidence that satisfy it.
 
@@ -130,10 +130,10 @@ All Product Management documents are strict XHTML. Each document follows the [Un
 
 ## Directory Layout
 
-Product Management files live in `.tosh/project-mgr/` at the root of the consuming project. WTS files stay in `.tosh/wts/`.
+Product Management files live in `.brevio/project-mgr/` at the root of the consuming project. WTS files stay in `.brevio/wts/`.
 
 ```text
-.tosh/
+.brevio/
 ├── project-mgr/
 │   ├── prd.html
 │   ├── fsd.html
@@ -224,15 +224,15 @@ Each line of `edges.jsonl` is one edge.
 
 | Operation | Algorithm | When it runs |
 | :--- | :--- | :--- |
-| Cycle detection | Depth-first search with three-color marking. | Before `tosh pm edge add` writes an edge. The command rejects an edge that creates a cycle. |
-| Execution order | Topological sort (Kahn's algorithm). | When `tosh pm graph` lists the work items that can start now. A work item with no open blockers can start. |
-| Redundancy removal | Transitive reduction. | When `tosh pm graph --reduce` reports edges that other edges already imply. |
+| Cycle detection | Depth-first search with three-color marking. | Before `brevio pm edge add` writes an edge. The command rejects an edge that creates a cycle. |
+| Execution order | Topological sort (Kahn's algorithm). | When `brevio pm graph` lists the work items that can start now. A work item with no open blockers can start. |
+| Redundancy removal | Transitive reduction. | When `brevio pm graph --reduce` reports edges that other edges already imply. |
 
 ### Graph Rules
 
 - A node cannot block itself.
 - An edge must connect two existing work items.
-- The WTS `Prerequisites` and `Enables` lists in section 9 of a work item file must match `edges.jsonl`. The command `tosh wts check` reports a difference.
+- The WTS `Prerequisites` and `Enables` lists in section 9 of a work item file must match `edges.jsonl`. The command `brevio wts check` reports a difference.
 
 ---
 
@@ -270,7 +270,7 @@ The agent can run the first four gates. The agent cannot pass the Authorization 
 
 ## Traceability Matrix
 
-The traceability matrix is a read-only view. `tosh pm trace` builds it from document metadata.
+The traceability matrix is a read-only view. `brevio pm trace` builds it from document metadata.
 
 ```mermaid
 flowchart LR
@@ -338,20 +338,20 @@ Work item queries use the line-based queries that the [WTS specification](wts/RE
 
 ## Command Surface
 
-Product Management commands live under `tosh pm`. WTS commands stay under `tosh wts`.
+Product Management commands live under `brevio pm`. WTS commands stay under `brevio wts`.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh pm init` | Creates `prd.html`, `fsd.html`, and the directories. |
-| `tosh pm epic add` | Creates an epic document and registers it. |
-| `tosh pm initiative add` | Creates an initiative document. |
-| `tosh pm milestone add` | Creates a milestone document. |
-| `tosh pm edge add` | Adds a `blocks` edge after the cycle check. |
-| `tosh pm edge remove` | Removes an edge. |
-| `tosh pm graph` | Prints the work items that can start now. The flag `--reduce` reports redundant edges. |
-| `tosh pm trace` | Rebuilds `traceability.html`. |
-| `tosh pm gate` | Runs the release gates for a milestone and records the verdicts. |
-| `tosh pm check` | Reports drift between epics, work items, edges, and the matrix. It changes nothing. |
+| `brevio pm init` | Creates `prd.html`, `fsd.html`, and the directories. |
+| `brevio pm epic add` | Creates an epic document and registers it. |
+| `brevio pm initiative add` | Creates an initiative document. |
+| `brevio pm milestone add` | Creates a milestone document. |
+| `brevio pm edge add` | Adds a `blocks` edge after the cycle check. |
+| `brevio pm edge remove` | Removes an edge. |
+| `brevio pm graph` | Prints the work items that can start now. The flag `--reduce` reports redundant edges. |
+| `brevio pm trace` | Rebuilds `traceability.html`. |
+| `brevio pm gate` | Runs the release gates for a milestone and records the verdicts. |
+| `brevio pm check` | Reports drift between epics, work items, edges, and the matrix. It changes nothing. |
 
 The MCP server exposes the same operations. It calls the same code as the CLI.
 
@@ -361,7 +361,7 @@ The MCP server exposes the same operations. It calls the same code as the CLI.
 
 | Subsystem | Specification | Interface with project-mgr |
 | :--- | :--- | :--- |
-| CLI | [`build-docs/cli/`](../cli/README.md) | Hosts the `tosh pm` and `tosh wts` command groups. |
+| CLI | [`build-docs/cli/`](../cli/README.md) | Hosts the `brevio pm` and `brevio wts` command groups. |
 | MCP Server | [`build-docs/mcp/`](../mcp/README.md) | Exposes tools to read requirements, list startable work items, report a failing unit, and read gate state. |
 | Static UI | [`build-docs/static-ui/`](../static-ui/README.md) | Renders the PRD, the FSD, the milestone board, the traceability matrix, and the dependency graph. |
 | Work Items domain | [`build-docs/docs/work-items/`](../docs/work-items/README.md) | Supplies convergence state, review findings, `retries`, and holds. |

@@ -23,7 +23,7 @@ models, retention policies, or how reports are generated and presented.
 
 ### 1.2 Context & Trigger
 
-`tosh` is an AI development harness designed for token conservation and development velocity. While work-item-level
+`brevio` is an AI development harness designed for token conservation and development velocity. While work-item-level
 metrics are defined for individual tasks and plans (`metrics.json`, `plan-conversation-metrics.json`), the overall role,
 scope, and document types of the dedicated `report` domain remain undefined in the design phase.
 
@@ -38,7 +38,7 @@ scope, and document types of the dedicated `report` domain remain undefined in t
   execution summaries, code quality/audits, agent performance).
 - [ ] Establish the data format and presentation standards (XHTML with M3 UI components, JSON structured data, or
   hybrid).
-- [ ] Define how reports are generated, aggregated across work items, and stored locally under `.tosh/`.
+- [ ] Define how reports are generated, aggregated across work items, and stored locally under `.brevio/`.
 
 ### Non-Goals
 
@@ -50,11 +50,11 @@ scope, and document types of the dedicated `report` domain remain undefined in t
 
 ## 3. Token Optimization & Performance Impact
 
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 - **Context Window & Token Economics**: Reports must be structured so agents can query targeted summary figures (e.g.,
   total token burn, failing test count) via XPath or JSON filter without ingesting massive historical execution logs.
-- **Speed & Latency**: Generating and parsing reports locally under `.tosh/reports/` avoids external telemetry service
+- **Speed & Latency**: Generating and parsing reports locally under `.brevio/reports/` avoids external telemetry service
   calls and roundtrip latency.
 
 ---
@@ -67,7 +67,7 @@ scope, and document types of the dedicated `report` domain remain undefined in t
   aggregating LLM usage across work items, and (2) Test & Validation Summary Reports rolling up task verification
   results.
 - **Pros**:
-    - Direct alignment with `tosh`'s core value proposition (token optimization).
+    - Direct alignment with `brevio`'s core value proposition (token optimization).
     - Low schema complexity and fast implementation.
 - **Cons**:
     - Excludes other common software engineering reports (e.g., security audits, code coverage).
@@ -92,7 +92,7 @@ scope, and document types of the dedicated `report` domain remain undefined in t
 - **Summary**: Do not persist static report documents. Instead, store raw metrics in work-item ledgers and have the CLI
   generate reports on-the-fly when requested.
 - **Pros**:
-    - Zero disk duplication in `.tosh/`.
+    - Zero disk duplication in `.brevio/`.
 - **Cons**:
     - Fails the static UI single-pane visualizer requirement (must be viewable in browser without running dynamic
       servers).
@@ -103,7 +103,7 @@ scope, and document types of the dedicated `report` domain remain undefined in t
 
 ## 5. Open Questions & Spikes
 
-- [ ] **Q1**: What specific report types are essential for the `report` domain in `tosh`? *(Owner: @team)*
+- [ ] **Q1**: What specific report types are essential for the `report` domain in `brevio`? *(Owner: @team)*
 - [ ] **Q2**: Should report documents be pre-rendered static XHTML documents, raw JSON datasets, or dual-layer? *(Owner:
   @team)*
 - [ ] **Q3**: How are historical reports rolled up or archived across multiple work items? *(Owner: @team)*
@@ -121,7 +121,7 @@ scope, and document types of the dedicated `report` domain remain undefined in t
 
 *(Complete when updating status to `DECIDED`)*
 
-- **Decision**: Rejected. `tosh` has no `report` document domain.
+- **Decision**: Rejected. `brevio` has no `report` document domain.
 - **Core Rationale**: The domain had no defined document types. Work-item metrics already live in the work item documents.
 - **Accepted Trade-offs**: No dedicated place for cross-work-item analytics. A later topic can add one.
 - **Decision Date**: 2026-11-02.

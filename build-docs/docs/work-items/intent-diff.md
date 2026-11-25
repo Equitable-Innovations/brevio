@@ -1,6 +1,6 @@
 # Intent Diff Document Definition
 
-The Intent Diff Document (`units/{unit_id}/intent.diff`) is the authoritative Tier 3 code patch artifact in the `tosh` work
+The Intent Diff Document (`units/{unit_id}/intent.diff`) is the authoritative Tier 3 code patch artifact in the `brevio` work
 item lifecycle. It records the deterministic, unified git diff of all source code modifications, file creations, and
 deletions performed by an agent during atomic unit execution.
 
@@ -25,9 +25,9 @@ This document serves a dual purpose:
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Diffs
 
-In `tosh`, unit diffs document and enforce execution compliance against the four foundational dimensions:
+In `brevio`, unit diffs document and enforce execution compliance against the four foundational dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Intent Diff Manifestation                                                                                                                                      |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Diff Manifestation                                                                                                                                      |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally catalogs the exact diff hunks applied to the repository, proving zero unauthorized modifications to protected or "do not touch" files.                     |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Isolates code changes strictly to the atomic unit's bounded responsibility, ensuring surgical diff hunks without cross-unit feature bleed or unrelated refactoring. |
@@ -66,7 +66,7 @@ Each unit diff artifact resides directly inside its isolated unit directory, pai
 validation, summary, conversation log, and metrics:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -212,12 +212,12 @@ index a1b2c3d..e4f5a6b 100644
 
 ## 4. Harness Lifecycle & Diff Generation Workflow
 
-The `tosh` harness integrates `intent.diff` generation throughout the unit execution lifecycle:
+The `brevio` harness integrates `intent.diff` generation throughout the unit execution lifecycle:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Harness as Tosh Harness
+    participant Harness as Brevio Harness
     participant Tree as Git Working Tree
     participant Agent as Worker Agent
     participant Diff as intent.diff
@@ -253,7 +253,7 @@ Before an agent begins execution of an atomic unit:
 Upon completion of code modification turns, the harness extracts the working tree changes:
 
 ```bash
-git diff --no-color -U3 > .tosh/work_items/{work_item_id}/sub_intents/{sub_intent_id}/units/{unit_id}/intent.diff
+git diff --no-color -U3 > .brevio/work_items/{work_item_id}/sub_intents/{sub_intent_id}/units/{unit_id}/intent.diff
 ```
 
 For new untracked files, the harness stages them intent-to-add (`git add -N`) before generating the diff so newly

@@ -1,7 +1,7 @@
 ---
 name: create-work-item
 description: >-
-  Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in todo/ for tosh. A work
+  Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in todo/ for brevio. A work
   item is the parent of all intent-driven SDLC documents. Asks the user structured questions
   to capture the declared intent, invariants, boundary envelope, evidence requirements, and
   autonomy tier, then writes the file from todo/template.md and registers it in

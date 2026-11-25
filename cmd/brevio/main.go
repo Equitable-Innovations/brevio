@@ -1,11 +1,11 @@
-// Command tosh is the entry point of the tosh CLI.
+// Command brevio is the entry point of the brevio CLI.
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/Equitable-Innovations/tosh/internal/cli"
+	"github.com/Equitable-Innovations/brevio/internal/cli"
 )
 
 func main() {

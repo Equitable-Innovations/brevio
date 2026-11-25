@@ -4,7 +4,7 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:S03:U008:SPEC` |
 | `doc-type` | `intent-unit-spec` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_03_tests_and_ci` |
 | `unit-id` | `unit_008_ci_workflow` |
 | `parent-doc-id` | `WORK-ITEM-001:S03:SPEC` ([sub-intent specification](WORK-ITEM-001_sub-intent-03_tests-and-ci_spec.md)) |

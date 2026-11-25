@@ -1,4 +1,4 @@
-module github.com/Equitable-Innovations/tosh
+module github.com/Equitable-Innovations/brevio
 
 go 1.26
 

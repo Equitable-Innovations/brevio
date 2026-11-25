@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Equitable-Innovations/tosh/internal/initcmd"
+	"github.com/Equitable-Innovations/brevio/internal/initcmd"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 	alreadyInitializedMessage = initcmd.DirName + "/ already exists. No change made."
 )
 
-// initRunner creates the .tosh directory. It is a parameter so that tests
+// initRunner creates the .brevio directory. It is a parameter so that tests
 // can replace initcmd.Run.
 type initRunner func(initcmd.Options) error
 
@@ -21,7 +21,7 @@ type initRunner func(initcmd.Options) error
 func newInitCommand(env Env, run initRunner) *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
-		Short: "Create the .tosh directory in the project root",
+		Short: "Create the .brevio directory in the project root",
 		Args:  noExtraArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return executeInit(cmd, env, run)

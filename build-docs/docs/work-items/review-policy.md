@@ -12,7 +12,7 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, static XHTML web page utilizing Material Design 3 Web Components
    (`@material/web` / **M3**) without client-side bundlers or build steps. Tech leads read and tune the policy in a
    browser.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI. Reviewing agents load only the passes and severity rules that they need.
 
 ---
@@ -36,10 +36,10 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The review policy resides at the root of `.tosh/work_items/`, beside the work item directories:
+The review policy resides at the root of `.brevio/work_items/`, beside the work item directories:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     ├── review_policy.html
     ├── lessons.html
@@ -52,7 +52,7 @@ The review policy resides at the root of `.tosh/work_items/`, beside the work it
 - **Encoding:** UTF-8.
 - **Owner:** The tech lead. A named human approves each change to the policy.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: update-work-item-status
 description: >-
-  Transition a single tosh work item to a new lifecycle status (BACKLOG -> PLANNED -> READY ->
+  Transition a single brevio work item to a new lifecycle status (BACKLOG -> PLANNED -> READY ->
   IN_PROGRESS -> IN_REVIEW -> DONE, plus BLOCKED / CANCELLED), updating the
   WORK-ITEM-###_*.md file and its record in todo/backlog.jsonl together (todo/scripts/backlog.mjs regenerates todo/backlog.md). Checks that the intent has
   invariants and evidence before READY and DONE. Warns and asks before a non-standard jump.

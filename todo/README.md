@@ -1,6 +1,6 @@
 # Backlog & Work Item Management Framework
 
-Welcome to the `todo/` workspace for **`tosh` (Token Optimized Software Harness)**.
+Welcome to the `todo/` workspace for **`brevio` (Token Optimized Software Harness)**.
 
 This directory serves as the centralized backlog and development work item hub. It bridges the gap between high-level architectural ideation in [`topics/`](../topics/README.md), canonical specifications in [`build-docs/`](../build-docs/README.md), and granular code implementation.
 
@@ -10,7 +10,7 @@ Every discrete feature, enhancement, or bug fix is represented by an individual 
 
 ## Table of Contents
 
-1. [Role & Relationship in Tosh](#role--relationship-in-tosh)
+1. [Role & Relationship in Brevio](#role--relationship-in-brevio)
 2. [Work Item Lifecycle & State Machine](#work-item-lifecycle--state-machine)
 3. [File Naming & Organization Conventions](#file-naming--organization-conventions)
 4. [Using `backlog.md`](#using-backlogmd)
@@ -21,11 +21,11 @@ Every discrete feature, enhancement, or bug fix is represented by an individual 
 
 ---
 
-## Role & Relationship in Tosh
+## Role & Relationship in Brevio
 
-Understanding how `todo/` fits into the overall `tosh` documentation ecosystem ensures clear separation of concerns:
+Understanding how `todo/` fits into the overall `brevio` documentation ecosystem ensures clear separation of concerns:
 
-| Dimension | `topics/` (Ideation & Deliberation) | `build-docs/` (Canonical Specs) | `todo/` (Development Backlog) | `.tosh/work_items/` (Execution Harness) |
+| Dimension | `topics/` (Ideation & Deliberation) | `build-docs/` (Canonical Specs) | `todo/` (Development Backlog) | `.brevio/work_items/` (Execution Harness) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Purpose** | Brainstorming, evaluating trade-offs, architectural consensus. | Authoritative blueprints, contracts, schemas, and current-state design. | Intent-declaring work items, prioritized backlog. | Runtime machine-parseable XHTML documents, telemetry, and execution logs. |
 | **Document Format** | Markdown (`TOPIC-###_slug.md`) | Markdown specs across component domains | Markdown (`WORK-ITEM-###_slug.md` & `backlog.md`) | Strict XHTML 1.0/5 documents and JSON ledgers |
@@ -36,7 +36,7 @@ Understanding how `todo/` fits into the overall `tosh` documentation ecosystem e
 flowchart LR
     A[topics/<br/>Ideation & Trade-offs] -->|Graduates to| B[build-docs/<br/>Canonical Specifications]
     B -->|Decomposes into| C[todo/<br/>Work Items & Backlog]
-    C -->|Activates into| D[.tosh/work_items/<br/>Tier 1-3 Execution Harness]
+    C -->|Activates into| D[.brevio/work_items/<br/>Tier 1-3 Execution Harness]
 ```
 
 ---
@@ -262,7 +262,7 @@ Follow this procedure when creating, executing, and resolving a work item (use `
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. Execution (/update-work-item-status)                     │
 │    - Assignee claims it (status IN_PROGRESS)                │
-│    - Seed .tosh/work_items/ and set Runtime Directory       │
+│    - Seed .brevio/work_items/ and set Runtime Directory       │
 │    - Agent converges the sub-intents and units              │
 └──────────────────────────────┬──────────────────────────────┘
                                │
@@ -288,7 +288,7 @@ Follow this procedure when creating, executing, and resolving a work item (use `
 
 ## Relationship to Work Items Runtime
 
-A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC, where the standard documents are children of the story. When an agentic LLM or human engineer begins active execution of a work item, the file seeds a runtime intent package under `.tosh/work_items/{timestamp}_{slug}/`. The `Runtime Directory` metadata row records the path.
+A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC, where the standard documents are children of the story. When an agentic LLM or human engineer begins active execution of a work item, the file seeds a runtime intent package under `.brevio/work_items/{timestamp}_{slug}/`. The `Runtime Directory` metadata row records the path.
 
 1. **Declared Intent, Boundary Envelope, Invariants, and Evidence Requirements** become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
 2. **Technical Approach** informs `01_solution_strategy.html`.
@@ -297,4 +297,4 @@ A work item is the parent of all intent-driven SDLC documents. It plays the role
 
 The backlog status (`BACKLOG` to `DONE`) is separate from the `convergence-status` of the runtime package. The work item moves to `DONE` after the intent is `settled` and the pull request is merged.
 
-This keeps end-to-end traceability from ideation in `topics/`, through canonical architecture in `build-docs/`, planned work in `todo/`, and live execution in `.tosh/work_items/`.
+This keeps end-to-end traceability from ideation in `topics/`, through canonical architecture in `build-docs/`, planned work in `todo/`, and live execution in `.brevio/work_items/`.

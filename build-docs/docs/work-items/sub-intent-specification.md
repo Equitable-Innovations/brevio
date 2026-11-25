@@ -1,7 +1,7 @@
 # Sub-Intent Specification Document Definition
 
 The Sub-Intent Specification (`sub_intents/{sub_intent_id}/sub_intent_spec.html`) is the authoritative Tier 2 milestone specification
-governing an isolated sub-intent of execution in the `tosh` work item lifecycle. It translates the high-level roadmap from
+governing an isolated sub-intent of execution in the `brevio` work item lifecycle. It translates the high-level roadmap from
 the Intent Decomposition (`02_intent_decomposition.html`) into an ordered, bounded sequence of atomic unit manifests.
 
 Every sub-intent specification enforces engineering discipline by establishing explicit context boundaries, referencing
@@ -13,17 +13,17 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) to visualize sub-intent scope, unit progress, dependency flows, and milestone status
    without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for token-efficient unit scheduling, dependency resolution, and worker dispatching.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Specs
 
-In `tosh`, sub-intent specifications eliminate ambiguity by applying the four execution dimensions directly to milestone
+In `brevio`, sub-intent specifications eliminate ambiguity by applying the four execution dimensions directly to milestone
 authoring:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Sub-Intent Specification Manifestation                                                                                                                    |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Specification Manifestation                                                                                                                    |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formulates an explicit sub-intent workspace scope, cites target pattern files, and specifies a strict sub-intent-level "do not touch" file manifest.                  |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Deconstructs the sub-intent milestone into an ordered manifest of atomic units (`unit_001`, `unit_002`), each with strict single responsibilities and contracts. |
@@ -54,7 +54,7 @@ authoring:
 Each sub-intent specification resides in its isolated milestone directory under `sub_intents/`:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -70,7 +70,7 @@ Each sub-intent specification resides in its isolated milestone directory under 
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

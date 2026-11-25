@@ -1,6 +1,6 @@
 # MCP Server Specification
 
-The `tosh` Model Context Protocol (MCP) server gives agentic LLMs fine-grained access to `tosh` documents. An agent calls a tool and receives a small fragment. It never loads a full document. The server calls the same code as the [CLI](../cli/README.md).
+The `brevio` Model Context Protocol (MCP) server gives agentic LLMs fine-grained access to `brevio` documents. An agent calls a tool and receives a small fragment. It never loads a full document. The server calls the same code as the [CLI](../cli/README.md).
 
 ---
 
@@ -38,7 +38,7 @@ The MCP server does not define document formats or business rules. The CLI and t
 
 ## Transport and Startup
 
-The command `tosh mcp` starts the server on standard input and output. The server serves the project that holds the working directory. The flag `--root` selects another project.
+The command `brevio mcp` starts the server on standard input and output. The server serves the project that holds the working directory. The flag `--root` selects another project.
 
 ---
 
@@ -55,9 +55,9 @@ The command `tosh mcp` starts the server on standard input and output. The serve
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_query_doc` | `file`, and `xpath` or `jq` | The matching nodes or values. |
-| `tosh_get_schema` | `doc_type` | The schema of the document type. |
-| `tosh_validate_doc` | `file` | The list of schema errors. If the document is valid, the list is empty. |
+| `brevio_query_doc` | `file`, and `xpath` or `jq` | The matching nodes or values. |
+| `brevio_get_schema` | `doc_type` | The schema of the document type. |
+| `brevio_validate_doc` | `file` | The list of schema errors. If the document is valid, the list is empty. |
 
 ---
 
@@ -65,11 +65,11 @@ The command `tosh mcp` starts the server on standard input and output. The serve
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_ledger_slice` | `unit_id` | The context slice of one unit. The slice is typically under 400 tokens. |
-| `tosh_update_unit` | `unit_id`, `action` (`start`, `verify`, or `complete`), and for `complete`: `verdict`, `exit_code`, `tokens`, `duration_ms` | The new unit state. A `fail` verdict raises `retries`. |
-| `tosh_get_gate_state` | `unit_id` | The gate type, the verdict, the approver, and any hold on the unit. |
+| `brevio_ledger_slice` | `unit_id` | The context slice of one unit. The slice is typically under 400 tokens. |
+| `brevio_update_unit` | `unit_id`, `action` (`start`, `verify`, or `complete`), and for `complete`: `verdict`, `exit_code`, `tokens`, `duration_ms` | The new unit state. A `fail` verdict raises `retries`. |
+| `brevio_get_gate_state` | `unit_id` | The gate type, the verdict, the approver, and any hold on the unit. |
 
-An agent reports a failing unit with `tosh_update_unit` and the action `complete` with the verdict `fail`.
+An agent reports a failing unit with `brevio_update_unit` and the action `complete` with the verdict `fail`.
 
 ---
 
@@ -79,11 +79,11 @@ The [WTS specification](../project-mgr/wts/README.md) defines the operations.
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_wts_list` | Optional `status`, `id` | Matching backlog records. |
-| `tosh_wts_add` | Work item fields | The new identifier and the file path. |
-| `tosh_wts_edit` | `id` and the fields to change | The new record. A status change applies the gates. |
-| `tosh_wts_start` | `id` | The path of the seeded intent package. |
-| `tosh_wts_check` | None | The list of drift findings. |
+| `brevio_wts_list` | Optional `status`, `id` | Matching backlog records. |
+| `brevio_wts_add` | Work item fields | The new identifier and the file path. |
+| `brevio_wts_edit` | `id` and the fields to change | The new record. A status change applies the gates. |
+| `brevio_wts_start` | `id` | The path of the seeded intent package. |
+| `brevio_wts_check` | None | The list of drift findings. |
 
 ---
 
@@ -93,11 +93,11 @@ The [project manager specification](../project-mgr/README.md) defines the operat
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_pm_get_requirement` | `id` (`PRD-REQ-###` or `FSD-FR-###`) | The text of one requirement. |
-| `tosh_pm_graph` | Optional `reduce` | The work items that can start now. With `reduce`, also the redundant edges. |
-| `tosh_pm_edge` | `action` (`add` or `remove`), `source`, `target` | The new edge list. `add` runs the cycle check first. |
-| `tosh_pm_trace` | Optional `requirement` | The traceability state of one requirement, or of all requirements. |
-| `tosh_pm_gate_state` | `milestone` | The result of each release gate. |
+| `brevio_pm_get_requirement` | `id` (`PRD-REQ-###` or `FSD-FR-###`) | The text of one requirement. |
+| `brevio_pm_graph` | Optional `reduce` | The work items that can start now. With `reduce`, also the redundant edges. |
+| `brevio_pm_edge` | `action` (`add` or `remove`), `source`, `target` | The new edge list. `add` runs the cycle check first. |
+| `brevio_pm_trace` | Optional `requirement` | The traceability state of one requirement, or of all requirements. |
+| `brevio_pm_gate_state` | `milestone` | The result of each release gate. |
 
 ---
 
@@ -107,11 +107,11 @@ The [OpenAPI specification](../docs/open-api/README.md#command-surface) defines 
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_openapi_list` | Optional `role`, `api_id` | The APIs, versions, and generation states. |
-| `tosh_openapi_find` | `api_id`, `major`, and one of `path_contains`, `tag`, `method` | The matching operations, with no operation bodies. |
-| `tosh_openapi_get_operation` | `api_id`, `major`, `slug` or `method` and `path`, optional `sections` | The selected sections of one operation document. |
-| `tosh_openapi_get_schema` | `api_id`, `major`, `name`, optional `sections` | The selected sections of one schema document. |
-| `tosh_openapi_check` | None | The list of `stale` and `invalid` versions. |
+| `brevio_openapi_list` | Optional `role`, `api_id` | The APIs, versions, and generation states. |
+| `brevio_openapi_find` | `api_id`, `major`, and one of `path_contains`, `tag`, `method` | The matching operations, with no operation bodies. |
+| `brevio_openapi_get_operation` | `api_id`, `major`, `slug` or `method` and `path`, optional `sections` | The selected sections of one operation document. |
+| `brevio_openapi_get_schema` | `api_id`, `major`, `name`, optional `sections` | The selected sections of one schema document. |
+| `brevio_openapi_check` | None | The list of `stale` and `invalid` versions. |
 
 ---
 
@@ -121,16 +121,16 @@ The [wiki specification](../docs/wiki/README.md#command-surface) defines the ope
 
 | Tool | Input | Result |
 | :--- | :--- | :--- |
-| `tosh_wiki_list` | Optional `doc_type`, `tag`, `review_due`, `drafts` | Page records from the index, with no page bodies. |
-| `tosh_wiki_outline` | `page` | The sections of one page, with token estimates and hashes. |
-| `tosh_wiki_get` | `page`, optional `sections` | The selected sections of one page. |
-| `tosh_wiki_find` | `text`, optional `doc_type`, `tag`, `limit` | Matching section references, titles, and page summaries. |
-| `tosh_wiki_rules` | `paths`, optional `level` | The coding standard rules that apply to the paths. |
-| `tosh_wiki_set_section` | `page`, `section`, `content`, `expect_hash`, and for a new section `title` and optional `after` or `parent` | The new hash of the section. |
-| `tosh_wiki_add_page` | `slug`, `title`, `summary`, optional `dir`, `tags` | The `doc-id` and the file path of the new draft page. |
-| `tosh_wiki_add_adr` | `title`, `slug`, optional `intent_id`, `supersedes` | The `doc-id` and the file path of the new `proposed` ADR. |
-| `tosh_wiki_add_risk` | `title`, `likelihood`, `impact`, `owner`, `content` | The risk identifier and the rating. |
-| `tosh_wiki_check` | Optional `max_age_days` | The list of findings. |
+| `brevio_wiki_list` | Optional `doc_type`, `tag`, `review_due`, `drafts` | Page records from the index, with no page bodies. |
+| `brevio_wiki_outline` | `page` | The sections of one page, with token estimates and hashes. |
+| `brevio_wiki_get` | `page`, optional `sections` | The selected sections of one page. |
+| `brevio_wiki_find` | `text`, optional `doc_type`, `tag`, `limit` | Matching section references, titles, and page summaries. |
+| `brevio_wiki_rules` | `paths`, optional `level` | The coding standard rules that apply to the paths. |
+| `brevio_wiki_set_section` | `page`, `section`, `content`, `expect_hash`, and for a new section `title` and optional `after` or `parent` | The new hash of the section. |
+| `brevio_wiki_add_page` | `slug`, `title`, `summary`, optional `dir`, `tags` | The `doc-id` and the file path of the new draft page. |
+| `brevio_wiki_add_adr` | `title`, `slug`, optional `intent_id`, `supersedes` | The `doc-id` and the file path of the new `proposed` ADR. |
+| `brevio_wiki_add_risk` | `title`, `likelihood`, `impact`, `owner`, `content` | The risk identifier and the rating. |
+| `brevio_wiki_check` | Optional `max_age_days` | The list of findings. |
 
 ---
 
@@ -138,11 +138,11 @@ The [wiki specification](../docs/wiki/README.md#command-surface) defines the ope
 
 | URI | Content |
 | :--- | :--- |
-| `tosh://wts/backlog` | The records of `backlog.jsonl`. |
-| `tosh://pm/traceability` | The state of each requirement. |
-| `tosh://pm/milestone/{version}` | The gate verdicts of one milestone. |
-| `tosh://open-api/catalog` | The records of `.tosh/open-api/catalog.json`. |
-| `tosh://wiki/index` | The records of `.tosh/wiki/index.json`. |
+| `brevio://wts/backlog` | The records of `backlog.jsonl`. |
+| `brevio://pm/traceability` | The state of each requirement. |
+| `brevio://pm/milestone/{version}` | The gate verdicts of one milestone. |
+| `brevio://open-api/catalog` | The records of `.brevio/open-api/catalog.json`. |
+| `brevio://wiki/index` | The records of `.brevio/wiki/index.json`. |
 
 A resource is read-only.
 
@@ -184,7 +184,7 @@ A tool call for one of these actions returns `forbidden`.
 3. If a fragment answers the question, a tool never returns a full document.
 4. A failed tool call leaves every file unchanged.
 5. A tool never approves or releases on behalf of a human.
-6. Tool names start with `tosh_`.
+6. Tool names start with `brevio_`.
 
 ---
 
@@ -192,6 +192,6 @@ A tool call for one of these actions returns `forbidden`.
 
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
-| 2026-11-04 | 0.3.0 | Added the wiki tools, the `tosh://wiki/index` resource, and the wiki authority limits. | TOPIC-002 |
-| 2026-11-04 | 0.2.0 | Added the OpenAPI tools and the `tosh://open-api/catalog` resource. | TOPIC-003 |
+| 2026-11-04 | 0.3.0 | Added the wiki tools, the `brevio://wiki/index` resource, and the wiki authority limits. | TOPIC-002 |
+| 2026-11-04 | 0.2.0 | Added the OpenAPI tools and the `brevio://open-api/catalog` resource. | TOPIC-003 |
 | 2026-11-01 | 0.1.0 | Initial specification: transport, document, work item, WTS, and project manager tools, resources, errors, and authority limits. | TOPIC-006 |

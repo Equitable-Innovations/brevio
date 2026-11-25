@@ -36,7 +36,7 @@ Why are we discussing this now during the product ideation stage? What backgroun
 ---
 
 ## 3. Token Optimization & Performance Impact
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 - **Context Window & Token Economics**: How does this design impact input/output tokens? Does it avoid loading unneeded documentation?
 - **Speed & Latency**: Does this enable local parsing (e.g. XPath / XHTML queries) or fast offline command execution?

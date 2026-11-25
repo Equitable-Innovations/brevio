@@ -1,28 +1,28 @@
 # Sub-Intent Verification Document Definition
 
 The Sub-Intent Verification Document (`sub_intents/{sub_intent_id}/sub_intent_verification.html`) is the authoritative Tier 2 verification gate
-in the `tosh` work item lifecycle. It records the automated integration test execution, sub-unit verdict rollups,
+in the `brevio` work item lifecycle. It records the automated integration test execution, sub-unit verdict rollups,
 architectural boundary integrity audits, and formal gating decisions (`pass` | `fail` | `warn`) required before
 downstream sub-intents are unlocked in the intent ledger.
 
 Sub-Intent validation shifts verification from retrospective, manual human inspection to deterministic, automated gating
-enforced by the `tosh` harness.
+enforced by the `brevio` harness.
 
 This document serves a dual purpose:
 
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) displaying test pass/fail gauges, suite execution logs, invariant checks, and
    audit badges without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for automated sub-intent transition gating, blocker detection, and remediation approachning.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Verification
 
-In `tosh`, sub-intent validation enforces mechanical rigor by anchoring verification to the four core dimensions:
+In `brevio`, sub-intent validation enforces mechanical rigor by anchoring verification to the four core dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Sub-Intent Verification Manifestation                                                                                                          |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Verification Manifestation                                                                                                          |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Performs an automated file boundary audit verifying that zero protected or "do not touch" files were modified during the sub-intent.                |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Aggregates individual atomic unit verdicts into an exhaustive roll-up matrix, ensuring 100% of sub-units reached passing status.               |
@@ -54,7 +54,7 @@ In `tosh`, sub-intent validation enforces mechanical rigor by anchoring verifica
 Each sub-intent validation document resides adjacent to its parent specification in the sub-intent directory:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -70,7 +70,7 @@ Each sub-intent validation document resides adjacent to its parent specification
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

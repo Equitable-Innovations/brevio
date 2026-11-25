@@ -4,7 +4,7 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:S03:U007:SPEC` |
 | `doc-type` | `intent-unit-spec` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_03_tests_and_ci` |
 | `unit-id` | `unit_007_test_gaps` |
 | `parent-doc-id` | `WORK-ITEM-001:S03:SPEC` ([sub-intent specification](WORK-ITEM-001_sub-intent-03_tests-and-ci_spec.md)) |
@@ -94,8 +94,8 @@ Section id: `edge-cases`. The table lists the tests that must exist. The owner i
 | `EDGE-001` | The file write fails. | `TestRunLeavesNoPartialDirectoryOnWriteFailure` | `unit_005_init_logic` |
 | `EDGE-002` | `--root` is a missing path. | `TestRootFlagMissingPath` | `unit_004_root_command_and_flags` |
 | `EDGE-003` | `--root` is a file. | `TestRootFlagIsFile` | `unit_004_root_command_and_flags` |
-| `EDGE-004` | `.tosh/` exists and is empty. | `TestRunAlreadyInitializedEmptyDirectory` | `unit_005_init_logic` |
-| `EDGE-005` | `.tosh` is a file. | `TestRunAlreadyInitializedFile` | `unit_005_init_logic` |
+| `EDGE-004` | `.brevio/` exists and is empty. | `TestRunAlreadyInitializedEmptyDirectory` | `unit_005_init_logic` |
+| `EDGE-005` | `.brevio` is a file. | `TestRunAlreadyInitializedFile` | `unit_005_init_logic` |
 | `EDGE-006` | `--format` has an unknown value. | `TestFormatFlagUnknownValue` | `unit_003_env_and_printer`, `unit_004_root_command_and_flags` |
 | `EDGE-007` | `--quiet` with a success. | `TestQuietSuppressesSuccessOutput` | `unit_003_env_and_printer` |
 | `EDGE-008` | `--quiet` with an error. | `TestQuietKeepsErrorOutput` | `unit_003_env_and_printer` |

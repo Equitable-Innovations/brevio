@@ -98,7 +98,7 @@ These tags can appear on any document in the work item. The document tables belo
 | `target-frameworks`    | Tech stack dependencies (for example `spring-boot`,`postgresql`,`jwt`)                                      |
 | `assigned-agents`      | Comma-delimited list of assigned agents (for example `agent:backend-engineer,agent:security-auditor`)       |
 | `required-skills`      | Comma-delimited list of required skills (for example `skill:spring-boot-jwt-auth,skill:owasp-verification`) |
-| `ai-tools`             | Comma-delimited list of MCP tools and servers (for example `mcp:db-inspector,mcp:ast-grep,cli:tosh`)        |
+| `ai-tools`             | Comma-delimited list of MCP tools and servers (for example `mcp:db-inspector,mcp:ast-grep,cli:brevio`)        |
 | `new-ai-components`    | Comma-delimited list of new AI components (for example `skill:spring-boot-jwt-auth`)                        |
 | `policy-versions`      | Policy skills and versions in force                                                                         |
 

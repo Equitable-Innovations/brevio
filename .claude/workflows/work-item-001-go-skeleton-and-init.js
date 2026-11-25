@@ -1,7 +1,7 @@
 export const meta = {
   name: 'work-item-001-go-skeleton-and-init',
   description:
-    'Build the Go skeleton and the tosh init command for WORK-ITEM-001. A writer agent and a reviewer agent converge each unit in ledger order.',
+    'Build the Go skeleton and the brevio init command for WORK-ITEM-001. A writer agent and a reviewer agent converge each unit in ledger order.',
 }
 
 // This script only coordinates agents. It cannot read files, run commands, or ask a question.

@@ -1,7 +1,7 @@
 # Topic Registry
 
 This document is the central ledger for tracking all product ideation, architectural discussions, and design decisions
-for **`tosh`**.
+for **`brevio`**.
 
 Whenever a new topic is proposed or changes state, update its entry in the registry below. For guidelines on the topic
 lifecycle, template structure, and conversion pipeline, consult [topics/README.md](README.md).

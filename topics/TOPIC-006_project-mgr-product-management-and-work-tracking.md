@@ -17,11 +17,11 @@
 
 ### 1.1 Problem Description
 
-`tosh` tracks work items through the Work Tracking System (WTS). Nothing above the work item exists. A project has no place for product requirements, functional specifications, epics, milestones, or release gates. If a requirement lives only in a work item file, the requirement is lost when the work item closes.
+`brevio` tracks work items through the Work Tracking System (WTS). Nothing above the work item exists. A project has no place for product requirements, functional specifications, epics, milestones, or release gates. If a requirement lives only in a work item file, the requirement is lost when the work item closes.
 
 ### 1.2 Context & Trigger
 
-The WTS spec describes a backlog of intents. It has no link from a work item to the requirement that justifies it. A conversation with Gemini proposed a Product Requirements Document (PRD) and a Functional Specification Document (FSD). It also proposed a work hierarchy, a dependency graph, and release gates. This topic records how those proposals map onto the existing `tosh` design.
+The WTS spec describes a backlog of intents. It has no link from a work item to the requirement that justifies it. A conversation with Gemini proposed a Product Requirements Document (PRD) and a Functional Specification Document (FSD). It also proposed a work hierarchy, a dependency graph, and release gates. This topic records how those proposals map onto the existing `brevio` design.
 
 ---
 
@@ -38,7 +38,7 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 
 ### Non-Goals
 
-- A relational database. `tosh` stores documents as files.
+- A relational database. `brevio` stores documents as files.
 - Technical design documents such as physical schemas and API contracts.
 - New document types for design specs, implementation plans, and test plans.
 - A Remediation work item type.
@@ -120,9 +120,9 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 
 ### Decision 3: PRD and FSD Format
 
-#### Option A: Strict XHTML in `.tosh/project-mgr/`
+#### Option A: Strict XHTML in `.brevio/project-mgr/`
 
-- **Summary**: Same standard as every other `tosh` document.
+- **Summary**: Same standard as every other `brevio` document.
 - **Pros**:
   - XPath extraction of single requirements.
   - Rendering in the Static UI.
@@ -143,7 +143,7 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 
 ### Proposals from the Gemini conversation that the design does not adopt
 
-- **SQL edge table**: Replaced by `edges.jsonl`, because `tosh` is file-based.
+- **SQL edge table**: Replaced by `edges.jsonl`, because `brevio` is file-based.
 - **Multiple parents per node**: A work item has one epic. Only `blocks` edges form a graph.
 - **Artifact slots on the work item** (`design-spec.md`, `impl-plan.md`, `qa-test-plan.md`, `sdlc-summary.md`): The intent package already holds these artifacts.
 - **Automated feedback endpoint that creates Remediation tasks**: Replaced by the existing `retries` counter and `retry_budget_exceeded` hold in the intent ledger. A failing-unit report links a finding to its unit and work item.
@@ -162,13 +162,13 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 
 ## 5. Open Questions & Spikes
 
-- [ ] **Q1**: Will WTS files move from `.tosh/wts/` to `.tosh/project-mgr/wts/`? *(Owner: @samsassin)*
+- [ ] **Q1**: Will WTS files move from `.brevio/wts/` to `.brevio/project-mgr/wts/`? *(Owner: @samsassin)*
 - [ ] **Q2**: Is `3` the right default retry budget? The ledger already defines it. *(Owner: @samsassin)*
 - [ ] **Q3**: Does a work item ever need more than one epic? *(Owner: @samsassin)*
 - [ ] **Q4**: Does a `retry_budget_exceeded` hold always move the work item to `BLOCKED`, or only for some autonomy tiers? *(Owner: @samsassin)*
 - [ ] **Q5**: Does the PRD need its own lifecycle and approval gate? *(Owner: @samsassin)*
 - [ ] **Q6**: The CLI, MCP, and REST specs set values that no topic decided: the default port `7077`, the bearer token for change requests, the exit codes, the tool names, and the `/api/v1` paths. Are these correct? *(Owner: @samsassin)*
-- [ ] **Q7**: `tosh work-item` has commands for units only. Does it need commands to create and settle an intent? *(Owner: @samsassin)*
+- [ ] **Q7**: `brevio work-item` has commands for units only. Does it need commands to create and settle an intent? *(Owner: @samsassin)*
 
 ---
 
@@ -184,8 +184,8 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 ## 7. Decision & Rationale
 
 - **Decision**: Decision 1 Option A. Decision 2 Option A. Decision 3 Option A.
-- **Core Rationale**: Each choice reuses an existing `tosh` mechanism. The intent package already holds the engineering artifacts. The XHTML standard already gives XPath extraction and rendering. The WTS spec stays valid.
-- **Accepted Trade-offs**: Two new document types (initiative and epic). PRD and FSD are harder to write by hand than Markdown. WTS stays in `.tosh/wts/` until Q1 is resolved.
+- **Core Rationale**: Each choice reuses an existing `brevio` mechanism. The intent package already holds the engineering artifacts. The XHTML standard already gives XPath extraction and rendering. The WTS spec stays valid.
+- **Accepted Trade-offs**: Two new document types (initiative and epic). PRD and FSD are harder to write by hand than Markdown. WTS stays in `.brevio/wts/` until Q1 is resolved.
 - **Decision Date**: 2026-11-01
 - **Sign-off**: @samsassin
 
@@ -200,7 +200,7 @@ The WTS spec describes a backlog of intents. It has no link from a work item to 
 - [x] `build-docs/docs/work-items/README.md` (no change needed: the ledger already holds `retries` and holds)
 - [ ] `build-docs/docs/README.md` (domain list, runtime layout, `project-mgr` domain value, subsystem matrix)
 - [ ] `build-docs/README.md` (subsystem index)
-- [x] `build-docs/cli/README.md` (`tosh pm` command group)
+- [x] `build-docs/cli/README.md` (`brevio pm` command group)
 - [x] `build-docs/mcp/README.md` (requirement, graph, failing-unit, and gate tools)
 - [x] `build-docs/rest-api/README.md` (initiative, epic, milestone, matrix, and graph endpoints). The REST API was removed on 2026-11-04.
 - [x] `build-docs/static-ui/README.md` (PRD, FSD, milestone board, matrix, and graph views)

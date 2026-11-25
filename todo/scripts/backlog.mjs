@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Backlog manager for tosh. Source of truth: todo/backlog.jsonl. Output: todo/backlog.md.
+// Backlog manager for brevio. Source of truth: todo/backlog.jsonl. Output: todo/backlog.md.
 // Every command that changes backlog.jsonl regenerates backlog.md from todo/backlog.template.md.
 // Usage: node todo/scripts/backlog.mjs <command> [options]   (run `help` for details)
 

@@ -1,4 +1,4 @@
-# Token Optimized Software Harness (tosh)
+# Brevio (Token Optimized Software Harness)
 
 > A CLI-based agentic software development harness designed to maximize speed and minimize LLM token consumption through structured, parseable local documentation.
 
@@ -7,7 +7,7 @@ An AI dev harness which prioritizes token conservation and speed. Token usage is
 they burn through money. Higher token counts not only cost more, they also take longer to run. Token conservation 
 results in faster runs and cost optimization.
 
-`tosh` is a CLI based agentic software development harness which prioritizes local processing for token optimization, 
+`brevio` is a CLI based agentic software development harness which prioritizes local processing for token optimization, 
 resulting in increased speed of development harness and reduced token cost.
 
 
@@ -21,7 +21,7 @@ polyglot format in this use case as it can be used for rich UI rendering via a b
 at highly efficient speeds and delivering only the portions of content relevant to the task and nothing more. This
 process will drastically reduce token usage as full document loads are no longer needed.
 
-`tosh` working in concert with a Code Graph tool can take things a step further.
+`brevio` working in concert with a Code Graph tool can take things a step further.
 
 
 ## Document Domain Breakdown
@@ -52,8 +52,8 @@ The work item documents will be created and updated in real time as the harness 
 ## Components
 
 ### [CLI](build-docs/cli/README.md)
-The CLI is the distributed application binary. The CLI initializes `tosh` and is used to launch the other components
-delivered within the CLI. It also can be used to perform any action `tosh` has available. The CLI is responsible 
+The CLI is the distributed application binary. The CLI initializes `brevio` and is used to launch the other components
+delivered within the CLI. It also can be used to perform any action `brevio` has available. The CLI is responsible 
 for reading and writing project documentation via a defined XHTML schema to define a parsable XML document on every
 run. The CLI allows querying documents and pulling out specific subsets of data within the documentation. The CLI
 also provides easy real-time management of checklists. 
@@ -82,15 +82,15 @@ team member doesn't need to generate their only local copy of the code.
 ## Partner Project
 At the beginning this harness will utilize `CodeGraph` for token optimization when working with source code files.
 
-In time `tosh` may gain it's own knowledge graph for code making this a more all-in-one solution.
+In time `brevio` may gain it's own knowledge graph for code making this a more all-in-one solution.
 
 
 ## Project Management
-`tosh` includes a basic [Project Manager](build-docs/project-mgr/README.md). It holds the product requirements, the
+`brevio` includes a basic [Project Manager](build-docs/project-mgr/README.md). It holds the product requirements, the
 plan, and the release gates. It also holds the [Work Tracking System](build-docs/project-mgr/wts/README.md), which
 tracks work items and their lifecycle. The Project Manager is small by design. It is not a full replacement for a
 dedicated project management system.
 
-`tosh` can also integrate with 3rd party project and work management systems. The CLI will allow for the expansion of
+`brevio` can also integrate with 3rd party project and work management systems. The CLI will allow for the expansion of
 capabilities through add-on modules. A module for Jira, Linear, ADO, or other systems can be created. A team that uses
 Jira can download the Jira module and keep Jira as its system of record.

@@ -55,8 +55,8 @@ Section id: `evidence-matrix`.
 
 | Evidence | Command | Delivered by | Baseline status |
 | :--- | :--- | :--- | :--- |
-| `EV-001` | `go build -o bin/tosh ./cmd/tosh && d=$(mktemp -d) && ./bin/tosh init --root "$d" && test -f "$d/.tosh/tosh.config.json"` | `unit_006_init_command_wiring` | Not runnable. No module exists. |
-| `EV-002` | `d=$(mktemp -d) && ./bin/tosh init --root "$d" && ./bin/tosh init --root "$d"; test $? -eq 2` | `unit_006_init_command_wiring` | Not runnable. No binary exists. |
+| `EV-001` | `go build -o bin/brevio ./cmd/brevio && d=$(mktemp -d) && ./bin/brevio init --root "$d" && test -f "$d/.brevio/brevio.config.json"` | `unit_006_init_command_wiring` | Not runnable. No module exists. |
+| `EV-002` | `d=$(mktemp -d) && ./bin/brevio init --root "$d" && ./bin/brevio init --root "$d"; test $? -eq 2` | `unit_006_init_command_wiring` | Not runnable. No binary exists. |
 | `EV-003` | `go test ./...` | `unit_007_test_gaps`, `unit_008_ci_workflow` | Not runnable. No module exists. |
 
 Every evidence command is an exact, runnable command with the expected exit code `0`.
@@ -65,7 +65,7 @@ Every evidence command is an exact, runnable command with the expected exit code
 
 ## 4. Invariant Monitors
 
-Section id: `invariant-monitors`. The baseline run happened on the branch `feat/tosh-init` at commit `24a304e`, before any Go file existed.
+Section id: `invariant-monitors`. The baseline run happened on the branch `feat/brevio-init` at commit `24a304e`, before any Go file existed.
 
 | Invariant | Command | Level | Baseline exit code | Baseline output | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -80,7 +80,7 @@ Section id: `invariant-monitors`. The baseline run happened on the branch `feat/
 | ID | Severity | Description | Proposed resolution | Owner | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `FIND-001` | Blocking | The old command of `INV-003` compared the working tree with `main`. The branch already holds commit `24a304e`, which adds one line to `topics/thought-stream.md`. The old command exited with code `1` before any code change. | The work item and every document now compare with `24a304e`: `git diff --quiet 24a304e -- build-docs topics`. The new command exits with code `0`. | @samsassin | `resolved` |
-| `FIND-002` | Advisory | `.gitignore` does not exist in the repository. `EV-001` writes `bin/tosh`. | `unit_001_module_and_main` creates `.gitignore` with the line `bin/`. | @samsassin | `resolved` in the unit specification |
+| `FIND-002` | Advisory | `.gitignore` does not exist in the repository. `EV-001` writes `bin/brevio`. | `unit_001_module_and_main` creates `.gitignore` with the line `bin/`. | @samsassin | `resolved` in the unit specification |
 
 With `FIND-001` resolved, the blocking count is `0` and the verdict is `pass`.
 
@@ -91,7 +91,7 @@ With `FIND-001` resolved, the blocking count is `0` and the verdict is `pass`.
 | Level | Scope | Command | Delivered by |
 | :--- | :--- | :--- | :--- |
 | Unit | One package, no network, temporary directories only | `go test ./internal/...` | Units 002, 003, 004, 005, 006, 007 |
-| Binary | The built `tosh` binary run in a temporary directory | The `EV-001` and `EV-002` commands | Unit 006 |
+| Binary | The built `brevio` binary run in a temporary directory | The `EV-001` and `EV-002` commands | Unit 006 |
 | Whole project | Build, vet, and all tests | `go build ./... && go vet ./... && go test ./...` | Unit 008 (in CI) |
 
 No integration or end-to-end suite exists for this work item. The binary level covers the whole user journey: one command that creates one directory.
@@ -104,11 +104,11 @@ These edge cases come from the risk catalog in the decomposition. Each has a nam
 
 | ID | Scenario | Expected behavior | Test (target name) | Unit |
 | :--- | :--- | :--- | :--- | :--- |
-| `EDGE-001` | The write of `tosh.config.json` fails. | `.tosh/` does not exist afterward. | `TestRunLeavesNoPartialDirectoryOnWriteFailure` | `unit_005_init_logic` |
+| `EDGE-001` | The write of `brevio.config.json` fails. | `.brevio/` does not exist afterward. | `TestRunLeavesNoPartialDirectoryOnWriteFailure` | `unit_005_init_logic` |
 | `EDGE-002` | `--root` points to a missing path. | Exit code `2`. No file changes. | `TestRootFlagMissingPath` | `unit_004_root_command_and_flags` |
 | `EDGE-003` | `--root` points to a file. | Exit code `2`. No file changes. | `TestRootFlagIsFile` | `unit_004_root_command_and_flags` |
-| `EDGE-004` | `.tosh/` exists and is empty. | Exit code `2`. No file changes. | `TestRunAlreadyInitializedEmptyDirectory` | `unit_005_init_logic` |
-| `EDGE-005` | `.tosh` is a file. | Exit code `2`. No file changes. | `TestRunAlreadyInitializedFile` | `unit_005_init_logic` |
+| `EDGE-004` | `.brevio/` exists and is empty. | Exit code `2`. No file changes. | `TestRunAlreadyInitializedEmptyDirectory` | `unit_005_init_logic` |
+| `EDGE-005` | `.brevio` is a file. | Exit code `2`. No file changes. | `TestRunAlreadyInitializedFile` | `unit_005_init_logic` |
 | `EDGE-006` | `--format` has an unknown value. | Exit code `2`. | `TestFormatFlagUnknownValue` | `unit_004_root_command_and_flags` |
 | `EDGE-007` | `--quiet` with a success. | No output. Exit code `0`. | `TestQuietSuppressesSuccessOutput` | `unit_003_env_and_printer` |
 | `EDGE-008` | `--quiet` with an error. | The error still prints. | `TestQuietKeepsErrorOutput` | `unit_003_env_and_printer` |

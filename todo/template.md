@@ -12,7 +12,7 @@
 | **Target Milestone** | `v0.1.0` |
 | **Related Topic(s)** | [`TOPIC-###`](../topics/TOPIC-###_slug.md) |
 | **Target Build-Doc(s)** | [`build-docs/...`](../build-docs/README.md) |
-| **Runtime Directory** | — | <!-- Set to .tosh/work_items/{timestamp}_{slug}/ when the intent package is seeded -->
+| **Runtime Directory** | — | <!-- Set to .brevio/work_items/{timestamp}_{slug}/ when the intent package is seeded -->
 | **Created Date** | YYYY-MM-DD |
 | **Active Date** | — | <!-- Stamped on first activation (transition out of BACKLOG to PLANNED or later); never changed afterward -->
 | **Last Updated** | YYYY-MM-DD |

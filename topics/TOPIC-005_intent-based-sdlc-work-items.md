@@ -46,13 +46,13 @@ Under this paradigm, the AI agent is not treated as a typist following a procedu
 
 ### Goals
 
-- [x] Formulate the core philosophy and taxonomy of an **Intent-Based SDLC** tailored for autonomous AI agents within `tosh`.
+- [x] Formulate the core philosophy and taxonomy of an **Intent-Based SDLC** tailored for autonomous AI agents within `brevio`.
 - [x] Redefine the Three-Tier Execution Hierarchy from procedural artifacts (Work Item &rarr; Phase &rarr; Task) into an Intent-Driven Hierarchy (Intent Package &rarr; Sub-Intent Milestones &rarr; Atomic Intent Execution Units).
 - [x] Establish explicit Intent terminology across document naming, schemas, and directories (e.g., `intent_spec.html`, `intent_decomposition.html`, `intent_ledger.json`, `intent_unit_spec.html`).
 - [x] Define the Intent Convergence State Machine (`declared` &rarr; `formulating` &rarr; `converging` &rarr; `verified` &rarr; `settled`, with a `drift_detected` guard).
 - [x] Map the migration and replacement strategy for all 18 existing documents in `build-docs/docs/work-items/`.
 - [x] Detail token optimization benefits, XPath extraction patterns, and local CLI query mechanisms under declarative intent.
-- [x] Align the Intent hierarchy with the stage model of the AI-native SDLC playbook (Plan, Design, Build, Test, Deploy, Maintain) and record where `tosh` follows or differs from it (see Section 9).
+- [x] Align the Intent hierarchy with the stage model of the AI-native SDLC playbook (Plan, Design, Build, Test, Deploy, Maintain) and record where `brevio` follows or differs from it (see Section 9).
 - [x] Define how invariants are enforced deterministically (hooks and CI gates) instead of only being declared in documents.
 - [x] Define autonomy tiers, approval gates, and the rule that the agent that writes a change cannot approve it.
 - [x] Define a "lessons" feedback loop so that failures become permanent invariants or verification checks.
@@ -219,7 +219,7 @@ flowchart TD
 
 ```text
 TRADITIONAL SDLC (BEFORE):                 INTENT-BASED SDLC FOR AI (AFTER):
-.tosh/work_items/                          .tosh/work_items/
+.brevio/work_items/                          .brevio/work_items/
 └── {timestamp}_{slug}/                    └── {timestamp}_{slug}/
     ├── 00_requirements.html                   ├── 00_intent_spec.html
     ├── 01_design_spec.html                    ├── 01_solution_strategy.html
@@ -248,7 +248,7 @@ TRADITIONAL SDLC (BEFORE):                 INTENT-BASED SDLC FOR AI (AFTER):
 
 ## 7. Token Optimization & Performance Impact
 
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 1. **Elimination of Procedural Bloat**:
    - Prescribing micro-steps in `task_spec.html` bloated prompts with 800–1,500 tokens of step-by-step instructions that were frequently ignored or hallucinated.
@@ -297,10 +297,10 @@ Source: [The AI-native SDLC playbook](https://claude.com/resources/articles/the-
 
 ### 9.1 Playbook Principles and Their Fit with This Topic
 
-| Playbook principle | Fit with the Intent-Based SDLC | Action for `tosh` |
+| Playbook principle | Fit with the Intent-Based SDLC | Action for `brevio` |
 | :--- | :--- | :--- |
 | Linear becomes a loop. Each stage commits an artifact. | Matches the Convergence State Machine (Section 5) and the XHTML document set. | Keep every state change tied to a committed document. |
-| Committed artifacts are the audit trail (`intent.md`, `spec.md`, `plan.md`, diffs, review findings, incident records). | Matches the document set in Section 4. `tosh` adds XHTML metadata and XPath access. | Add a review-findings document and an incident document (see 9.3). |
+| Committed artifacts are the audit trail (`intent.md`, `spec.md`, `plan.md`, diffs, review findings, incident records). | Matches the document set in Section 4. `brevio` adds XHTML metadata and XPath access. | Add a review-findings document and an incident document (see 9.3). |
 | Attention moves to gates. | Matches the Verification & Invariant Gate. | Name each gate and its human approver in the ledger. |
 | Policy is enforced while work happens. Skills advise and hooks enforce. | The topic declares invariants but does not yet say how they are enforced. | Add an enforcement model (see 9.4). |
 | One source of truth per artifact. | `intent_ledger.json` is the source of truth for state. | State which file owns each fact, and link legacy tickets by commit SHA. |
@@ -309,10 +309,10 @@ Source: [The AI-native SDLC playbook](https://claude.com/resources/articles/the-
 
 ### 9.2 Stage Mapping
 
-| Playbook stage | Playbook artifact | `tosh` Intent artifact | Note |
+| Playbook stage | Playbook artifact | `brevio` Intent artifact | Note |
 | :--- | :--- | :--- | :--- |
 | Plan | `intent.md`, a proto-spec in the originator's own words, reviewed by the product owner | `00_intent_spec.html` in state `declared` | Capture the raw statement first. Add invariants and evidence in `formulating`. |
-| Design | `spec.md`, built from `intent.md` and constrained by organization skills | `01_solution_strategy.html` | The playbook merges requirements and design into one session. `tosh` keeps two documents but can author them in one session. |
+| Design | `spec.md`, built from `intent.md` and constrained by organization skills | `01_solution_strategy.html` | The playbook merges requirements and design into one session. `brevio` keeps two documents but can author them in one session. |
 | Build | `plan.md` reviewed in plan mode, then code | `02_intent_decomposition.html`, `intent_unit_spec.html`, `intent.diff` | The Sub-Intent DAG is the reviewed plan. The playbook commits the plan before any code change. |
 | Test | A single test command, a measurable target, a failing test first for bug fixes | `verification.html`, Verification Contract | Matches the Verification Contract. Add "failing test first" and "tests are read-only during a fix" as optional unit constraints. |
 | Deploy | `REVIEW.md` review policy, approval gates as hooks, named release authorization | `sub_intent_verification.html`, `03_intent_verification.html` | Add a review policy document and a release authorization field. |
@@ -320,8 +320,8 @@ Source: [The AI-native SDLC playbook](https://claude.com/resources/articles/the-
 
 ### 9.3 Candidate New Documents and Metadata
 
-- **Review policy** (`REVIEW.md` in the playbook): defines review passes (bugs, security, compliance) and severity levels. Candidate `tosh` form: one project-level XHTML document, and a per-intent `review_findings.html`.
-- **Lessons log** (`lessons.md` in the on-call article): records what happened, root cause, fix, and gotcha. Claude reads it at the start of each investigation. Candidate `tosh` form: a project-level `lessons.html`, queried by XPath.
+- **Review policy** (`REVIEW.md` in the playbook): defines review passes (bugs, security, compliance) and severity levels. Candidate `brevio` form: one project-level XHTML document, and a per-intent `review_findings.html`.
+- **Lessons log** (`lessons.md` in the on-call article): records what happened, root cause, fix, and gotcha. Claude reads it at the start of each investigation. Candidate `brevio` form: a project-level `lessons.html`, queried by XPath.
 - **Origin link**: a metadata tag such as `origin-ref` so that an intent created from a production finding or an alert points back to it.
 - **Approver identity**: metadata tags for the named human approver of each gate and for the agent identity that produced the change.
 
@@ -329,7 +329,7 @@ Source: [The AI-native SDLC playbook](https://claude.com/resources/articles/the-
 
 The playbook states that a skill is advisory and a hook is deterministic. Each non-negotiable policy needs a hook. The security article adds that Anthropic places its hard gate in CI, and that invariant tests (for example "user A can never read user B's data") trigger manual review when they fail.
 
-The proposal for `tosh` is that each invariant declares one enforcement level:
+The proposal for `brevio` is that each invariant declares one enforcement level:
 
 | Level | Mechanism | Example |
 | :--- | :--- | :--- |
@@ -344,7 +344,7 @@ This model gives a first answer to Q3. An invariant assertion is a shell command
 
 The playbook and the on-call article describe a gradient of autonomy: read-only, proposal, human-reviewed change, and scoped automation. The playbook also advises tiering autonomy by environment and keeping production release authorization with a named human.
 
-Proposal for `tosh`:
+Proposal for `brevio`:
 - Each intent declares an `autonomy-tier`: `observe`, `propose`, `change-with-review`, or `scoped-automation`.
 - The agent identity that writes a unit must differ from the identity that approves it. The ledger records both.
 - Each agent identity has the least permissions needed. For example, an incident agent can write documents and read logs but cannot deploy.
@@ -354,35 +354,35 @@ Proposal for `tosh`:
 
 The playbook says to update `CLAUDE.md` when Claude makes the same error twice, and to turn every incident into an eval. The security article calls this "closing the loop". The on-call article promotes recurring entries in `lessons.md` into the investigation skill.
 
-Proposal for `tosh`: when a unit enters `drift_detected` or fails verification for a reason not yet covered, the agent proposes one of three outputs. These are a new invariant, a new verification check, or a note for the project instructions. A human accepts or rejects the proposal. This keeps the invariant set growing from real failures.
+Proposal for `brevio`: when a unit enters `drift_detected` or fails verification for a reason not yet covered, the agent proposes one of three outputs. These are a new invariant, a new verification check, or a note for the project instructions. A human accepts or rejects the proposal. This keeps the invariant set growing from real failures.
 
 ### 9.7 Token and Metric Notes
 
-- The playbook lists leading and lagging indicators for each stage. Candidates for `tosh` telemetry: time from `declared` to `formulating` complete, specification rework after build starts, first-pass verification rate, time from plan approval to `settled`, and repeat failures that an existing invariant should have caught.
-- The playbook keeps `CLAUDE.md` under one page. This supports the lean XPath extraction approach in Section 7. `tosh` agents read only the sub-tree that they need.
-- The estimates in Section 3 and Section 7 (40%, 60%, 25-40%) are design targets. The playbook gives no matching figures. Treat them as unmeasured until `tosh` collects its own telemetry.
+- The playbook lists leading and lagging indicators for each stage. Candidates for `brevio` telemetry: time from `declared` to `formulating` complete, specification rework after build starts, first-pass verification rate, time from plan approval to `settled`, and repeat failures that an existing invariant should have caught.
+- The playbook keeps `CLAUDE.md` under one page. This supports the lean XPath extraction approach in Section 7. `brevio` agents read only the sub-tree that they need.
+- The estimates in Section 3 and Section 7 (40%, 60%, 25-40%) are design targets. The playbook gives no matching figures. Treat them as unmeasured until `brevio` collects its own telemetry.
 
 ### 9.8 Differences to Keep
 
-- The playbook uses Markdown files (`intent.md`, `spec.md`, `plan.md`). `tosh` keeps strict XHTML so that humans get a rendered view and agents get XPath access.
-- The playbook leaves invariants mostly implicit in skills, hooks, and CI. `tosh` makes invariants a first-class, queryable part of the intent document.
+- The playbook uses Markdown files (`intent.md`, `spec.md`, `plan.md`). `brevio` keeps strict XHTML so that humans get a rendered view and agents get XPath access.
+- The playbook leaves invariants mostly implicit in skills, hooks, and CI. `brevio` makes invariants a first-class, queryable part of the intent document.
 - The source-control article describes review that checks the intent of a change instead of every line, and review rules that separate comment-only edits from sensitive logic edits. This supports the invariant-first review model, but the article does not describe a spec workflow, so it is not a precedent for the document set.
 
 ### 9.9 Stage Handoff Triggers and Confidence Gates (from the PDF)
 
 The PDF says that a stage ends by committing an artifact, and that the commit starts the next stage. An accepted `intent.md` starts the design pass. An approved `spec.md` starts plan mode. A merged pull request starts the pipeline. A breached control band writes the next `intent.md`. Teams first run each step by hand, then automate the trigger.
 
-Proposal for `tosh`:
+Proposal for `brevio`:
 - A ledger state change is the trigger. For example, when `00_intent_spec.html` moves to `formulating`, a non-interactive job can author `01_solution_strategy.html` and open it for review.
 - A human accepts or rejects each artifact at a gate. Acceptance is recorded in the ledger as a named approver and a timestamp.
 - In unattended runs, an independent confidence gate sits between stages. It is either a deterministic check or an adversarial reviewing agent. The gate decides whether the output continues or goes to a human.
-- The PDF says that the product owner reviews the design spec and does not write it. The spec lists flagged concerns, and the owner resolves each concern with its policy owner before build starts. Candidate `tosh` form: a `concerns` section in `01_solution_strategy.html`, with one owner per concern.
+- The PDF says that the product owner reviews the design spec and does not write it. The spec lists flagged concerns, and the owner resolves each concern with its policy owner before build starts. Candidate `brevio` form: a `concerns` section in `01_solution_strategy.html`, with one owner per concern.
 
 ### 9.10 Plan Drift, Parallel Work, and Verification Detail (from the PDF)
 
-- **Plan drift.** The PDF commits `plan.md` before code, tells the engineer to update the plan in the same commit when the work departs from it, and suggests a hook to keep both in sync. Review then checks the diff against the plan. For `tosh`, the Target Scope of each unit plays the role of the plan. If `intent.diff` touches a file outside the Target Scope, the unit enters `drift_detected` until the spec or the diff changes.
-- **Parallel work.** The PDF runs one session per task in a separate git worktree. Tasks that share files run one after another in one session. For `tosh`, each unit can list the files that it touches. The CLI can then compute which branches of the Sub-Intent DAG are safe to run in parallel. Two to three parallel sessions is the PDF's starting point, and the limit is how many streams one person can review.
-- **Feedback loop and verifier.** The PDF separates two things. The feedback loop runs during the whole task. The verifier is a fresh-context check that runs once, after the session believes that the work is done, so that the verdict does not carry the assumptions that produced the code. For `tosh`, `verification.html` records the verifier result apart from the loop log.
+- **Plan drift.** The PDF commits `plan.md` before code, tells the engineer to update the plan in the same commit when the work departs from it, and suggests a hook to keep both in sync. Review then checks the diff against the plan. For `brevio`, the Target Scope of each unit plays the role of the plan. If `intent.diff` touches a file outside the Target Scope, the unit enters `drift_detected` until the spec or the diff changes.
+- **Parallel work.** The PDF runs one session per task in a separate git worktree. Tasks that share files run one after another in one session. For `brevio`, each unit can list the files that it touches. The CLI can then compute which branches of the Sub-Intent DAG are safe to run in parallel. Two to three parallel sessions is the PDF's starting point, and the limit is how many streams one person can review.
+- **Feedback loop and verifier.** The PDF separates two things. The feedback loop runs during the whole task. The verifier is a fresh-context check that runs once, after the session believes that the work is done, so that the verdict does not carry the assumptions that produced the code. For `brevio`, `verification.html` records the verifier result apart from the loop log.
 - **Measurable targets.** Each target must be quantifiable, for example "all tests in `test_status.py` pass" or "the endpoint returns 200 with the new field". This sets a rule for the Verification Contract: every assertion must be a command with a pass or fail result.
 - **Evidence from the toolchain.** The PDF names the literal output of the test command, the build log, or the screenshot diff as the evidence. The agent summary is not evidence. `verification.html` must store the literal output.
 - **Test files in a fix.** The PDF blocks edits to test files during a fix task, because an agent that fixes code must not weaken the check on that code. This supports the optional unit constraint in Section 9.2.
@@ -399,8 +399,8 @@ The PDF closes the loop with a deterministic script that watches production metr
 
 The agent writes its diagnosis in the intent format: the anomaly and its evidence, a proposed outcome, affected systems, and open questions. A service owner then chooses to fix now, schedule, or dismiss. Dismissals tune the bands. When a fix ships, the team adds an eval for the incident.
 
-Notes for `tosh`:
-- Detection stays outside `tosh`. The `origin-ref` tag (Section 9.3) links the new intent to the alert or finding. See Q9.
+Notes for `brevio`:
+- Detection stays outside `brevio`. The `origin-ref` tag (Section 9.3) links the new intent to the alert or finding. See Q9.
 - The tier table gives a concrete meaning to each autonomy tier in Section 9.5.
 - Slack or ticket triage can also create an intent. A small, well-bounded fix goes straight to a pull request. A larger one becomes a new `declared` intent.
 - The PDF names a version-controlled lessons file that the agent writes after an incident (for example `lessons/2026-06-checkout-cache.md`). This confirms the `lessons.html` candidate in Section 9.3.
@@ -409,14 +409,14 @@ Notes for `tosh`:
 
 The PDF treats the agent configuration as code that needs regression tests. The configuration is the project instruction file, skills, and hooks. An eval suite runs on a schedule and on any change to that configuration. A change that lowers the pass rate is reviewed before it merges. The PDF suggests 20 to 50 real tasks as a start, each with a prompt and checks that define an acceptable result. Each production incident adds one eval.
 
-Proposal for `tosh`:
+Proposal for `brevio`:
 - Invariants, hook templates, and verification commands are agent configuration. A change to any of them can run the eval suite before it is accepted.
 - The lessons loop (Section 9.6) ends with an eval, not only with a new invariant. An accepted lesson adds one eval case.
 - Report the time from incident to permanent eval as a telemetry value.
 
 ### 9.13 Source of Truth, Hook Scope, and Review Detail (from the PDF)
 
-- **Source of truth.** The PDF says to name one system as the source of truth for each artifact. It lists three configurations: the repository owns the record, the legacy system owns the record, or both hold a link to each other as a minimum. For `tosh`, the repository is the owner by default. Each document can carry an `external-ref` tag for a legacy record ID, and the legacy record holds the commit SHA. See Q10.
+- **Source of truth.** The PDF says to name one system as the source of truth for each artifact. It lists three configurations: the repository owns the record, the legacy system owns the record, or both hold a link to each other as a minimum. For `brevio`, the repository is the owner by default. Each document can carry an `external-ref` tag for a legacy record ID, and the legacy record holds the commit SHA. See Q10.
 - **Hook scope.** Team hooks live in the project settings file in version control. Non-negotiable hooks live in managed settings that engineers cannot switch off. This adds a second dimension to the enforcement levels in Section 9.4: the owner of the hook. The hook templates in Q5 must say which scope each template needs.
 - **Block messages.** A hook that blocks an action must state the reason and the route to approval. The CLI and the MCP server must pass that text to the agent.
 - **Ask decision.** A hook can allow, ask, or block. The `ask` decision pauses the action until a named person approves. This is the mechanism for the `human-gate` level in Section 9.4. The PDF keeps `ask` hooks out of the build stage, because an approval prompt puts a person on the critical path of all parallel sessions.
@@ -426,10 +426,10 @@ Proposal for `tosh`:
 ### 9.14 Intent Format and Metrics Additions (from the PDF)
 
 - **Intent format.** The PDF sample `intent.md` has these parts: author and status, problem, proposed outcome, affected users and systems, constraints, and open questions. `00_intent_spec.html` should hold the same parts, written first in the originator's own words, before invariants and evidence are added. Open questions need a place in the document, and the PDF expects the design pass to answer them or carry them forward.
-- **Entry routes.** An intent can start from a person, a ticket, or an alert. People without git experience can commit through a connector. For `tosh`, the MCP server is the matching connector, so non-engineers can declare an intent.
+- **Entry routes.** An intent can start from a person, a ticket, or an alert. People without git experience can commit through a connector. For `brevio`, the MCP server is the matching connector, so non-engineers can declare an intent.
 - **Policy versions.** The PDF logs the spec, the prompt that produced it, and the skill versions in force. Candidate metadata tags: `prompt-ref` and `policy-versions`.
 - **Auto mode.** The PDF moves human attention from each edit to the review of artifacts after long autonomous sessions. This supports the `change-with-review` tier in Section 9.5, with approval at the plan and at the final diff.
-- **Git-derived metrics.** The PDF reads most measures from timestamps and history, so no extra tracking is needed. Candidates for `tosh`:
+- **Git-derived metrics.** The PDF reads most measures from timestamps and history, so no extra tracking is needed. Candidates for `brevio`:
   - Time from first conversation to a committed `00_intent_spec.html`.
   - Intent survival rate: the share of intents that are accepted into design instead of closed.
   - Edits to the intent after the first strategy commit.
@@ -445,26 +445,26 @@ Proposal for `tosh`:
 
 ## 10. Open Questions & Spikes
 
-- [x] **Q1**: Should the parent directory remain `.tosh/work_items/` or be renamed to `.tosh/intents/`? *(Owner: @architect)*
-  - **Resolved 2026-10-31**: Keep `.tosh/work_items/`.
-- [x] **Q2**: How should the CLI command surface evolve? (e.g., `tosh intent new`, `tosh intent converge`, `tosh intent verify` vs. `tosh work-item ...`). *(Owner: @cli-team)*
-  - **Resolved 2026-10-31**: Keep the `tosh work-item ...` command group. Subcommands use the new terms.
+- [x] **Q1**: Should the parent directory remain `.brevio/work_items/` or be renamed to `.brevio/intents/`? *(Owner: @architect)*
+  - **Resolved 2026-10-31**: Keep `.brevio/work_items/`.
+- [x] **Q2**: How should the CLI command surface evolve? (e.g., `brevio intent new`, `brevio intent converge`, `brevio intent verify` vs. `brevio work-item ...`). *(Owner: @cli-team)*
+  - **Resolved 2026-10-31**: Keep the `brevio work-item ...` command group. Subcommands use the new terms.
 - [x] **Q3**: What standard format should Invariant assertions take to allow automated CLI drift checks? (e.g., regex, AST rules, or custom shell commands). *(Owner: @team)* Partial input from Section 9.4: a shell command with an exit code plus an enforcement level.
   - **Resolved 2026-10-31**: An invariant is a shell command with an exit code, plus an enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`).
-- [x] **Q4**: Should `tosh` merge `00_intent_spec` and `01_solution_strategy` into one document, as the playbook merges requirements and design? *(Owner: @architect)*
+- [x] **Q4**: Should `brevio` merge `00_intent_spec` and `01_solution_strategy` into one document, as the playbook merges requirements and design? *(Owner: @architect)*
   - **Resolved 2026-10-31**: Keep two documents. One session can author both.
-- [x] **Q5**: Should `tosh` ship hook templates that enforce `build-gate` invariants for Claude Code, and how does the MCP server expose gate state? *(Owner: @cli-team)*
+- [x] **Q5**: Should `brevio` ship hook templates that enforce `build-gate` invariants for Claude Code, and how does the MCP server expose gate state? *(Owner: @cli-team)*
   - **Resolved 2026-10-31**: Ship Claude Code hook templates and expose gate state through the MCP server.
 - [x] **Q6**: Do review policy and lessons log belong in the Work Items domain, the Wiki domain, or the Report domain? *(Owner: @architect)*
   - **Resolved 2026-10-31**: Both live in the Work Items domain: a project-level review policy and lessons log, and a per-intent `review_findings.html`.
-- [x] **Q7**: Which autonomy tiers does `tosh` support in its first release? *(Owner: @team)*
+- [x] **Q7**: Which autonomy tiers does `brevio` support in its first release? *(Owner: @team)*
   - **Resolved 2026-10-31**: Support all four tiers. The default is `propose`.
-- [x] **Q8**: Which confidence gates does `tosh` support between stages: a deterministic check, an adversarial reviewing agent, or both? Who owns the escalation to a human? *(Owner: @architect)* Input from Section 9.9.
+- [x] **Q8**: Which confidence gates does `brevio` support between stages: a deterministic check, an adversarial reviewing agent, or both? Who owns the escalation to a human? *(Owner: @architect)* Input from Section 9.9.
   - **Resolved 2026-10-31**: Support deterministic and adversarial-agent gates. A failed gate holds the ledger state and names a human approver.
-- [x] **Q9**: Does `tosh` own control-band detection, or does it only receive findings as new intents through `origin-ref`? *(Owner: @architect)* Input from Section 9.11.
-  - **Resolved 2026-10-31**: No. `tosh` accepts findings as new `declared` intents with an `origin-ref` tag. Detection stays in the user monitoring stack.
-- [x] **Q10**: Is the repository the source of truth for every document by default, and how does `tosh` store `external-ref` links to legacy records? *(Owner: @team)* Input from Section 9.13.
-  - **Resolved 2026-10-31**: The repository owns every `tosh` document. An optional `external-ref` tag holds a legacy record ID.
+- [x] **Q9**: Does `brevio` own control-band detection, or does it only receive findings as new intents through `origin-ref`? *(Owner: @architect)* Input from Section 9.11.
+  - **Resolved 2026-10-31**: No. `brevio` accepts findings as new `declared` intents with an `origin-ref` tag. Detection stays in the user monitoring stack.
+- [x] **Q10**: Is the repository the source of truth for every document by default, and how does `brevio` store `external-ref` links to legacy records? *(Owner: @team)* Input from Section 9.13.
+  - **Resolved 2026-10-31**: The repository owns every `brevio` document. An optional `external-ref` tag holds a legacy record ID.
 - [x] **Q11**: Does the unit spec list the files that it touches, so that the CLI can compute parallel-safe branches and detect plan drift? *(Owner: @cli-team)* Input from Section 9.10.
   - **Resolved 2026-10-31**: Yes, required. Target Scope is a required list of paths or globs in `intent_unit_spec.html`.
 
@@ -482,7 +482,7 @@ Proposal for `tosh`:
 
 ## 12. Decision & Rationale
 
-- **Decision**: Adopt the Intent-Based SDLC paradigm for all work-item specifications in `tosh`. Replace traditional procedural/agile artifacts (user stories, story points, step-by-step task instructions) with declarative Intent, System Invariants, Sub-Intent DAGs, and deterministic Verification Contracts.
+- **Decision**: Adopt the Intent-Based SDLC paradigm for all work-item specifications in `brevio`. Replace traditional procedural/agile artifacts (user stories, story points, step-by-step task instructions) with declarative Intent, System Invariants, Sub-Intent DAGs, and deterministic Verification Contracts.
 - **Core Rationale**:
   1. AI agents execute significantly better against declarative outcomes and guardrails than against rigid procedural recipes.
   2. Reduces token waste by stripping out irrelevant human sprint ceremonies and procedural verbosity.

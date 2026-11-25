@@ -1,6 +1,6 @@
 # Work Tracking System (WTS)
 
-The Work Tracking System (WTS) is the part of `tosh` that tracks planned work. It holds the backlog, the work item files, and the lifecycle of each work item.
+The Work Tracking System (WTS) is the part of `brevio` that tracks planned work. It holds the backlog, the work item files, and the lifecycle of each work item.
 
 WTS is one of two parts of the [project manager](../README.md). The other part is Product Management, which holds requirements, epics, and milestones.
 
@@ -46,8 +46,8 @@ A work item is the parent of all intent-driven SDLC documents. It plays the role
 
 | Layer | Location | Purpose |
 | :--- | :--- | :--- |
-| Backlog | `.tosh/wts/` | Declared intents, priority, and lifecycle status. |
-| Execution | `.tosh/work_items/{timestamp}_{slug}/` | Runtime intent package in strict XHTML. |
+| Backlog | `.brevio/wts/` | Declared intents, priority, and lifecycle status. |
+| Execution | `.brevio/work_items/{timestamp}_{slug}/` | Runtime intent package in strict XHTML. |
 
 ```mermaid
 flowchart LR
@@ -61,10 +61,10 @@ The WTS status and the `convergence-status` of the runtime package are separate 
 
 ## Directory Layout
 
-WTS files live in `.tosh/wts/` at the root of the consuming project.
+WTS files live in `.brevio/wts/` at the root of the consuming project.
 
 ```text
-.tosh/wts/
+.brevio/wts/
 ├── backlog.jsonl                      # Index. One JSON object per line.
 ├── backlog.md                         # Generated view. Never edited by hand.
 ├── backlog.template.md                # Layout of the generated view.
@@ -216,18 +216,18 @@ Rows in the active table sort by `active` date, oldest first. Rows that still ha
 
 ## Command Surface
 
-WTS commands live under `tosh wts`.
+WTS commands live under `brevio wts`.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh wts next-id` | Prints the next free `WORK-ITEM-###` identifier. |
-| `tosh wts add` | Creates the work item file from the template, appends a record, and rebuilds `backlog.md`. |
-| `tosh wts edit` | Changes fields of a record. A status change applies the gates and the date stamps. |
-| `tosh wts remove` | Deletes the record and the work item file. The flag `--keep-file` keeps the file. |
-| `tosh wts generate` | Rebuilds `backlog.md` without changing the data. |
-| `tosh wts list` | Prints records as JSON lines. The flags `--status` and `--id` filter the output. |
-| `tosh wts check` | Reports drift between `backlog.jsonl` and the work item files. It changes nothing. |
-| `tosh wts start` | Seeds the runtime intent package, and sets the `Runtime Directory` field. |
+| `brevio wts next-id` | Prints the next free `WORK-ITEM-###` identifier. |
+| `brevio wts add` | Creates the work item file from the template, appends a record, and rebuilds `backlog.md`. |
+| `brevio wts edit` | Changes fields of a record. A status change applies the gates and the date stamps. |
+| `brevio wts remove` | Deletes the record and the work item file. The flag `--keep-file` keeps the file. |
+| `brevio wts generate` | Rebuilds `backlog.md` without changing the data. |
+| `brevio wts list` | Prints records as JSON lines. The flags `--status` and `--id` filter the output. |
+| `brevio wts check` | Reports drift between `backlog.jsonl` and the work item files. It changes nothing. |
+| `brevio wts start` | Seeds the runtime intent package, and sets the `Runtime Directory` field. |
 
 The MCP server exposes the same operations. It calls the same code as the CLI.
 
@@ -239,21 +239,21 @@ The `check` command reports each of these conditions:
 - A work item file has no record.
 - The status in a file differs from the status in its record.
 - The generated `backlog.md` differs from a fresh build.
-- The `Prerequisites` and `Enables` lists in section 9 of a file differ from the edges in `.tosh/project-mgr/edges.jsonl`.
+- The `Prerequisites` and `Enables` lists in section 9 of a file differ from the edges in `.brevio/project-mgr/edges.jsonl`.
 - The `epic` field names an epic that does not exist.
 
 ---
 
 ## Agent Surface
 
-`tosh` installs these agent assets for WTS.
+`brevio` installs these agent assets for WTS.
 
 | Asset | Purpose |
 | :--- | :--- |
 | `create-work-item` skill | Asks for the intent, invariants, boundary envelope, evidence, and autonomy tier. Then it writes and registers the work item. |
 | `update-work-item-status` skill | Moves one work item to a new status and applies the gates. |
 | `update-backlog` skill | Audits drift, rebuilds `backlog.md`, and applies bulk edits to fields other than status. |
-| `backlog-manager` agent | Routes backlog requests to the three skills. It changes only files in `.tosh/wts/`. |
+| `backlog-manager` agent | Routes backlog requests to the three skills. It changes only files in `.brevio/wts/`. |
 
 Agents read `backlog.jsonl` with XML-free line queries. They read a work item file by section instead of in full.
 
@@ -266,11 +266,11 @@ Agents read `backlog.jsonl` with XML-free line queries. They read a work item fi
 | Topic | Work item | `Related Topic(s)` metadata row. |
 | Build doc | Work item | `Target Build-Doc(s)` metadata row. |
 | Work item | Intent package | `Runtime Directory` metadata row. |
-| Work item | Work item | Section 9, `Prerequisites` and `Enables`. The `blocks` edges in `.tosh/project-mgr/edges.jsonl` hold the same links. |
+| Work item | Work item | Section 9, `Prerequisites` and `Enables`. The `blocks` edges in `.brevio/project-mgr/edges.jsonl` hold the same links. |
 | Epic | Work item | `Epic` metadata row. |
 | Requirement | Work item | `Implements` metadata row. |
 
-When `tosh wts start` seeds the intent package, WTS maps the work item as follows:
+When `brevio wts start` seeds the intent package, WTS maps the work item as follows:
 
 1. Sections 1, 3, 4, and 5 become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
 2. Section 6 informs `01_solution_strategy.html`.

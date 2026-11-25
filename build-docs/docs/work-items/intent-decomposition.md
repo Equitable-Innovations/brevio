@@ -1,6 +1,6 @@
 # Intent Decomposition Document Definition
 
-The Intent Decomposition (`02_intent_decomposition.html`) is the authoritative Tier 1 roadmap in the `tosh` work item
+The Intent Decomposition (`02_intent_decomposition.html`) is the authoritative Tier 1 roadmap in the `brevio` work item
 lifecycle. It bridges the Solution Strategy (`01_solution_strategy.html`) and the concrete sub-intent specifications
 (`sub_intents/{sub_intent_id}/sub_intent_spec.html`).
 
@@ -12,17 +12,17 @@ This document serves a dual purpose:
 
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) and inline DAG diagrams without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for token-efficient DAG scheduling and sub-intent orchestration.
 
 ---
 
 ## Core Decomposition Paradigm: Human Engineer vs. AI Coding Tool
 
-In `tosh`, decomposition bridges the gap between human engineering conventions and AI agent requirements across four
+In `brevio`, decomposition bridges the gap between human engineering conventions and AI agent requirements across four
 dimensions:
 
-| Dimension      | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Decomposition Manifestation                                                                                                     |
+| Dimension      | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Decomposition Manifestation                                                                                                     |
 |:---------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**    | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Catalogs target architectural boundaries, links concrete pattern examples, and declares repository-wide protected paths.                |
 | **Granularity**| Focuses on high-level patterns and architecture; details left to implementation time. | Requires bounded, single-responsibility goals with deterministic inputs and outputs.              | Partitions the intent into sub-intents with bounded scope, explicit DAG dependencies, and unit count estimates.                          |
@@ -55,7 +55,7 @@ The intent decomposition document resides at the root of the work item directory
 strategy:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {work-item-id}/
         ├── 00_intent_spec.html
@@ -67,7 +67,7 @@ strategy:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 
@@ -221,7 +221,7 @@ Section id: `gating-strategy`. Defines the gates that govern transitions:
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Orchestrators, subagent workers, and the `tosh` CLI extract targeted execution data using exact XPath expressions
+Orchestrators, subagent workers, and the `brevio` CLI extract targeted execution data using exact XPath expressions
 without ingesting the full document.
 
 ### Extracting Total Sub-Intent Count & Unit Estimates
