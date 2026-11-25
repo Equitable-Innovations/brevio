@@ -12,7 +12,7 @@
 | `depends-on` | `unit_001_module_and_main` |
 | `implements-req` | `EV-002` |
 | `target-files` | `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/errors_test.go` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `go.mod`, `cmd/**` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `go.mod`, `cmd/**` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -49,7 +49,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `go.mod`, `cmd/**`.
+"Do not touch": `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `go.mod`, `cmd/**`.
 
 Signature invariants: The constant names above and the names `ExitError` and `CodeOf` are fixed. Later units and work items import them.
 

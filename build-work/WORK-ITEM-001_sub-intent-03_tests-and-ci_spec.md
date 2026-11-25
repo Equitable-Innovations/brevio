@@ -39,7 +39,7 @@ Section id: `sub-intent-constraints`.
 | Write whitelist | `internal/cli/*_test.go`, `internal/initcmd/*_test.go`, `.github/workflows/ci.yml` |
 | `do-not-touch` | Every non-test Go file: `cmd/**`, `internal/**/*.go` except `*_test.go` |
 | `do-not-touch` | `go.mod`, `go.sum` |
-| `do-not-touch` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**` |
+| `do-not-touch` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**` |
 | Inviolable | A new test must not weaken or delete an existing test. |
 | Inviolable | If a test fails because of a defect in the code, a new remediation unit fixes the code. This sub-intent does not edit the code. |
 | Inviolable | The workflow uses Go 1.26 and one Linux runner. |

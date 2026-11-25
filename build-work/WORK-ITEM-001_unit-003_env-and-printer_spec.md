@@ -12,7 +12,7 @@
 | `depends-on` | `unit_002_exit_codes_and_errors` |
 | `implements-req` | `EV-001`, `EV-002` |
 | `target-files` | `internal/cli/env.go`, `internal/cli/output.go`, `internal/cli/output_test.go` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `go.mod`, `cmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `go.mod`, `cmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -51,7 +51,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `go.mod`, `cmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go`.
+"Do not touch": `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `go.mod`, `cmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go`.
 
 Signature invariants: The names `Env`, `Printer`, and `Format` are fixed. The exported symbols of unit 002 keep their signatures.
 

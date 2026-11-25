@@ -12,7 +12,7 @@
 | `depends-on` | None (the sub-intent depends on `sub_intent_02_init_command`) |
 | `implements-req` | `EV-003` |
 | `target-files` | `internal/cli/*_test.go`, `internal/initcmd/*_test.go` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `cmd/**`, `go.mod`, `go.sum`, `.github/**`, every non-test Go file |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `cmd/**`, `go.mod`, `go.sum`, `.github/**`, every non-test Go file |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -49,7 +49,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": every non-test Go file, `go.mod`, `go.sum`, `cmd/**`, `.github/**`, `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`.
+"Do not touch": every non-test Go file, `go.mod`, `go.sum`, `cmd/**`, `.github/**`, `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`.
 
 Constraint: A new test must not delete or weaken an existing test.
 

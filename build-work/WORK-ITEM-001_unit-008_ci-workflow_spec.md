@@ -12,7 +12,7 @@
 | `depends-on` | `unit_007_test_gaps` |
 | `implements-req` | `EV-003` |
 | `target-files` | `.github/workflows/ci.yml` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `cmd/**`, `internal/**`, `go.mod`, `go.sum` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `cmd/**`, `internal/**`, `go.mod`, `go.sum` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |

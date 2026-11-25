@@ -38,7 +38,7 @@ Section id: `sub-intent-constraints`.
 | Write whitelist | `go.mod`, `go.sum`, `.gitignore`, `cmd/brevio/main.go`, `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/errors_test.go`, `internal/cli/env.go`, `internal/cli/output.go`, `internal/cli/output_test.go`, `internal/cli/root.go`, `internal/cli/root_test.go` |
 | `do-not-touch` | `build-docs/**` |
 | `do-not-touch` | `topics/**` |
-| `do-not-touch` | `todo/**` |
+| `do-not-touch` | `backlog/**` |
 | `do-not-touch` | `build-work/**` |
 | Inviolable | No file imports `net/http` or `net` (`INV-002`). |
 | Inviolable | `cobra` is the only third-party library. |

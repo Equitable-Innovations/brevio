@@ -38,12 +38,12 @@ For guidelines on work item lifecycles, formatting standards, and execution work
 ## How to Register a New Work Item
 
 > [!TIP]
-> Never edit this file by hand. The script `todo/scripts/backlog.mjs` rebuilds it each time `backlog.jsonl` changes. Run `/create-work-item` (or delegate to `backlog-manager`) to create a work item, `/update-work-item-status` to change its status, and `/update-backlog` to audit drift and apply bulk edits.
+> Never edit this file by hand. The script `backlog/scripts/backlog.mjs` rebuilds it each time `backlog.jsonl` changes. Run `/create-work-item` (or delegate to `backlog-manager`) to create a work item, `/update-work-item-status` to change its status, and `/update-backlog` to audit drift and apply bulk edits.
 
 If registering manually:
-1. **Allocate the Next ID**: Run `node todo/scripts/backlog.mjs next-id`.
+1. **Allocate the Next ID**: Run `node backlog/scripts/backlog.mjs next-id`.
 2. **Create the File**: Copy [`template.md`](template.md) to `WORK-ITEM-###_{file-name-slug}.md` in this directory.
 3. **Declare the Intent**: Fill out the declared intent, invariants, boundary envelope, evidence requirements, and autonomy tier.
-4. **Register the Record**: Run `node todo/scripts/backlog.mjs add --title "..." --domain CLI`. The script adds the line to `backlog.jsonl` and rebuilds this file.
-5. **Maintain Lifecycle State**: Run `node todo/scripts/backlog.mjs edit --id N --status IN_PROGRESS` as the work item moves from `READY` &rarr; `IN_PROGRESS` &rarr; `IN_REVIEW` &rarr; `DONE`.
+4. **Register the Record**: Run `node backlog/scripts/backlog.mjs add --title "..." --domain CLI`. The script adds the line to `backlog.jsonl` and rebuilds this file.
+5. **Maintain Lifecycle State**: Run `node backlog/scripts/backlog.mjs edit --id N --status IN_PROGRESS` as the work item moves from `READY` &rarr; `IN_PROGRESS` &rarr; `IN_REVIEW` &rarr; `DONE`.
 6. **Archive on Completion**: Setting the status to `DONE` or `CANCELLED` moves the row to the **Completed & Archived Work Items** table.

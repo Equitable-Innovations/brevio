@@ -12,7 +12,7 @@
 | `depends-on` | None (the sub-intent depends on `sub_intent_01_module_and_root_command`) |
 | `implements-req` | `EV-001`, `EV-002` |
 | `target-files` | `internal/initcmd/init.go`, `internal/initcmd/init_test.go` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `cmd/**`, `internal/cli/**`, `go.mod`, `go.sum` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `cmd/**`, `internal/cli/**`, `go.mod`, `go.sum` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -53,7 +53,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `cmd/**`, `internal/cli/**`, `go.mod`, `go.sum`.
+"Do not touch": `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `cmd/**`, `internal/cli/**`, `go.mod`, `go.sum`.
 
 Import rule: The package imports only the standard library. It does not import `cobra` or `internal/cli`.
 

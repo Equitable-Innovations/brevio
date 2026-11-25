@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo holds the design/specification for `brevio` (Token Optimized Software Harness), a CLI-based agentic development
 harness, and the first Go code for it. The Go skeleton and the `brevio init` command are built
-([WORK-ITEM-001](todo/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md), `DONE`). Every other command is
+([WORK-ITEM-001](backlog/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md), `DONE`). Every other command is
 still specification only. Most of the repository is Markdown (and eventually XHTML) specifying what `brevio` will do and
 how its generated documents will be structured.
 
@@ -30,9 +30,9 @@ how its generated documents will be structured.
 
 ### Work tracking
 
-- `todo/` holds the development backlog. Each work item is `todo/WORK-ITEM-###_<slug>.md` and is registered in
-  `todo/backlog.jsonl`.
-- `todo/backlog.md` is generated. Never edit it by hand. Use `node todo/scripts/backlog.mjs`, or the
+- `backlog/` holds the development backlog. Each work item is `backlog/WORK-ITEM-###_<slug>.md` and is registered in
+  `backlog/backlog.jsonl`.
+- `backlog/backlog.md` is generated. Never edit it by hand. Use `node backlog/scripts/backlog.mjs`, or the
   `create-work-item`, `update-work-item-status`, and `update-backlog` skills.
 - `build-work/` holds the working documents (intent spec, ledger, unit specs, verification) that a work item
   produces while it is built.
@@ -75,7 +75,7 @@ WTS, which sits inside it at `build-docs/project-mgr/wts`:
 | Project Wiki   | `build-docs/docs/wiki/`       | Specified (README) ([TOPIC-002](topics/TOPIC-002_wiki-documents-domain-definition.md)): core pages, ADRs, freeform pages, section-level reads and writes |
 | OpenAPI        | `build-docs/docs/open-api/`   | In discussion ([TOPIC-003](topics/TOPIC-003_openapi-documents-rendering-and-storage.md)) |
 | Project Manager | `build-docs/project-mgr/`    | Initial spec drafted ([TOPIC-006](topics/TOPIC-006_project-mgr-product-management-and-work-tracking.md)): PRD, FSD, epics, milestones, release gates |
-| WTS            | `build-docs/project-mgr/wts`  | Initial spec drafted (Work Tracking System, part of the Project Manager, modeled on the `todo/` workspace) |
+| WTS            | `build-docs/project-mgr/wts`  | Initial spec drafted (Work Tracking System, part of the Project Manager, modeled on the `backlog/` workspace) |
 
 Other `build-docs/` subsystems being specified alongside the document domains: `cli/` (the distributed binary and
 command surface), `mcp/` (bundled MCP server exposing document tools to LLMs), and `static-ui/` (zero-build M3 web-component templates that render every document domain in a

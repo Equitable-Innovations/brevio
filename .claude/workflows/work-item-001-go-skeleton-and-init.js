@@ -23,7 +23,7 @@ const COMMON_RULES = [
   'Work in the repository at the current directory. The host is Windows.',
   'Run shell commands with Git Bash.',
   'Follow the programming guidelines in build-docs/guidelines/README.md.',
-  'Do not change any file in build-docs, topics, todo, or build-work, unless this prompt says that you must.',
+  'Do not change any file in build-docs, topics, backlog, or build-work, unless this prompt says that you must.',
   'Do not push to a remote.',
   'Do not make a git commit, unless this prompt says that you must.',
   'Ignore the untracked file "AI Native SDLC Playbook_designv2.pdf". Do not stage it.',

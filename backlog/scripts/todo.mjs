@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// TODO manager for brevio. Source of truth: todo/todo.jsonl (one JSON object per line).
+// TODO manager for brevio. Source of truth: backlog/todo.jsonl (one JSON object per line).
 // A TODO is a quick note to return to. Kind "task" is a note for the current run.
 // Kind "debt" is long-lived tech debt. Every TODO records the session and agent that made it.
-// Usage: node todo/scripts/todo.mjs <command> [options]   (run `help` for details)
+// Usage: node backlog/scripts/todo.mjs <command> [options]   (run `help` for details)
 
 import { parseArgs } from 'node:util';
 import { readFileSync, writeFileSync, appendFileSync, existsSync, renameSync } from 'node:fs';
@@ -164,7 +164,7 @@ function cmdPrune(o) {
 
 function cmdSession() { console.log(currentSession()); }
 
-const HELP = `todo.mjs - quick TODO capture, stored in todo/todo.jsonl
+const HELP = `todo.mjs - quick TODO capture, stored in backlog/todo.jsonl
 
 Commands:
   add <text> [--kind task|debt] [--file P] [--line N] [--priority P0..P3] [--tags a,b]

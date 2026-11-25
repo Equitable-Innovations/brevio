@@ -1,6 +1,6 @@
 # WORK-ITEM-001 Intent Specification: Go Project Skeleton and `brevio init` Command
 
-This document is the runtime intent specification (`00_intent_spec.html`) in Markdown form. The source is the work item [`WORK-ITEM-001`](../todo/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md). This document copies the declared intent, the invariants, and the evidence requirements. It adds no new requirement.
+This document is the runtime intent specification (`00_intent_spec.html`) in Markdown form. The source is the work item [`WORK-ITEM-001`](../backlog/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md). This document copies the declared intent, the invariants, and the evidence requirements. It adds no new requirement.
 
 | Metadata | Value |
 | :--- | :--- |
