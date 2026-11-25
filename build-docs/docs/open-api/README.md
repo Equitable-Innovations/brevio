@@ -1,6 +1,6 @@
 # OpenAPI Documents Architecture & Specification
 
-> The master specification for the OpenAPI Documents domain of `tosh`. This document defines how `tosh` stores OpenAPI
+> The master specification for the OpenAPI Documents domain of `brevio`. This document defines how `brevio` stores OpenAPI
 > source files and generates XHTML documents from them. Developers and agents then read one operation or one schema at
 > a time.
 
@@ -35,7 +35,7 @@ endpoints, the payloads, and the responses of an API. The domain covers two kind
 - The APIs that the project exposes to other systems.
 - The external APIs that the project calls.
 
-A developer saves an OpenAPI 3.0 or 3.1 file in `.tosh/open-api/`. The `tosh` CLI makes sure that the file is valid and
+A developer saves an OpenAPI 3.0 or 3.1 file in `.brevio/open-api/`. The `brevio` CLI makes sure that the file is valid and
 then generates a set of strict XHTML documents from it. The generated documents render in a browser with Material Design
 3 (M3) web components. Agents query the same documents with XPath and read one operation or one schema at a time.
 
@@ -43,8 +43,8 @@ The domain does not cover these items:
 
 - The execution of requests against a live server. The generated documents contain no request runner.
 - The generation of client or server code from a contract.
-- Custom OpenAPI validation rules. `tosh` uses a standard OpenAPI 3.0 and 3.1 validator.
-- Code-level API reference documents, such as package, class, and function signatures. `tosh` generates no document of
+- Custom OpenAPI validation rules. `brevio` uses a standard OpenAPI 3.0 and 3.1 validator.
+- Code-level API reference documents, such as package, class, and function signatures. `brevio` generates no document of
   this kind.
 
 ### Dual-Purpose Consumption Model
@@ -53,7 +53,7 @@ Every generated document has two consumers:
 
 1. Developers open the documents in a browser. The documents show endpoint cards, method chips, parameter tables, and
    response sections with no build step and no runtime server.
-2. Agents and the `tosh` CLI query the documents with an XML parser. One operation document is typically between 300 and
+2. Agents and the `brevio` CLI query the documents with an XML parser. One operation document is typically between 300 and
    1,500 tokens. A full OpenAPI file is often between 10,000 and 50,000 tokens.
 
 ---
@@ -67,7 +67,7 @@ source. A projection is output that a tool derives from a source and never edits
 flowchart LR
     SRC["openapi.yaml or openapi.json<br/>(source/)"] --> VAL{"OpenAPI 3.0 / 3.1<br/>validation"}
     VAL -->|invalid| ERR["catalog.json records invalid<br/>previous output stays"]
-    VAL -->|valid| GEN["tosh open-api generate"]
+    VAL -->|valid| GEN["brevio open-api generate"]
     GEN --> OV["index.html<br/>(API overview)"]
     GEN --> OP["operations/*.html<br/>(one per operation)"]
     GEN --> SC["schemas/*.html<br/>(one per component schema)"]
@@ -87,7 +87,7 @@ flowchart LR
   `$ref: "./schemas/invoice.yaml"` is valid.
 - A `$ref` to a remote URL is not valid. The CLI makes no network call, so every reference must resolve to a local
   file.
-- The developer edits the source file directly, or replaces it with `tosh open-api update`. A framework that exports an
+- The developer edits the source file directly, or replaces it with `brevio open-api update`. A framework that exports an
   OpenAPI file at build time can write the export to the same path.
 
 ### Generated Files
@@ -105,7 +105,7 @@ flowchart LR
 
 ### API Roles
 
-Each API has one role. The role is the first directory level under `.tosh/open-api/`.
+Each API has one role. The role is the first directory level under `.brevio/open-api/`.
 
 | Role      | Directory    | Meaning                                                                  | Example                                   |
 |:----------|:-------------|:-------------------------------------------------------------------------|:------------------------------------------|
@@ -123,7 +123,7 @@ The role controls how other domains use the contract:
 ### API Identifier
 
 Each API has an API identifier (`api-id`). The identifier is a kebab-case slug that is unique within its role, for
-example `billing-api` or `stripe-payments`. The developer chooses it with `tosh open-api add`.
+example `billing-api` or `stripe-payments`. The developer chooses it with `brevio open-api add`.
 
 ### Versioning
 
@@ -143,12 +143,12 @@ example `billing-api` or `stripe-payments`. The developer chooses it with `tosh 
 
 ```mermaid
 stateDiagram-v2
-    [*] --> current: tosh open-api add
+    [*] --> current: brevio open-api add
     current --> stale: source file changes
-    stale --> current: tosh open-api generate (valid source)
-    stale --> invalid: tosh open-api generate (invalid source)
+    stale --> current: brevio open-api generate (valid source)
+    stale --> invalid: brevio open-api generate (invalid source)
     invalid --> current: source fixed and generated
-    current --> [*]: tosh open-api remove
+    current --> [*]: brevio open-api remove
 ```
 
 | State     | Meaning                                                                                                     |
@@ -157,9 +157,9 @@ stateDiagram-v2
 | `stale`   | The source file changed after the last generation. The generated documents show the previous contract.      |
 | `invalid` | The last generation failed validation. The documents from the last valid generation stay in place.          |
 
-- `tosh open-api check` compares each source hash with `catalog.json` and reports every `stale` or `invalid` version.
+- `brevio open-api check` compares each source hash with `catalog.json` and reports every `stale` or `invalid` version.
   It changes no file. If it finds a difference, it exits with code `5`.
-- A CI job or a `build-gate` hook can run `tosh open-api check` to stop a commit that changes a source file without its
+- A CI job or a `build-gate` hook can run `brevio open-api check` to stop a commit that changes a source file without its
   generated documents.
 - The universal `status` tag of a generated document is always `completed`. The generation state lives only in
   `catalog.json`, because a document cannot know that its source changed.
@@ -205,7 +205,7 @@ If two operations produce the same slug, generation fails and names both operati
 
 ```
 <repo-root>/
-└── .tosh/
+└── .brevio/
     └── open-api/
         ├── catalog.json                          # Machine index of all API versions
         ├── catalog.html                          # Landing page of the domain
@@ -250,7 +250,7 @@ If two operations produce the same slug, generation fails and names both operati
 ## API Catalog Index (`catalog.json`)
 
 `catalog.json` is the machine index of the domain. The CLI and the MCP server read it to find an API version without a
-directory walk. Only `tosh open-api` commands write it.
+directory walk. Only `brevio open-api` commands write it.
 
 ```json
 {
@@ -301,7 +301,7 @@ directory walk. Only `tosh open-api` commands write it.
 - `catalogVersion` rises by one on every write. A write with a version that does not match fails with exit code `6`.
 - `lastError` holds the validation errors of the last failed generation. If `generationState` is not `invalid`,
   `lastError` is `null`.
-- Every path in the catalog is relative to `.tosh/open-api/`.
+- Every path in the catalog is relative to `.brevio/open-api/`.
 
 ---
 
@@ -368,7 +368,7 @@ the head of an operation document.
     </script>
 </head>
 <body>
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <!-- Structured Document Body -->
 </main>
 </body>
@@ -407,9 +407,9 @@ the head of an operation document.
 | `uses-schemas`      | Operation                    | The component schemas that the operation references, comma-separated.                  |
 | `schema-name`       | Schema                       | The key of the schema in `components.schemas`.                                          |
 | `used-by-operations`| Schema                       | The slugs of the operations that reference the schema, comma-separated.                 |
-| `source-file`       | Overview, operation, schema  | The path of the entry file, relative to `.tosh/open-api/`.                              |
+| `source-file`       | Overview, operation, schema  | The path of the entry file, relative to `.brevio/open-api/`.                              |
 | `source-hash`       | Overview, operation, schema  | The SHA-256 hash of the source at generation time.                                      |
-| `generator-version` | All                          | The version of the `tosh` generator that wrote the document.                            |
+| `generator-version` | All                          | The version of the `brevio` generator that wrote the document.                            |
 
 ---
 
@@ -459,7 +459,7 @@ uses it.
 ### Body Example (Operation Document)
 
 ```html
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <article data-endpoint="/invoices" data-method="POST" data-operation-id="createInvoice">
         <section id="operation-summary">
             <md-assist-chip label="POST" class="method-post"></md-assist-chip>
@@ -532,21 +532,21 @@ The documents contain no request runner and no live call to a server.
 
 ## Command Surface
 
-The [CLI](../../cli/README.md) provides the `tosh open-api` command group. The [MCP server](../../mcp/README.md)
+The [CLI](../../cli/README.md) provides the `brevio open-api` command group. The [MCP server](../../mcp/README.md)
 provides matching tools. Both surfaces call the same code.
 
 ### CLI Commands
 
 | Command                                                                                     | Effect                                                                                                    |
 |:--------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------|
-| `tosh open-api add --role <service\|client> --api-id <id> --source <file> [--major <n>]`    | Copies the source into a new version directory, validates it, and generates the documents.                |
-| `tosh open-api update --api-id <id> --major <n> --source <file>`                            | Replaces the source of an existing version, validates it, and generates the documents.                    |
-| `tosh open-api generate [--api-id <id>] [--major <n>]`                                      | Validates the sources and regenerates the documents. With no flags, it regenerates every `stale` version. |
-| `tosh open-api check`                                                                       | Reports every `stale` or `invalid` version. It changes nothing. It exits with code `5` on a difference.   |
-| `tosh open-api list [--role <service\|client>]`                                             | Prints the APIs and versions from `catalog.json`.                                                         |
-| `tosh open-api operation --api-id <id> --major <n> (--slug <slug> \| --method <m> --path <p>)` | Prints the operation document fragment that the `--section` flag selects. The default is all sections.  |
-| `tosh open-api schema --api-id <id> --major <n> --name <name>`                              | Prints the schema document fragment that the `--section` flag selects. The default is all sections.       |
-| `tosh open-api remove --api-id <id> --major <n>`                                            | Deletes the version directory and its catalog entry.                                                      |
+| `brevio open-api add --role <service\|client> --api-id <id> --source <file> [--major <n>]`    | Copies the source into a new version directory, validates it, and generates the documents.                |
+| `brevio open-api update --api-id <id> --major <n> --source <file>`                            | Replaces the source of an existing version, validates it, and generates the documents.                    |
+| `brevio open-api generate [--api-id <id>] [--major <n>]`                                      | Validates the sources and regenerates the documents. With no flags, it regenerates every `stale` version. |
+| `brevio open-api check`                                                                       | Reports every `stale` or `invalid` version. It changes nothing. It exits with code `5` on a difference.   |
+| `brevio open-api list [--role <service\|client>]`                                             | Prints the APIs and versions from `catalog.json`.                                                         |
+| `brevio open-api operation --api-id <id> --major <n> (--slug <slug> \| --method <m> --path <p>)` | Prints the operation document fragment that the `--section` flag selects. The default is all sections.  |
+| `brevio open-api schema --api-id <id> --major <n> --name <name>`                              | Prints the schema document fragment that the `--section` flag selects. The default is all sections.       |
+| `brevio open-api remove --api-id <id> --major <n>`                                            | Deletes the version directory and its catalog entry.                                                      |
 
 If the source of `add`, `update`, or `generate` fails validation, the command exits with code `3`. It records the errors
 in `lastError` and leaves the previous generated documents unchanged.
@@ -555,14 +555,14 @@ in `lastError` and leaves the previous generated documents unchanged.
 
 | Tool                        | Input                                                                 | Result                                                                                  |
 |:----------------------------|:----------------------------------------------------------------------|:----------------------------------------------------------------------------------------|
-| `tosh_openapi_list`         | Optional `role`, `api_id`                                             | The APIs, versions, and generation states from `catalog.json`.                         |
-| `tosh_openapi_find`         | `api_id`, `major`, and one of `path_contains`, `tag`, `method`        | The matching operations: slug, method, path, and summary. No operation bodies.          |
-| `tosh_openapi_get_operation`| `api_id`, `major`, `slug` or `method` and `path`, optional `sections` | The selected sections of one operation document.                                        |
-| `tosh_openapi_get_schema`   | `api_id`, `major`, `name`, optional `sections`                        | The selected sections of one schema document.                                          |
-| `tosh_openapi_check`        | None                                                                  | The list of `stale` and `invalid` versions.                                             |
+| `brevio_openapi_list`         | Optional `role`, `api_id`                                             | The APIs, versions, and generation states from `catalog.json`.                         |
+| `brevio_openapi_find`         | `api_id`, `major`, and one of `path_contains`, `tag`, `method`        | The matching operations: slug, method, path, and summary. No operation bodies.          |
+| `brevio_openapi_get_operation`| `api_id`, `major`, `slug` or `method` and `path`, optional `sections` | The selected sections of one operation document.                                        |
+| `brevio_openapi_get_schema`   | `api_id`, `major`, `name`, optional `sections`                        | The selected sections of one schema document.                                          |
+| `brevio_openapi_check`        | None                                                                  | The list of `stale` and `invalid` versions.                                             |
 
 The MCP tools are read-only. To change a contract, an agent edits the source file inside the Target Scope of a unit. The
-unit verification then runs `tosh open-api generate`.
+unit verification then runs `brevio open-api generate`.
 
 ---
 
@@ -578,7 +578,7 @@ Full OpenAPI File Ingestion:
 │ ~42,000 Tokens                                         │
 └────────────────────────────────────────────────────────┘
 
-tosh Operation Extraction:
+brevio Operation Extraction:
 ┌───────────────────────────────────────┐
 │ Parameters + Request + 201 Response   │
 │ ~650 Tokens (98.5% reduction)         │
@@ -660,7 +660,7 @@ graph LR
 1. Current state design: this document represents the current state of the design. Historical deliberations are
    recorded in [`topics/`](../../../topics/README.md).
 2. Single source of truth: the OpenAPI source file is the contract. No person and no agent edits a generated document.
-   Only `tosh open-api` commands write generated documents and `catalog.json`.
+   Only `brevio open-api` commands write generated documents and `catalog.json`.
 3. Supported versions: the source must be OpenAPI 3.0.x or 3.1.x. Swagger 2.0 sources are not valid.
 4. Local references only: every `$ref` must resolve to a file in the same `source/` directory. A remote reference fails
    validation.

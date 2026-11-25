@@ -1,6 +1,6 @@
 # Document Types
 
-This document lists every document type that `tosh` defines. Each row names the type, its file name, its format, and the specification that defines it.
+This document lists every document type that `brevio` defines. Each row names the type, its file name, its format, and the specification that defines it.
 
 The catalog holds 46 document types in five groups. The XHTML types carry the seven universal baseline tags that the [document system specification](docs/README.md#universal-xhtml-document-standard) defines.
 
@@ -22,11 +22,11 @@ The catalog holds 46 document types in five groups. The XHTML types carry the se
 
 | Group | `domain` tag | Runtime location | Types | Specification |
 | :--- | :--- | :--- | :--- | :--- |
-| Work Items | `work-items` | `.tosh/work_items/` | 20 | [`docs/work-items/README.md`](docs/work-items/README.md) |
-| Project Wiki | `wiki` | `.tosh/wiki/` | 9 | [`docs/wiki/README.md`](docs/wiki/README.md) |
-| OpenAPI | `open-api` | `.tosh/open-api/` | 5 | [`docs/open-api/README.md`](docs/open-api/README.md) |
-| Product Management | `project-mgr` | `.tosh/project-mgr/` | 7 | [`project-mgr/README.md`](project-mgr/README.md) |
-| Work Tracking System | None | `.tosh/wts/` | 5 | [`project-mgr/wts/README.md`](project-mgr/wts/README.md) |
+| Work Items | `work-items` | `.brevio/work_items/` | 20 | [`docs/work-items/README.md`](docs/work-items/README.md) |
+| Project Wiki | `wiki` | `.brevio/wiki/` | 9 | [`docs/wiki/README.md`](docs/wiki/README.md) |
+| OpenAPI | `open-api` | `.brevio/open-api/` | 5 | [`docs/open-api/README.md`](docs/open-api/README.md) |
+| Product Management | `project-mgr` | `.brevio/project-mgr/` | 7 | [`project-mgr/README.md`](project-mgr/README.md) |
+| Work Tracking System | None | `.brevio/wts/` | 5 | [`project-mgr/wts/README.md`](project-mgr/wts/README.md) |
 
 The Work Tracking System types are Markdown and JSONL files. They have no `domain` tag.
 
@@ -34,7 +34,7 @@ The Work Tracking System types are Markdown and JSONL files. They have no `domai
 
 ## Work Items Domain
 
-Each work item has its own directory, `.tosh/work_items/{YYYYMMDDTHHMMSSZ}_{slug}/`. The directory holds the intent package. Two project-level documents sit at the root of `.tosh/work_items/`.
+Each work item has its own directory, `.brevio/work_items/{YYYYMMDDTHHMMSSZ}_{slug}/`. The directory holds the intent package. Two project-level documents sit at the root of `.brevio/work_items/`.
 
 ### Tier 1: Intent Package
 
@@ -75,7 +75,7 @@ These files live in `units/unit_{NNN}_{slug}/` inside a sub-intent directory.
 
 ### Project-Level
 
-These files sit at the root of `.tosh/work_items/`.
+These files sit at the root of `.brevio/work_items/`.
 
 | # | Document type | `doc-type` | File name | Format | Specification |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -88,7 +88,7 @@ The metadata contract for all Work Items documents is in [`intent-document-metad
 
 ## Project Wiki Domain
 
-All files live in `.tosh/wiki/`. The [wiki specification](docs/wiki/README.md) defines each type.
+All files live in `.brevio/wiki/`. The [wiki specification](docs/wiki/README.md) defines each type.
 
 | # | Document type | `doc-type` | File name | Format |
 | :--- | :--- | :--- | :--- | :--- |
@@ -108,7 +108,7 @@ Types 23 to 27 are the five core pages. Every wiki has them. A team adds ADRs an
 
 ## OpenAPI Domain
 
-All files live in `.tosh/open-api/`. The [OpenAPI specification](docs/open-api/README.md) defines each type. The generator writes every type except the source file.
+All files live in `.brevio/open-api/`. The [OpenAPI specification](docs/open-api/README.md) defines each type. The generator writes every type except the source file.
 
 | # | Document type | `doc-type` | File name | Format |
 | :--- | :--- | :--- | :--- | :--- |
@@ -118,13 +118,13 @@ All files live in `.tosh/open-api/`. The [OpenAPI specification](docs/open-api/R
 | 33 | Operation Document | `openapi-operation` | `{role}/{api-id}/v{major}/operations/{operation-slug}.html` | XHTML |
 | 34 | Schema Document | `openapi-schema` | `{role}/{api-id}/v{major}/schemas/{schema-name}.html` | XHTML |
 
-The `{role}` value is `services` or `clients`. The OpenAPI source file, `{role}/{api-id}/v{major}/source/openapi.yaml` or `openapi.json`, is an input and not a `tosh` document type.
+The `{role}` value is `services` or `clients`. The OpenAPI source file, `{role}/{api-id}/v{major}/source/openapi.yaml` or `openapi.json`, is an input and not a `brevio` document type.
 
 ---
 
 ## Product Management
 
-All files live in `.tosh/project-mgr/`. The [project manager specification](project-mgr/README.md) defines each type.
+All files live in `.brevio/project-mgr/`. The [project manager specification](project-mgr/README.md) defines each type.
 
 | # | Document type | `doc-type` | File name | Format |
 | :--- | :--- | :--- | :--- | :--- |
@@ -136,13 +136,13 @@ All files live in `.tosh/project-mgr/`. The [project manager specification](proj
 | 40 | Traceability Matrix | None | `traceability.html` | XHTML |
 | 41 | Dependency Edges | None | `edges.jsonl` | JSONL |
 
-The `tosh pm trace` command generates the Traceability Matrix. No person edits it by hand.
+The `brevio pm trace` command generates the Traceability Matrix. No person edits it by hand.
 
 ---
 
 ## Work Tracking System
 
-All files live in `.tosh/wts/`. The [WTS specification](project-mgr/wts/README.md) defines each type. These files are not XHTML.
+All files live in `.brevio/wts/`. The [WTS specification](project-mgr/wts/README.md) defines each type. These files are not XHTML.
 
 | # | Document type | File name | Format |
 | :--- | :--- | :--- | :--- |
@@ -152,7 +152,7 @@ All files live in `.tosh/wts/`. The [WTS specification](project-mgr/wts/README.m
 | 45 | Backlog Template | `backlog.template.md` | Markdown |
 | 46 | Work Item Template | `template.md` | Markdown |
 
-The `tosh wts generate` command builds the Backlog View from the Backlog Index and the Backlog Template. No person edits the Backlog View by hand.
+The `brevio wts generate` command builds the Backlog View from the Backlog Index and the Backlog Template. No person edits the Backlog View by hand.
 
 ---
 

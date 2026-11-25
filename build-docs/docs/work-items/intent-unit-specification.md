@@ -1,7 +1,7 @@
 # Intent Unit Specification Document Definition
 
 The Intent Unit Specification Document (`sub_intents/{sub_intent_id}/units/{unit_id}/intent_unit_spec.html`) is the
-authoritative Tier 3 atomic unit of convergence in the `tosh` work item lifecycle. It declares one bounded outcome for
+authoritative Tier 3 atomic unit of convergence in the `brevio` work item lifecycle. It declares one bounded outcome for
 an AI coding agent or human engineer: the unit goal, the required target scope, the invariants and protected paths, the
 reference anchors, and the verification contract that proves satisfaction.
 
@@ -13,7 +13,7 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) displaying the unit goal, target scope chips, invariant list, and verification
    commands without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for zero-overhead agent ingestion. A typical extraction (goal, scope, invariants, verification commands) is
    300 to 450 tokens.
 
@@ -21,10 +21,10 @@ This document serves a dual purpose:
 
 ## Core Paradigm: Applying the Four Dimensions to Unit Specs
 
-In `tosh`, unit specifications translate the core dimensions into concrete, actionable boundaries for AI coding
+In `brevio`, unit specifications translate the core dimensions into concrete, actionable boundaries for AI coding
 tools:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Intent Unit Specification Manifestation                                                                                                                  |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Unit Specification Manifestation                                                                                                                  |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Declares the required target scope, provides clickable links and line-range anchors to existing patterns, and itemizes protected paths and signatures.       |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Restricts unit scope strictly to a single responsibility (e.g., author one DDL file or implement one endpoint handler), eliminating multi-module sprawl. |
@@ -57,7 +57,7 @@ tools:
 Each unit specification resides inside its dedicated unit directory within its parent sub-intent:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -76,7 +76,7 @@ Each unit specification resides inside its dedicated unit directory within its p
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

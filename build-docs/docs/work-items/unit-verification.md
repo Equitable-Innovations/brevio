@@ -1,7 +1,7 @@
 # Unit Verification Document Definition
 
 The Unit Verification Document (`units/{unit_id}/verification.html`) is the authoritative Tier 3 verification record in the
-`tosh` work item lifecycle. It records the automated execution evidence, process return codes, assertion counts, file
+`brevio` work item lifecycle. It records the automated execution evidence, process return codes, assertion counts, file
 boundary compliance audits, and formal pass/fail verdict for an atomic unit before changes are committed.
 
 Unit verification replaces subjective manual inspection with deterministic terminal execution and structured output
@@ -12,16 +12,16 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) displaying verdict badges, exit codes, assertion scorecards, and formatted CLI
    execution streams without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for zero-token-overhead test analysis, automated retry dispatching, and ledger state updates.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Unit Verification
 
-In `tosh`, unit validation mechanically evaluates execution success against the four core dimensions:
+In `brevio`, unit validation mechanically evaluates execution success against the four core dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Unit Verification Manifestation                                                                                                       |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Unit Verification Manifestation                                                                                                       |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Performs automated git tree diffing to verify that only target files were edited and zero "do not touch" files were modified.              |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Isolates assertion results and test metrics strictly to the atomic unit's bounded scope, ensuring zero cross-unit pollution.               |
@@ -53,7 +53,7 @@ In `tosh`, unit validation mechanically evaluates execution success against the 
 Each unit validation document resides directly in its isolated unit directory, paired with its parent specification:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -72,7 +72,7 @@ Each unit validation document resides directly in its isolated unit directory, p
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

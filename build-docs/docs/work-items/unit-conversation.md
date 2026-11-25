@@ -1,11 +1,11 @@
 # Unit Conversation Log Document Definition
 
 The **Unit Conversation Log Document** (`units/{unit_id}/conversation.jsonl`) is the authoritative Tier 3 interaction
-record in the **Token Optimized Software Harness (`tosh`)** work item lifecycle. It provides an immutable, append-only,
+record in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It provides an immutable, append-only,
 turn-by-turn log of the entire agentic LLM dialogue, system prompts, reasoning traces, tool executions, terminal command
 streams, and verification feedback from atomic unit activation through unit closure.
 
-In `tosh`, unit conversation logs are not mere debugging dumps. They form the foundational telemetry data lake powering
+In `brevio`, unit conversation logs are not mere debugging dumps. They form the foundational telemetry data lake powering
 **systemic feedback loops**, including:
 
 - **Offline Model Fine-Tuning & Distillation (SFT/DPO):** Mining successful execution trajectories for high-performance
@@ -29,10 +29,10 @@ This document serves a dual purpose:
 
 ## Core Execution Paradigm: Applying the 4 Dimensions to Unit Conversations
 
-In `tosh`, the unit conversation log mechanically records the agent's interaction across the four core
+In `brevio`, the unit conversation log mechanically records the agent's interaction across the four core
 dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Unit Conversation Log Manifestation                                                                                                    |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Unit Conversation Log Manifestation                                                                                                    |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Logs exact system prompt states, injected file contents, and scratchpad memory for every turn, tracking context drift and cache invalidation. |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Strictly isolates conversation turns to the bounded lifecycle of an individual unit, eliminating multi-unit chatter and context dilution.     |
@@ -68,7 +68,7 @@ The unit conversation log resides directly inside the isolated unit directory al
 validation, summary, and telemetry documents:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -107,7 +107,7 @@ The event stream follows a 3-sub-intent structural lifecycle:
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Harness as Tosh Harness
+    participant Harness as Brevio Harness
     participant Log as conversation.jsonl
     participant LLM as Agent Model
     Note over Harness, Log: Sub-Intent 1: Activation
@@ -144,7 +144,7 @@ and parent work-item coordinates:
     "role": "backend-engineer",
     "model": "claude-3-5-sonnet",
     "temperature": 0.0,
-    "harnessVersion": "tosh-v0.2.0"
+    "harnessVersion": "brevio-v0.2.0"
   },
   "paths": {
     "spec": "sub_intents/sub_intent_01_database_migration/units/unit_001_create_tables/intent_unit_spec.html",
@@ -446,7 +446,7 @@ The following annotated JSONL excerpt demonstrates a clean, 4-turn execution of 
 
 ```mermaid
 flowchart TD
-    LOGS["conversation.jsonl<br/>(Unit Session Logs)"] --> HARVESTER["Tosh Telemetry & Trajectory Harvester"]
+    LOGS["conversation.jsonl<br/>(Unit Session Logs)"] --> HARVESTER["Brevio Telemetry & Trajectory Harvester"]
 
     subgraph FeedbackLoops [Automated Feedback & Optimization Loops]
         HARVESTER -->|FPSR = 1 . 0 & Turns ≤ 4| SFT["1. SFT / DPO Dataset Generator<br/>(Gold Standard Exemplars & Preference Pairs)"]

@@ -1,15 +1,15 @@
 # Build Docs
 
-This directory of documentation are requirements, plans, and specifications for building `tosh`.
+This directory of documentation are requirements, plans, and specifications for building `brevio`.
 
 ## Index
 
 | Directory | Content |
 | :--- | :--- |
-| [`document-types.md`](document-types.md) | Single list of every document type that `tosh` defines. |
+| [`document-types.md`](document-types.md) | Single list of every document type that `brevio` defines. |
 | [`docs/`](docs/README.md) | Master specification of the document system and its five document domains. |
 | [`project-mgr/`](project-mgr/README.md) | Project manager: PRD, FSD, epics, milestones, release gates, and the [Work Tracking System](project-mgr/wts/README.md). |
-| [`guidelines/`](guidelines/README.md) | Programming guidelines for the code of `tosh`. |
+| [`guidelines/`](guidelines/README.md) | Programming guidelines for the code of `brevio`. |
 | `cli/` | The distributed binary and its command surface. |
 | `mcp/` | The bundled MCP server that exposes document tools to LLMs. |
 | [`static-ui/`](static-ui/README.md) | Zero-build M3 web-component templates that render every document domain. |

@@ -1,7 +1,7 @@
 # Intent Conversation Summary Document Definition
 
 The **Intent Conversation Summary Document** (`05_intent_conversation_summary.html`) is the authoritative Tier 1
-post-planning narrative synthesis in the **Token Optimized Software Harness (`tosh`)** work item lifecycle. It distills
+post-planning narrative synthesis in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It distills
 the multi-agent LLM dialogue, architectural debates, trade-off analyses, and alignment rounds that produced the
 requirements ([
 `00_intent_spec.html`](intent-specification.md)), technical
@@ -24,7 +24,7 @@ This document fulfills a dual-purpose consumption model:
    high-level economic KPIs, multi-agent collaboration evaluations, and concrete AI component tuning suggestions without
    requiring client-side bundlers or runtime servers.
 2. **Agent / Harness Interface (Machine Parseable):** Serves as a structured XML document queryable via XPath and the
-   `tosh` CLI. Evaluation harnesses and orchestrators ingest conversational performance ratings, token benchmarks, and
+   `brevio` CLI. Evaluation harnesses and orchestrators ingest conversational performance ratings, token benchmarks, and
    AI component recommendations to dynamically calibrate model selection, prompt templates, and agent skill
    configurations across future work items.
 
@@ -32,9 +32,9 @@ This document fulfills a dual-purpose consumption model:
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Conversation Summaries
 
-In `tosh`, the plan conversation summary evaluates planning execution against the four foundational dimensions:
+In `brevio`, the plan conversation summary evaluates planning execution against the four foundational dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Intent Conversation Summary Manifestation                                                                                                                                                                                                    |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Conversation Summary Manifestation                                                                                                                                                                                                    |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Audits context retrieval precision and repository exploration during planning, ensuring agents grounded their designs in real codebase facts without prompt bloat.                                                                                |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Evaluates whether multi-agent dialogue remained focused and progressive, avoiding circular debates or monolithic requirements in favor of atomic sub-intent milestones.                                                                                |
@@ -79,7 +79,7 @@ The plan conversation summary document resides at the root of the work item dire
 artifacts:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
         ├── 00_intent_spec.html                # Requirements & Checklists
@@ -98,7 +98,7 @@ artifacts:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in modern browsers via local filesystem (`file://`) or served locally via
-  the `tosh` CLI.
+  the `brevio` CLI.
 - **Paired Artifacts:**
     - Requirements: [
       `00_intent_spec.html`](intent-specification.md)
@@ -169,7 +169,7 @@ participant lists, and the Material Web ES module importmap loader:
     </script>
 </head>
 <body>
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <!-- Structured Document Body -->
 </main>
 </body>

@@ -1,6 +1,6 @@
 # CLI Specification
 
-The `tosh` command line interface (CLI) is the distributed binary. It is the only component that reads and writes `tosh` documents. The MCP server calls the same code, so every operation behaves the same on both surfaces.
+The `brevio` command line interface (CLI) is the distributed binary. It is the only component that reads and writes `brevio` documents. The MCP server calls the same code, so every operation behaves the same on both surfaces.
 
 ---
 
@@ -43,7 +43,7 @@ The CLI does not define document formats. The [document system](../docs/README.m
 
 ## Design Principles
 
-1. The CLI works on local files under `.tosh/`. It makes no network call.
+1. The CLI works on local files under `.brevio/`. It makes no network call.
 2. A command prints only what the caller asked for. An agent reads a small fragment, not a full document.
 3. Every command that changes state does so atomically. A failed command leaves no partial change.
 4. Every command can print JSON. A script or an agent never has to parse prose.
@@ -54,8 +54,8 @@ The CLI does not define document formats. The [document system](../docs/README.m
 ## Command Tree
 
 ```text
-tosh
-├── init                       # Create .tosh/ in the current project.
+brevio
+├── init                       # Create .brevio/ in the current project.
 ├── doc
 │   ├── query                  # Run an XPath or JSON query on one document.
 │   ├── validate               # Make sure that a document follows its schema.
@@ -89,7 +89,7 @@ tosh
 
 | Flag | Effect |
 | :--- | :--- |
-| `--root <path>` | Project root that holds `.tosh/`. The default is the nearest parent directory that holds `.tosh/`. |
+| `--root <path>` | Project root that holds `.brevio/`. The default is the nearest parent directory that holds `.brevio/`. |
 | `--format <json\|text>` | Output format. The default is `text` on a terminal and `json` in a pipe. |
 | `--quiet` | Prints nothing on success. |
 | `--help` | Prints help for the command. |
@@ -120,10 +120,10 @@ With `--format json`, a command prints one JSON object or one JSON object per li
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh doc query --file <path> --xpath <expression>` | Prints the nodes of an XHTML document that match the expression. |
-| `tosh doc query --file <path> --jq <expression>` | Prints the result of a JSON query on a JSON or JSONL file. |
-| `tosh doc validate --file <path>` | Makes sure that the document is well-formed XML and carries the seven baseline tags. |
-| `tosh doc schema --type <doc-type>` | Prints the schema of a document type. |
+| `brevio doc query --file <path> --xpath <expression>` | Prints the nodes of an XHTML document that match the expression. |
+| `brevio doc query --file <path> --jq <expression>` | Prints the result of a JSON query on a JSON or JSONL file. |
+| `brevio doc validate --file <path>` | Makes sure that the document is well-formed XML and carries the seven baseline tags. |
+| `brevio doc schema --type <doc-type>` | Prints the schema of a document type. |
 
 ---
 
@@ -133,83 +133,83 @@ These commands change the intent ledger of a work item. A worker agent never edi
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh work-item unit start --unit-id <id>` | Moves a unit to `converging`. If a dependency is not `verified` or a hold is present, the command fails. |
-| `tosh work-item unit verify --unit-id <id>` | Runs the verification contract of the unit and records the literal output. |
-| `tosh work-item unit complete --unit-id <id> --verdict <pass\|fail> --exit-code <n> --tokens <n> --duration-ms <n>` | Records the result and the metrics. A `fail` verdict returns the unit to remediation and raises `retries`. |
-| `tosh work-item ledger slice --unit-id <id>` | Prints the context slice of one unit. |
-| `tosh work-item hooks install` | Writes the `build-gate` hook templates into the project. |
+| `brevio work-item unit start --unit-id <id>` | Moves a unit to `converging`. If a dependency is not `verified` or a hold is present, the command fails. |
+| `brevio work-item unit verify --unit-id <id>` | Runs the verification contract of the unit and records the literal output. |
+| `brevio work-item unit complete --unit-id <id> --verdict <pass\|fail> --exit-code <n> --tokens <n> --duration-ms <n>` | Records the result and the metrics. A `fail` verdict returns the unit to remediation and raises `retries`. |
+| `brevio work-item ledger slice --unit-id <id>` | Prints the context slice of one unit. |
+| `brevio work-item hooks install` | Writes the `build-gate` hook templates into the project. |
 
-If `retries` exceeds the retry budget, the ledger places a `retry_budget_exceeded` hold. The next `tosh wts` status change reads the hold.
+If `retries` exceeds the retry budget, the ledger places a `retry_budget_exceeded` hold. The next `brevio wts` status change reads the hold.
 
 ---
 
 ## WTS Commands
 
-The [WTS specification](../project-mgr/wts/README.md#command-surface) defines the `tosh wts` commands.
+The [WTS specification](../project-mgr/wts/README.md#command-surface) defines the `brevio wts` commands.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh wts next-id` | Prints the next free work item identifier. |
-| `tosh wts add` | Creates a work item file and a backlog record. |
-| `tosh wts edit` | Changes fields of a record and applies the gates. |
-| `tosh wts remove` | Deletes a record and, by default, its file. |
-| `tosh wts generate` | Rebuilds `backlog.md`. |
-| `tosh wts list` | Prints records as JSON lines. |
-| `tosh wts check` | Reports drift. It changes nothing. |
-| `tosh wts start` | Seeds the runtime intent package. |
+| `brevio wts next-id` | Prints the next free work item identifier. |
+| `brevio wts add` | Creates a work item file and a backlog record. |
+| `brevio wts edit` | Changes fields of a record and applies the gates. |
+| `brevio wts remove` | Deletes a record and, by default, its file. |
+| `brevio wts generate` | Rebuilds `backlog.md`. |
+| `brevio wts list` | Prints records as JSON lines. |
+| `brevio wts check` | Reports drift. It changes nothing. |
+| `brevio wts start` | Seeds the runtime intent package. |
 
 ---
 
 ## Project Manager Commands
 
-The [project manager specification](../project-mgr/README.md#command-surface) defines the `tosh pm` commands.
+The [project manager specification](../project-mgr/README.md#command-surface) defines the `brevio pm` commands.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh pm init` | Creates `prd.html`, `fsd.html`, and the directories. |
-| `tosh pm epic add`, `tosh pm initiative add`, `tosh pm milestone add` | Create the document and register it. |
-| `tosh pm edge add`, `tosh pm edge remove` | Change a `blocks` edge. Before `edge add` writes the edge, it makes sure that the edge creates no cycle. |
-| `tosh pm graph` | Prints the work items that can start now. The flag `--reduce` reports redundant edges. |
-| `tosh pm trace` | Rebuilds `traceability.html`. |
-| `tosh pm gate --milestone <version>` | Runs the release gates and records the verdicts. The Authorization gate needs a human. |
-| `tosh pm check` | Reports drift. It changes nothing. |
+| `brevio pm init` | Creates `prd.html`, `fsd.html`, and the directories. |
+| `brevio pm epic add`, `brevio pm initiative add`, `brevio pm milestone add` | Create the document and register it. |
+| `brevio pm edge add`, `brevio pm edge remove` | Change a `blocks` edge. Before `edge add` writes the edge, it makes sure that the edge creates no cycle. |
+| `brevio pm graph` | Prints the work items that can start now. The flag `--reduce` reports redundant edges. |
+| `brevio pm trace` | Rebuilds `traceability.html`. |
+| `brevio pm gate --milestone <version>` | Runs the release gates and records the verdicts. The Authorization gate needs a human. |
+| `brevio pm check` | Reports drift. It changes nothing. |
 
 ---
 
 ## OpenAPI Commands
 
-The [OpenAPI specification](../docs/open-api/README.md#command-surface) defines the `tosh open-api` commands.
+The [OpenAPI specification](../docs/open-api/README.md#command-surface) defines the `brevio open-api` commands.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh open-api add` | Saves a new OpenAPI source and generates its documents. |
-| `tosh open-api update` | Replaces the source of an existing version and generates its documents. |
-| `tosh open-api generate` | Regenerates the documents of one version or of every `stale` version. |
-| `tosh open-api check` | Reports `stale` and `invalid` versions. It changes nothing. |
-| `tosh open-api list` | Prints the APIs and versions from `catalog.json`. |
-| `tosh open-api operation` | Prints sections of one operation document. |
-| `tosh open-api schema` | Prints sections of one schema document. |
-| `tosh open-api remove` | Deletes one API version and its catalog entry. |
+| `brevio open-api add` | Saves a new OpenAPI source and generates its documents. |
+| `brevio open-api update` | Replaces the source of an existing version and generates its documents. |
+| `brevio open-api generate` | Regenerates the documents of one version or of every `stale` version. |
+| `brevio open-api check` | Reports `stale` and `invalid` versions. It changes nothing. |
+| `brevio open-api list` | Prints the APIs and versions from `catalog.json`. |
+| `brevio open-api operation` | Prints sections of one operation document. |
+| `brevio open-api schema` | Prints sections of one schema document. |
+| `brevio open-api remove` | Deletes one API version and its catalog entry. |
 
 ---
 
 ## Wiki Commands
 
-The [wiki specification](../docs/wiki/README.md#command-surface) defines the `tosh wiki` commands.
+The [wiki specification](../docs/wiki/README.md#command-surface) defines the `brevio wiki` commands.
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh wiki init` | Creates `.tosh/wiki/`, the five core pages, and the index. |
-| `tosh wiki list`, `tosh wiki outline`, `tosh wiki get` | Print page records, the sections of one page, or selected sections. |
-| `tosh wiki find` | Searches the section text of published pages and prints section references. |
-| `tosh wiki rules` | Prints the coding standard rules that apply to a set of paths. |
-| `tosh wiki page add`, `set-meta`, `move`, `remove` | Create, change, move, or delete a freeform page. |
-| `tosh wiki section set`, `add`, `remove` | Change one section. A write needs the expected section hash. |
-| `tosh wiki adr add`, `accept`, `deprecate` | Create an ADR or change its status. `accept` and `deprecate` need a named human. |
-| `tosh wiki risk add`, `set` | Add a risk or change its attributes. |
-| `tosh wiki review` | Records a review of a page. |
-| `tosh wiki index` | Makes sure that every page is valid and rebuilds `index.json` and `index.html`. |
-| `tosh wiki check` | Reports invalid pages, broken links, index drift, and pages that need a review. It changes nothing. |
+| `brevio wiki init` | Creates `.brevio/wiki/`, the five core pages, and the index. |
+| `brevio wiki list`, `brevio wiki outline`, `brevio wiki get` | Print page records, the sections of one page, or selected sections. |
+| `brevio wiki find` | Searches the section text of published pages and prints section references. |
+| `brevio wiki rules` | Prints the coding standard rules that apply to a set of paths. |
+| `brevio wiki page add`, `set-meta`, `move`, `remove` | Create, change, move, or delete a freeform page. |
+| `brevio wiki section set`, `add`, `remove` | Change one section. A write needs the expected section hash. |
+| `brevio wiki adr add`, `accept`, `deprecate` | Create an ADR or change its status. `accept` and `deprecate` need a named human. |
+| `brevio wiki risk add`, `set` | Add a risk or change its attributes. |
+| `brevio wiki review` | Records a review of a page. |
+| `brevio wiki index` | Makes sure that every page is valid and rebuilds `index.json` and `index.html`. |
+| `brevio wiki check` | Reports invalid pages, broken links, index drift, and pages that need a review. It changes nothing. |
 
 ---
 
@@ -217,7 +217,7 @@ The [wiki specification](../docs/wiki/README.md#command-surface) defines the `to
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh mcp` | Starts the [MCP server](../mcp/README.md) on standard input and output. |
+| `brevio mcp` | Starts the [MCP server](../mcp/README.md) on standard input and output. |
 
 ---
 
@@ -225,16 +225,16 @@ The [wiki specification](../docs/wiki/README.md#command-surface) defines the `to
 
 | Command | Effect |
 | :--- | :--- |
-| `tosh init` | Creates `.tosh/` and `.tosh/tosh.config.json`. |
-| `tosh assets install` | Installs the agent skills and agents that the WTS specification lists. |
+| `brevio init` | Creates `.brevio/` and `.brevio/brevio.config.json`. |
+| `brevio assets install` | Installs the agent skills and agents that the WTS specification lists. |
 
-`tosh init` makes no change to a directory that already holds `.tosh/`. It prints a message and exits with code `2`.
+`brevio init` makes no change to a directory that already holds `.brevio/`. It prints a message and exits with code `2`.
 
 ---
 
 ## Concurrency and Atomic Writes
 
-- A command that changes a ledger takes the file lock `.tosh/work_items/{id}/.ledger.lock` before it reads the ledger.
+- A command that changes a ledger takes the file lock `.brevio/work_items/{id}/.ledger.lock` before it reads the ledger.
 - The ledger carries `ledgerVersion`. A write must raise the version by one. If the versions do not match, the command retries with exponential backoff. After the last retry, the command exits with code `6`.
 - A command that changes more than one file writes each file to a temporary name and renames all files at the end.
 
@@ -242,18 +242,18 @@ The [wiki specification](../docs/wiki/README.md#command-surface) defines the `to
 
 ## Configuration
 
-The file `.tosh/tosh.config.json` holds the project configuration. This version defines no keys.
+The file `.brevio/brevio.config.json` holds the project configuration. This version defines no keys.
 
 ---
 
 ## Rules & Constraints
 
 1. This document represents the current state of the design. History lives in `topics/`.
-2. The CLI is the only writer of `tosh` documents. The MCP server calls CLI code. A person can edit a wiki page or an OpenAPI source file in a text editor. `tosh wiki check` and `tosh open-api check` find an invalid edit.
+2. The CLI is the only writer of `brevio` documents. The MCP server calls CLI code. A person can edit a wiki page or an OpenAPI source file in a text editor. `brevio wiki check` and `brevio open-api check` find an invalid edit.
 3. A command that fails leaves every file unchanged.
 4. A gate failure exits with code `4` and changes no state.
 5. A command never lets an agent approve a `human-gate` or authorize a release.
-6. A command never edits `backlog.md`, `traceability.html`, or a generated OpenAPI document in place. Only the generate commands write them. Only `tosh wiki` commands write the wiki `index.json` and `index.html`.
+6. A command never edits `backlog.md`, `traceability.html`, or a generated OpenAPI document in place. Only the generate commands write them. Only `brevio wiki` commands write the wiki `index.json` and `index.html`.
 7. The CLI makes no network call.
 
 ---
@@ -262,7 +262,7 @@ The file `.tosh/tosh.config.json` holds the project configuration. This version 
 
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
-| 2026-11-04 | 0.4.0 | Added the `tosh wiki` command group and the rule for hand edits of wiki pages. | TOPIC-002 |
-| 2026-11-04 | 0.3.0 | Added the `tosh open-api` command group. | TOPIC-003 |
-| 2026-11-04 | 0.2.0 | Removed the `tosh serve` command and the `serve.host` and `serve.port` configuration keys. | Removal of the REST API |
+| 2026-11-04 | 0.4.0 | Added the `brevio wiki` command group and the rule for hand edits of wiki pages. | TOPIC-002 |
+| 2026-11-04 | 0.3.0 | Added the `brevio open-api` command group. | TOPIC-003 |
+| 2026-11-04 | 0.2.0 | Removed the `brevio serve` command and the `serve.host` and `serve.port` configuration keys. | Removal of the REST API |
 | 2026-11-01 | 0.1.0 | Initial specification: command tree, global flags, exit codes, document, work item, WTS, and project manager commands, server commands, concurrency, and configuration. | TOPIC-006 |

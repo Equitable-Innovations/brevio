@@ -4,14 +4,14 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:S01:U004:SPEC` |
 | `doc-type` | `intent-unit-spec` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_01_module_and_root_command` |
 | `unit-id` | `unit_004_root_command_and_flags` |
 | `parent-doc-id` | `WORK-ITEM-001:S01:SPEC` ([sub-intent specification](WORK-ITEM-001_sub-intent-01_module-and-root-command_spec.md)) |
 | `unit-sequence` | 4 |
 | `depends-on` | `unit_003_env_and_printer` |
 | `implements-req` | `EV-001`, `EV-002` |
-| `target-files` | `internal/cli/root.go`, `internal/cli/root_test.go`, `cmd/tosh/main.go`, `go.mod`, `go.sum` |
+| `target-files` | `internal/cli/root.go`, `internal/cli/root_test.go`, `cmd/brevio/main.go`, `go.mod`, `go.sum` |
 | `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/env.go`, `internal/cli/output.go` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
@@ -28,7 +28,7 @@ Section id: `unit-goal`.
 The binary has a root command with the four global flags. Every error that the root command or `cobra` raises ends as one exit code and one printed error. The `completion` command does not exist.
 
 - Preconditions: `unit_003_env_and_printer` is `verified`. `go.mod` has no dependency.
-- Postconditions: `go.mod` and `go.sum` hold `cobra` and the packages that `cobra` needs. `cmd/tosh/main.go` builds an `Env` from the process, calls one function in `internal/cli`, and calls `os.Exit` with the returned code. No other file calls `os.Exit`.
+- Postconditions: `go.mod` and `go.sum` hold `cobra` and the packages that `cobra` needs. `cmd/brevio/main.go` builds an `Env` from the process, calls one function in `internal/cli`, and calls `os.Exit` with the returned code. No other file calls `os.Exit`.
 - Flags: `--root <path>`, `--format <json|text>`, `--quiet`, and `--help`, as the [CLI specification](../build-docs/cli/README.md#global-flags) defines.
 - `--root` rule: If the flag is present, the path must exist and must be a directory. If not, the command fails with the code `ExitUsage` and the error name `invalid_argument`. If the flag is absent, the root command does nothing about the root. A subcommand picks its own default.
 - `--format` rule: An unknown value fails with the code `ExitUsage`. This rule also applies to a call with no subcommand.
@@ -46,7 +46,7 @@ Section id: `invariants`.
 | :--- | :--- |
 | `internal/cli/root.go` | `create` |
 | `internal/cli/root_test.go` | `create` |
-| `cmd/tosh/main.go` | `modify` |
+| `cmd/brevio/main.go` | `modify` |
 | `go.mod` | `modify` |
 | `go.sum` | `create` |
 
@@ -87,13 +87,13 @@ Section id: `verification-contract`. Every command must exit with code `0`.
 | `go test ./internal/cli/...` | `ok` and no failure. |
 | `go build ./... && go vet ./...` | No output. |
 | `go mod tidy -diff` | No output. The module files are tidy. |
-| `go build -o bin/tosh ./cmd/tosh && ./bin/tosh` | Help text. Exit code `0`. |
-| `./bin/tosh --help \| grep -q -e "--root" && ./bin/tosh --help \| grep -q -e "--format" && ./bin/tosh --help \| grep -q -e "--quiet"` | No output. |
-| `! ./bin/tosh --help \| grep -q "completion"` | No output. |
-| `./bin/tosh --format xml; test $? -eq 2` | An error line that names `json` and `text`. |
-| `./bin/tosh --root /no/such/path; test $? -eq 2` | An error line that names the path. |
-| `./bin/tosh nosuchcommand; test $? -eq 2` | An error line. No `cobra` usage text. |
-| `test "$(grep -rl "os.Exit" --include=*.go . \| tr -d '\n')" = "./cmd/tosh/main.go"` | No output. Only `main.go` calls `os.Exit`. |
+| `go build -o bin/brevio ./cmd/brevio && ./bin/brevio` | Help text. Exit code `0`. |
+| `./bin/brevio --help \| grep -q -e "--root" && ./bin/brevio --help \| grep -q -e "--format" && ./bin/brevio --help \| grep -q -e "--quiet"` | No output. |
+| `! ./bin/brevio --help \| grep -q "completion"` | No output. |
+| `./bin/brevio --format xml; test $? -eq 2` | An error line that names `json` and `text`. |
+| `./bin/brevio --root /no/such/path; test $? -eq 2` | An error line that names the path. |
+| `./bin/brevio nosuchcommand; test $? -eq 2` | An error line. No `cobra` usage text. |
+| `test "$(grep -rl "os.Exit" --include=*.go . \| tr -d '\n')" = "./cmd/brevio/main.go"` | No output. Only `main.go` calls `os.Exit`. |
 | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | No output. |
 | `git diff --quiet 24a304e -- build-docs topics` | No output. |
 
@@ -132,7 +132,7 @@ Section id: `acceptance-criteria`.
 - `AC-001`: The four flags exist and behave as section 1 states.
 - `AC-002`: Invalid arguments of every kind exit with code `2`.
 - `AC-003`: No `completion` command exists.
-- `AC-004`: Only `cmd/tosh/main.go` calls `os.Exit`.
+- `AC-004`: Only `cmd/brevio/main.go` calls `os.Exit`.
 - `AC-005`: `go mod tidy -diff` prints nothing.
 - `AC-006`: `go test ./internal/cli/...` passes.
 - `AC-007`: The diff touches only the five files in the target scope.

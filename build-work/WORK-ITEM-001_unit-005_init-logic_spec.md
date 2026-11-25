@@ -4,7 +4,7 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:S02:U005:SPEC` |
 | `doc-type` | `intent-unit-spec` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_02_init_command` |
 | `unit-id` | `unit_005_init_logic` |
 | `parent-doc-id` | `WORK-ITEM-001:S02:SPEC` ([sub-intent specification](WORK-ITEM-001_sub-intent-02_init-command_spec.md)) |
@@ -25,13 +25,13 @@
 
 Section id: `unit-goal`.
 
-The package `internal/initcmd` creates `.tosh/` and `.tosh/tosh.config.json` inside a root directory in one atomic step. The package knows nothing about `cobra`, flags, or output.
+The package `internal/initcmd` creates `.brevio/` and `.brevio/brevio.config.json` inside a root directory in one atomic step. The package knows nothing about `cobra`, flags, or output.
 
 - Preconditions: Sub-intent 01 is `verified`. The package `internal/initcmd` does not exist.
-- Postconditions: The package exports `Run`, an `Options` value that holds the root directory, and the sentinel error `ErrAlreadyInitialized`. It exports the directory name `.tosh` as a constant for the CLI layer.
-- Success behavior: After `Run` returns no error, the root holds `.tosh/` with mode `0755` and `.tosh/tosh.config.json` with mode `0644`. The file holds the text `{}` and one final newline.
-- Existing path: If the root already holds an entry named `.tosh` of any type (directory, file, or symbolic link), `Run` returns `ErrAlreadyInitialized` and changes nothing.
-- Atomic write: `Run` builds the result inside a temporary directory in the same root, named with the prefix `.tosh.tmp-`. It then renames the temporary directory to `.tosh`. After any failure, no temporary directory remains.
+- Postconditions: The package exports `Run`, an `Options` value that holds the root directory, and the sentinel error `ErrAlreadyInitialized`. It exports the directory name `.brevio` as a constant for the CLI layer.
+- Success behavior: After `Run` returns no error, the root holds `.brevio/` with mode `0755` and `.brevio/brevio.config.json` with mode `0644`. The file holds the text `{}` and one final newline.
+- Existing path: If the root already holds an entry named `.brevio` of any type (directory, file, or symbolic link), `Run` returns `ErrAlreadyInitialized` and changes nothing.
+- Atomic write: `Run` builds the result inside a temporary directory in the same root, named with the prefix `.brevio.tmp-`. It then renames the temporary directory to `.brevio`. After any failure, no temporary directory remains.
 - Root rule: If the root does not exist or is not a directory, `Run` returns an error that is not `ErrAlreadyInitialized`.
 - Seam: The code has a seam, for example a function field, so that a test forces the file write to fail. No global variable holds the seam (guideline 29).
 - Return value: `Run` returns an error or nothing. It returns no path.
@@ -93,14 +93,14 @@ Section id: `edge-cases`.
 
 | ID | Condition | Expected handling | Assertion target |
 | :--- | :--- | :--- | :--- |
-| `EC-001` | Empty root | `.tosh/` and the file exist. The file content is `{}` plus a newline. | `TestRunCreatesDirectoryAndConfig` |
-| `EC-002` | `.tosh/` exists and holds files | `ErrAlreadyInitialized`. Every file keeps its content. | `TestRunAlreadyInitializedKeepsFiles` |
-| `EC-003` | `.tosh/` exists and is empty | `ErrAlreadyInitialized`. | `TestRunAlreadyInitializedEmptyDirectory` |
-| `EC-004` | `.tosh` is a file | `ErrAlreadyInitialized`. The file keeps its content. | `TestRunAlreadyInitializedFile` |
-| `EC-005` | The write of the file fails (forced through the seam) | An error. `.tosh/` does not exist. No `.tosh.tmp-` entry remains. | `TestRunLeavesNoPartialDirectoryOnWriteFailure` |
+| `EC-001` | Empty root | `.brevio/` and the file exist. The file content is `{}` plus a newline. | `TestRunCreatesDirectoryAndConfig` |
+| `EC-002` | `.brevio/` exists and holds files | `ErrAlreadyInitialized`. Every file keeps its content. | `TestRunAlreadyInitializedKeepsFiles` |
+| `EC-003` | `.brevio/` exists and is empty | `ErrAlreadyInitialized`. | `TestRunAlreadyInitializedEmptyDirectory` |
+| `EC-004` | `.brevio` is a file | `ErrAlreadyInitialized`. The file keeps its content. | `TestRunAlreadyInitializedFile` |
+| `EC-005` | The write of the file fails (forced through the seam) | An error. `.brevio/` does not exist. No `.brevio.tmp-` entry remains. | `TestRunLeavesNoPartialDirectoryOnWriteFailure` |
 | `EC-006` | The root does not exist | An error that is not `ErrAlreadyInitialized`. | `TestRunMissingRoot` |
 | `EC-007` | The root is a file | An error that is not `ErrAlreadyInitialized`. | `TestRunRootIsFile` |
-| `EC-008` | The root is read-only | An error. No `.tosh/` and no temporary entry. The test skips on Windows, where directory modes do not block writes. | `TestRunReadOnlyRoot` |
+| `EC-008` | The root is read-only | An error. No `.brevio/` and no temporary entry. The test skips on Windows, where directory modes do not block writes. | `TestRunReadOnlyRoot` |
 | `EC-009` | Other files in the root | They stay unchanged. | `TestRunKeepsOtherFiles` |
 
 ---
@@ -118,9 +118,9 @@ Section id: `unit-constraints`.
 
 Section id: `acceptance-criteria`.
 
-- `AC-001`: `Run` creates `.tosh/` and `tosh.config.json` with the specified content and modes.
-- `AC-002`: `Run` returns `ErrAlreadyInitialized` for every kind of existing `.tosh` entry and changes nothing.
-- `AC-003`: After a forced write failure, the root holds no `.tosh` and no temporary entry.
+- `AC-001`: `Run` creates `.brevio/` and `brevio.config.json` with the specified content and modes.
+- `AC-002`: `Run` returns `ErrAlreadyInitialized` for every kind of existing `.brevio` entry and changes nothing.
+- `AC-003`: After a forced write failure, the root holds no `.brevio` and no temporary entry.
 - `AC-004`: The package imports only the standard library.
 - `AC-005`: `go test ./internal/initcmd/...` passes.
 - `AC-006`: The diff touches only the two files in the target scope.

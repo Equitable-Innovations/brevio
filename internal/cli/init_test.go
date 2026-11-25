@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Equitable-Innovations/tosh/internal/initcmd"
+	"github.com/Equitable-Innovations/brevio/internal/initcmd"
 )
 
 func runInit(t *testing.T, workDir string, args ...string) (code int, stdout, stderr string) {
@@ -25,10 +25,10 @@ func TestInitCreatesDirectoryText(t *testing.T) {
 	if code != ExitOK {
 		t.Fatalf("code = %d", code)
 	}
-	if stdout != "Created .tosh/\n" {
+	if stdout != "Created .brevio/\n" {
 		t.Errorf("stdout = %q", stdout)
 	}
-	if _, err := os.Stat(filepath.Join(root, ".tosh", "tosh.config.json")); err != nil {
+	if _, err := os.Stat(filepath.Join(root, ".brevio", "brevio.config.json")); err != nil {
 		t.Errorf("config file missing: %v", err)
 	}
 }
@@ -38,7 +38,7 @@ func TestInitCreatesDirectoryJSON(t *testing.T) {
 	if code != ExitOK {
 		t.Fatalf("code = %d", code)
 	}
-	if stdout != "{\"created\":\".tosh\"}\n" {
+	if stdout != "{\"created\":\".brevio\"}\n" {
 		t.Errorf("stdout = %q", stdout)
 	}
 }
@@ -46,7 +46,7 @@ func TestInitCreatesDirectoryJSON(t *testing.T) {
 func TestInitTwiceExitsTwo(t *testing.T) {
 	root := t.TempDir()
 	runInit(t, root, "--root", root, "--format", "text")
-	cfg := filepath.Join(root, ".tosh", "tosh.config.json")
+	cfg := filepath.Join(root, ".brevio", "brevio.config.json")
 	before, err := os.ReadFile(cfg)
 	if err != nil {
 		t.Fatal(err)
@@ -58,7 +58,7 @@ func TestInitTwiceExitsTwo(t *testing.T) {
 	if stdout != "" {
 		t.Errorf("stdout = %q", stdout)
 	}
-	if stderr != ".tosh/ already exists. No change made.\n" {
+	if stderr != ".brevio/ already exists. No change made.\n" {
 		t.Errorf("stderr = %q", stderr)
 	}
 	after, _ := os.ReadFile(cfg)
@@ -77,7 +77,7 @@ func TestInitTwiceJSONError(t *testing.T) {
 	if name := errorName(t, stderr); name != "already_initialized" {
 		t.Errorf("error name = %q", name)
 	}
-	want := "{\"error\":\"already_initialized\",\"message\":\".tosh/ already exists. No change made.\"}\n"
+	want := "{\"error\":\"already_initialized\",\"message\":\".brevio/ already exists. No change made.\"}\n"
 	if stderr != want {
 		t.Errorf("stderr = %q", stderr)
 	}
@@ -89,8 +89,8 @@ func TestInitDefaultsToWorkingDirectory(t *testing.T) {
 	if code != ExitOK {
 		t.Fatalf("code = %d, stderr = %q", code, stderr)
 	}
-	if _, err := os.Stat(filepath.Join(work, ".tosh")); err != nil {
-		t.Errorf(".tosh missing in working directory: %v", err)
+	if _, err := os.Stat(filepath.Join(work, ".brevio")); err != nil {
+		t.Errorf(".brevio missing in working directory: %v", err)
 	}
 }
 
@@ -100,8 +100,8 @@ func TestInitQuiet(t *testing.T) {
 	if code != ExitOK || stdout != "" {
 		t.Errorf("code = %d, stdout = %q", code, stdout)
 	}
-	if _, err := os.Stat(filepath.Join(root, ".tosh")); err != nil {
-		t.Errorf(".tosh missing: %v", err)
+	if _, err := os.Stat(filepath.Join(root, ".brevio")); err != nil {
+		t.Errorf(".brevio missing: %v", err)
 	}
 }
 
@@ -114,8 +114,8 @@ func TestInitRejectsExtraArguments(t *testing.T) {
 	if name := errorName(t, stderr); name != "invalid_argument" {
 		t.Errorf("error name = %q", name)
 	}
-	if _, err := os.Stat(filepath.Join(root, ".tosh")); err == nil {
-		t.Error(".tosh was created")
+	if _, err := os.Stat(filepath.Join(root, ".brevio")); err == nil {
+		t.Error(".brevio was created")
 	}
 }
 

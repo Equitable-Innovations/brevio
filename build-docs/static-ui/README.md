@@ -1,12 +1,12 @@
 # Static User Interface Specification
 
 This directory (`build-docs/static-ui/`) documents and specifies everything related to the rendering of the user
-interface for `tosh`. It is dedicated exclusively to technical documentation, design requirements, component
+interface for `brevio`. It is dedicated exclusively to technical documentation, design requirements, component
 specifications, and template definitions for what will be built.
 
 > [!NOTE]
 > This directory does not contain the final product code, runtime assets, or production application bundles. It contains
-the canonical specifications, design rules, and prototype examples guiding the development of the `tosh` static UI.
+the canonical specifications, design rules, and prototype examples guiding the development of the `brevio` static UI.
 
 ---
 
@@ -27,7 +27,7 @@ the canonical specifications, design rules, and prototype examples guiding the d
 
 ## Scope & Purpose
 
-The specifications in this directory define how `tosh` will render local documentation as a rich, interactive, and
+The specifications in this directory define how `brevio` will render local documentation as a rich, interactive, and
 completely static user interface:
 
 - **Specification of UI Rendering:** Details how structured XHTML documents will be parsed, styled, and presented to
@@ -44,14 +44,14 @@ completely static user interface:
 
 ## Target UI Architecture
 
-The planned user interface built by `tosh` must adhere to the following architectural model:
+The planned user interface built by `brevio` must adhere to the following architectural model:
 
 - **Completely Static:** The UI requires zero client-side compilation or bundlers at runtime. Pages are standard
   browser-executable XHTML files that can be opened directly via the `file://` protocol.
 - **Single-Pane Visualizer:** One interface for navigation across all documentation domains: work items, the
   project manager, the project wiki, and OpenAPI contracts.
 - **Parseable Document Viewer:** Documents act as dual-purpose artifacts: fully styled visual web pages for developers
-  and structured, queryable XML/XHTML documents for LLM agents and the `tosh` CLI.
+  and structured, queryable XML/XHTML documents for LLM agents and the `brevio` CLI.
 
 ---
 
@@ -261,7 +261,7 @@ All document templates inherit a standard XHTML shell:
 - **Documentation Layout:** Two-column reading layout with a sticky table-of-contents navigation drawer and main article
   container with styled callouts.
 - **Navigation Tree:** The drawer groups pages into Core, Decisions, Risks, and Pages. The template builds the drawer in
-  the browser from `.tosh/wiki/index.json`, so the page markup holds no navigation.
+  the browser from `.brevio/wiki/index.json`, so the page markup holds no navigation.
 - **State Display:** Chips show a draft page and the status of an ADR. Banners show a page that needs a review and a
   superseded ADR. The [wiki specification](../docs/wiki/README.md#static-ui-rendering) defines the full rules.
 
@@ -308,7 +308,7 @@ An intent unit specification template layout using Material Web components:
 
 ```xhtml
 
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <header class="doc-header">
         <h1 class="md-typescale-headline-medium">Unit 001: Database Schema Migration</h1>
         <md-chip-set>

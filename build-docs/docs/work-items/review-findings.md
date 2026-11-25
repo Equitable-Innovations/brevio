@@ -12,7 +12,7 @@ This document serves a dual purpose:
 
 1. **Human Interface:** Renders as a local, static XHTML web page utilizing Material Design 3 Web Components
    (`@material/web` / **M3**) without client-side bundlers or build steps. Reviewers sort findings by pass and severity.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI. Fix agents read only the open Important findings.
 
 ---
@@ -39,7 +39,7 @@ This document serves a dual purpose:
 The review findings document resides at the root of the work item directory:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {work-item-id}/
         ├── 04_intent_summary.html
@@ -53,7 +53,7 @@ The review findings document resides at the root of the work item directory:
 - **Encoding:** UTF-8.
 - **Authors:** One or more reviewer identities. Each finding names the reviewer that raised it.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

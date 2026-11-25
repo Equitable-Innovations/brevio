@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// TODO manager for tosh. Source of truth: todo/todo.jsonl (one JSON object per line).
+// TODO manager for brevio. Source of truth: todo/todo.jsonl (one JSON object per line).
 // A TODO is a quick note to return to. Kind "task" is a note for the current run.
 // Kind "debt" is long-lived tech debt. Every TODO records the session and agent that made it.
 // Usage: node todo/scripts/todo.mjs <command> [options]   (run `help` for details)

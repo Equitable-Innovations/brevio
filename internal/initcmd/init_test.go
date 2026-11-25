@@ -47,9 +47,9 @@ func TestRunCreatesDirectoryAndConfig(t *testing.T) {
 	}
 	dirInfo, err := os.Stat(filepath.Join(root, DirName))
 	if err != nil || !dirInfo.IsDir() {
-		t.Fatalf(".tosh is not a directory: %v", err)
+		t.Fatalf(".brevio is not a directory: %v", err)
 	}
-	cfg := filepath.Join(root, DirName, "tosh.config.json")
+	cfg := filepath.Join(root, DirName, "brevio.config.json")
 	if got := readFileOrFail(t, cfg); got != wantConfig {
 		t.Fatalf("config content = %q, want %q", got, wantConfig)
 	}
@@ -63,7 +63,7 @@ func TestRunCreatesDirectoryAndConfig(t *testing.T) {
 		}
 	}
 	if names := entryNames(t, root); len(names) != 1 {
-		t.Errorf("root entries = %v, want only .tosh", names)
+		t.Errorf("root entries = %v, want only .brevio", names)
 	}
 }
 
@@ -73,13 +73,13 @@ func TestRunAlreadyInitializedKeepsFiles(t *testing.T) {
 	if err := os.Mkdir(dir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	writeFileOrFail(t, filepath.Join(dir, "tosh.config.json"), `{"a":1}`)
+	writeFileOrFail(t, filepath.Join(dir, "brevio.config.json"), `{"a":1}`)
 	writeFileOrFail(t, filepath.Join(dir, "other.txt"), "keep")
 
 	if err := Run(Options{Root: root}); !errors.Is(err, ErrAlreadyInitialized) {
 		t.Fatalf("err = %v, want ErrAlreadyInitialized", err)
 	}
-	if got := readFileOrFail(t, filepath.Join(dir, "tosh.config.json")); got != `{"a":1}` {
+	if got := readFileOrFail(t, filepath.Join(dir, "brevio.config.json")); got != `{"a":1}` {
 		t.Errorf("config changed: %q", got)
 	}
 	if got := readFileOrFail(t, filepath.Join(dir, "other.txt")); got != "keep" {
@@ -99,7 +99,7 @@ func TestRunAlreadyInitializedEmptyDirectory(t *testing.T) {
 		t.Fatalf("err = %v, want ErrAlreadyInitialized", err)
 	}
 	if names := entryNames(t, filepath.Join(root, DirName)); len(names) != 0 {
-		t.Errorf(".tosh entries = %v, want none", names)
+		t.Errorf(".brevio entries = %v, want none", names)
 	}
 }
 
@@ -165,7 +165,7 @@ func TestRunReadOnlyRoot(t *testing.T) {
 		t.Fatal("want error for read-only root")
 	}
 	for _, name := range entryNames(t, root) {
-		if strings.HasPrefix(name, ".tosh") {
+		if strings.HasPrefix(name, ".brevio") {
 			t.Errorf("unexpected entry %q", name)
 		}
 	}

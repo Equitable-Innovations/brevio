@@ -1,7 +1,7 @@
 # Intent Summary Document Definition
 
 The Intent Summary Document (`04_intent_summary.html`) is the authoritative Tier 1 post-execution synthesis for the entire
-work item lifecycle in `tosh`. It aggregates all completed sub-intents, atomic units, validation verdicts, source code diffs,
+work item lifecycle in `brevio`. It aggregates all completed sub-intents, atomic units, validation verdicts, source code diffs,
 and cumulative token telemetry into an executive completion report that certifies feature delivery and authorizes pull
 request submission.
 
@@ -14,16 +14,16 @@ This document serves a dual purpose:
    Components (`@material/web` / **M3**) presenting an executive delivery dashboard, evidence traceability matrices,
    sub-intent milestone rollups, cumulative diff statistics, and PR description generators without requiring client-side
    bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for automated PR creation, release note compilation, and work item archive indexing.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Summary
 
-In `tosh`, the intent summary validates the entire implementation against the four foundational dimensions:
+In `brevio`, the intent summary validates the entire implementation against the four foundational dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Intent Summary Manifestation                                                                                                                |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Summary Manifestation                                                                                                                |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Catalogs the comprehensive repository file diff, audits repo-wide "do not touch" boundary compliance, and records branch/PR metadata.            |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Synthesizes milestone achievements while maintaining drill-down lineage to every atomic unit, commit, and conversation transcript.               |
@@ -57,7 +57,7 @@ In `tosh`, the intent summary validates the entire implementation against the fo
 The intent summary document resides at the root of the work item directory:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         ├── 00_intent_spec.html
@@ -76,7 +76,7 @@ The intent summary document resides at the root of the work item directory:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

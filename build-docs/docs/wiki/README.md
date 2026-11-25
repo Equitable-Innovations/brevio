@@ -1,6 +1,6 @@
 # Project Wiki Documents Architecture & Specification
 
-> The master specification for the Project Wiki domain of `tosh`. This document defines how a project keeps its wiki
+> The master specification for the Project Wiki domain of `brevio`. This document defines how a project keeps its wiki
 > inside the repository as strict XHTML pages. Developers read the pages in a browser. Agents read and change one
 > section at a time.
 
@@ -31,7 +31,7 @@
 
 The project wiki holds the knowledge of a project that lasts longer than one work item. Examples are the project
 overview, the architecture, the setup steps, the coding standards, the architecture decisions, and the risks. The wiki
-lives in `.tosh/wiki/` and git stores it with the code.
+lives in `.brevio/wiki/` and git stores it with the code.
 
 The domain covers these items:
 
@@ -42,10 +42,10 @@ The domain covers these items:
 
 The domain does not cover these items:
 
-- A web editor or a WYSIWYG editor. A person edits a page in a text editor or through `tosh wiki` commands.
-- Full-text search across the repository. `tosh wiki find` searches only wiki pages.
+- A web editor or a WYSIWYG editor. A person edits a page in a text editor or through `brevio wiki` commands.
+- Full-text search across the repository. `brevio wiki find` searches only wiki pages.
 - Synchronization with an external wiki product.
-- The decisions about the design of `tosh` itself. The `topics/` workspace of the `tosh` repository holds them.
+- The decisions about the design of `brevio` itself. The `topics/` workspace of the `brevio` repository holds them.
 
 ### Dual-Purpose Consumption Model
 
@@ -53,7 +53,7 @@ Every wiki page has two consumers:
 
 1. Developers open the pages in a browser. The pages render with Material Design 3 (M3) web components, with no build
    step and no runtime server.
-2. Agents and the `tosh` CLI query the pages with an XML parser. An agent first reads the index or the outline of a
+2. Agents and the `brevio` CLI query the pages with an XML parser. An agent first reads the index or the outline of a
    page. Then it reads only the sections that it needs. One section is typically between 150 and 800 tokens. A full
    engineering wiki is often more than 30,000 tokens.
 
@@ -66,10 +66,10 @@ each page.
 
 ```mermaid
 flowchart LR
-    HUM["Developer<br/>(text editor or tosh wiki)"] --> PAGE["Wiki page<br/>(.tosh/wiki/*.html)"]
-    AG["Agent<br/>(tosh wiki or MCP tools)"] -->|"one section per write"| PAGE
-    PAGE --> CHK{"tosh wiki check"}
-    CHK -->|valid| IDX["tosh wiki index<br/>(index.json, index.html)"]
+    HUM["Developer<br/>(text editor or brevio wiki)"] --> PAGE["Wiki page<br/>(.brevio/wiki/*.html)"]
+    AG["Agent<br/>(brevio wiki or MCP tools)"] -->|"one section per write"| PAGE
+    PAGE --> CHK{"brevio wiki check"}
+    CHK -->|valid| IDX["brevio wiki index<br/>(index.json, index.html)"]
     CHK -->|invalid| ERR["Exit code 3<br/>index unchanged"]
     PAGE --> UI["Browser<br/>(M3 static UI)"]
     IDX --> AG
@@ -84,14 +84,14 @@ and a risk also carry an `id`. A reference names them in the same way, for examp
 ### Writes by People
 
 - A person can edit a page in a text editor.
-- After the edit, the person runs `tosh wiki index`. The command makes sure that every page is valid and rebuilds the
+- After the edit, the person runs `brevio wiki index`. The command makes sure that every page is valid and rebuilds the
   index.
-- A CI job or a `build-gate` hook can run `tosh wiki check` to stop a commit that holds an invalid page or a stale
+- A CI job or a `build-gate` hook can run `brevio wiki check` to stop a commit that holds an invalid page or a stale
   index.
 
 ### Writes by Agents
 
-- An agent changes a page only through `tosh wiki` commands or the matching MCP tools. It does not edit a page file
+- An agent changes a page only through `brevio wiki` commands or the matching MCP tools. It does not edit a page file
   directly.
 - A section write replaces the content of one section. The agent sends an XHTML fragment and the hash of the section
   that it read.
@@ -108,13 +108,13 @@ The wiki has three parts.
 
 | Part      | Location            | Content                                                                                   |
 |:----------|:--------------------|:------------------------------------------------------------------------------------------|
-| Core      | `.tosh/wiki/*.html` | Five required pages with fixed file names and fixed section identifiers.                  |
+| Core      | `.brevio/wiki/*.html` | Five required pages with fixed file names and fixed section identifiers.                  |
 | Decisions | `decisions/`        | One ADR per decision.                                                                     |
 | Pages     | `pages/`            | Freeform pages that the team names and arranges in directories.                           |
 
 ### Core Pages
 
-`tosh wiki init` creates the five core pages with their required sections. A new required section holds no content
+`brevio wiki init` creates the five core pages with their required sections. A new required section holds no content
 until a person or an agent writes it. A core page cannot be removed or renamed.
 
 The core pages describe the current state of the project. When the project changes, a person or an agent changes the
@@ -129,7 +129,7 @@ old one.
 
 ### Freeform Pages
 
-- A team adds a freeform page with `tosh wiki page add`. The page lives under `pages/`, in directories up to three levels
+- A team adds a freeform page with `brevio wiki page add`. The page lives under `pages/`, in directories up to three levels
   deep.
 - Each freeform page has a slug. A slug is a kebab-case name that is unique in the wiki. The slug does not change when
   the page moves to another directory, so references to the page stay valid.
@@ -149,16 +149,16 @@ The universal `status` tag of a wiki page has two values.
 
 ### Review State
 
-A page that nobody reviews becomes outdated. The index records a review state for each page. `tosh wiki index` and
-`tosh wiki check` calculate it. No person or agent writes it.
+A page that nobody reviews becomes outdated. The index records a review state for each page. `brevio wiki index` and
+`brevio wiki check` calculate it. No person or agent writes it.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> draft: tosh wiki page add
-    draft --> current: tosh wiki page set-meta --status completed
+    [*] --> draft: brevio wiki page add
+    draft --> current: brevio wiki page set-meta --status completed
     current --> review_due: covered code changed, or review age exceeded
-    review_due --> current: tosh wiki review
-    current --> [*]: tosh wiki page remove
+    review_due --> current: brevio wiki review
+    current --> [*]: brevio wiki page remove
 ```
 
 | Review State | Condition                                                                                                   |
@@ -168,8 +168,8 @@ stateDiagram-v2
 
 - The `covers-paths` tag lists the paths and globs of the code that the page describes. The CLI reads the commit dates of
   those files from the local git repository.
-- The maximum review age is 180 days. The flag `--max-age-days` of `tosh wiki check` changes it for one run.
-- `tosh wiki review` sets `reviewed-at` and `reviewed-by` on the page. The person who reviews the page reads the page
+- The maximum review age is 180 days. The flag `--max-age-days` of `brevio wiki check` changes it for one run.
+- `brevio wiki review` sets `reviewed-at` and `reviewed-by` on the page. The person who reviews the page reads the page
   and the changed code first.
 - ADRs have no review state. An ADR records a decision on one date.
 
@@ -228,10 +228,10 @@ The XHTML documents use the `doc-type` values `wiki-home`, `wiki-overview`, `wik
 
 ```
 <repo-root>/
-└── .tosh/
+└── .brevio/
     └── wiki/
         ├── index.json                         # Machine index of all pages and sections
-        ├── index.html                         # Wiki Home (written by tosh wiki index)
+        ├── index.html                         # Wiki Home (written by brevio wiki index)
         │
         ├── overview.html                      # Project Overview (core)
         ├── architecture.html                  # Architecture (core)
@@ -255,7 +255,7 @@ The XHTML documents use the `doc-type` values `wiki-home`, `wiki-overview`, `wik
 
 ### Naming Conventions
 
-- Core page file names are fixed. No other file is valid at the root of `.tosh/wiki/`, except `index.json` and
+- Core page file names are fixed. No other file is valid at the root of `.brevio/wiki/`, except `index.json` and
   `index.html`.
 - ADR files are `ADR-{NNN}_{kebab-case-slug}.html` with three-digit zero padding. The CLI allocates the next free
   number.
@@ -269,7 +269,7 @@ The XHTML documents use the `doc-type` values `wiki-home`, `wiki-overview`, `wik
 ## Wiki Index (`index.json`)
 
 `index.json` is the machine index of the domain. The CLI and the MCP server read it to find a page or a section without
-a directory walk and without opening a page. Only `tosh wiki` commands write it.
+a directory walk and without opening a page. Only `brevio wiki` commands write it.
 
 ```json
 {
@@ -343,7 +343,7 @@ a directory walk and without opening a page. Only `tosh wiki` commands write it.
   budget.
 - `hash` is the SHA-256 hash of the canonical XML of the section. A section write must send this value.
 - `rules` lists the rule identifiers of a section on the Coding Standards page. Other pages have no `rules` field.
-- Every path in the index is relative to `.tosh/wiki/`.
+- Every path in the index is relative to `.brevio/wiki/`.
 
 ---
 
@@ -403,7 +403,7 @@ Coding Standards page.
     </script>
 </head>
 <body>
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <!-- Structured Document Body -->
 </main>
 </body>
@@ -466,7 +466,7 @@ A section can hold the elements in this list:
 - A diagram is `<pre class="mermaid">` with Mermaid text. The wiki template renders it in the browser, and an agent
   reads the text.
 - An image is `<img>` with a `src` in `assets/` and a required `alt` text.
-- A link to another wiki page carries `data-wiki-ref` with a section reference. `tosh wiki check` makes sure that every
+- A link to another wiki page carries `data-wiki-ref` with a section reference. `brevio wiki check` makes sure that every
   `data-wiki-ref` resolves.
 - A page holds no `<script>` element in its body. The page holds no inline event attribute.
 
@@ -572,7 +572,7 @@ conventions.
 ### Body Example (Coding Standards)
 
 ```html
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <article data-wiki-page="WIKI:coding-standards">
         <header id="page-header">
             <h1 class="md-typescale-headline-small">Coding Standards</h1>
@@ -634,34 +634,34 @@ Wiki pages use the Wiki template of the [static UI](../../static-ui/README.md). 
 
 ## Command Surface
 
-The [CLI](../../cli/README.md) provides the `tosh wiki` command group. The [MCP server](../../mcp/README.md) provides
+The [CLI](../../cli/README.md) provides the `brevio wiki` command group. The [MCP server](../../mcp/README.md) provides
 matching tools. Both surfaces call the same code.
 
 ### CLI Commands
 
 | Command                                                                                          | Effect                                                                                                         |
 |:-------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------|
-| `tosh wiki init`                                                                                 | Creates `.tosh/wiki/`, the five core pages with their required sections, and the index.                        |
-| `tosh wiki list [--type <doc-type>] [--tag <tag>] [--review-due] [--drafts]`                     | Prints page records from the index: identifier, title, summary, and review state. No page bodies.              |
-| `tosh wiki outline --page <doc-id>`                                                              | Prints the sections of one page: identifier, title, token estimate, and hash.                                  |
-| `tosh wiki get --page <doc-id> [--section <id>[,<id>...]]`                                       | Prints the selected sections of one page. The default is all sections.                                         |
-| `tosh wiki find --text <words> [--type <doc-type>] [--tag <tag>] [--limit <n>]`                  | Searches the section text of all published pages. Prints section references, titles, and page summaries.       |
-| `tosh wiki rules --paths <path>[,<path>...] [--level <required\|recommended>]`                   | Prints the coding standard rules whose section `data-applies-to` matches any of the paths.                     |
-| `tosh wiki page add --slug <slug> --title <title> --summary <text> [--dir <dir>] [--tags <tags>]` | Creates a freeform page with one empty section and the status `in-progress`.                                  |
-| `tosh wiki page set-meta --page <doc-id> [--title] [--summary] [--tags] [--owner] [--covers-paths] [--status] [--nav-order]` | Changes the head tags of a page.                                                       |
-| `tosh wiki page move --page <doc-id> --dir <dir>`                                                | Moves a freeform page to another directory under `pages/`. The `doc-id` stays the same.                        |
-| `tosh wiki page remove --page <doc-id> [--force]`                                                | Deletes a freeform page. If a document in `.tosh/` references the page, the command fails with exit code `4` unless `--force` is present. |
-| `tosh wiki section set --page <doc-id> --section <id> --file <fragment> --expect-hash <hash>`     | Replaces the content of one section with the fragment in the file.                                            |
-| `tosh wiki section add --page <doc-id> --section <id> --title <title> --file <fragment> [--after <id>] [--parent <id>]` | Adds a new section.                                                                     |
-| `tosh wiki section remove --page <doc-id> --section <id> --expect-hash <hash>`                    | Removes a section. A required section of a core page cannot be removed.                                       |
-| `tosh wiki adr add --title <title> --slug <slug> [--intent-id <id>] [--supersedes <doc-id>]`      | Creates an ADR with the status `proposed` and the next free number.                                           |
-| `tosh wiki adr accept --adr <doc-id> --by <identity>`                                             | Sets `accepted`, `decided-at`, and `deciders`. If the ADR supersedes another, it also sets `superseded` and `superseded-by` on the old ADR. |
-| `tosh wiki adr deprecate --adr <doc-id> --by <identity>`                                          | Sets `deprecated`.                                                                                            |
-| `tosh wiki risk add --title <title> --likelihood <level> --impact <level> --owner <owner> --file <fragment>` | Adds a risk with the next free number, the status `open`, and a calculated rating.                 |
-| `tosh wiki risk set --risk <RISK-NNN> [--likelihood] [--impact] [--status] [--owner]`             | Changes the attributes of a risk and calculates the rating again.                                             |
-| `tosh wiki review --page <doc-id> --by <identity>`                                                | Sets `reviewed-at` and `reviewed-by`. The review state of the page becomes `current`.                         |
-| `tosh wiki index`                                                                                 | Makes sure that every page is valid, then rebuilds `index.json` and `index.html`.                             |
-| `tosh wiki check [--max-age-days <n>]`                                                            | Reports invalid pages, missing required sections, broken `data-wiki-ref` links, index drift, and `review_due` pages. It changes nothing. It exits with code `5` on a finding. |
+| `brevio wiki init`                                                                                 | Creates `.brevio/wiki/`, the five core pages with their required sections, and the index.                        |
+| `brevio wiki list [--type <doc-type>] [--tag <tag>] [--review-due] [--drafts]`                     | Prints page records from the index: identifier, title, summary, and review state. No page bodies.              |
+| `brevio wiki outline --page <doc-id>`                                                              | Prints the sections of one page: identifier, title, token estimate, and hash.                                  |
+| `brevio wiki get --page <doc-id> [--section <id>[,<id>...]]`                                       | Prints the selected sections of one page. The default is all sections.                                         |
+| `brevio wiki find --text <words> [--type <doc-type>] [--tag <tag>] [--limit <n>]`                  | Searches the section text of all published pages. Prints section references, titles, and page summaries.       |
+| `brevio wiki rules --paths <path>[,<path>...] [--level <required\|recommended>]`                   | Prints the coding standard rules whose section `data-applies-to` matches any of the paths.                     |
+| `brevio wiki page add --slug <slug> --title <title> --summary <text> [--dir <dir>] [--tags <tags>]` | Creates a freeform page with one empty section and the status `in-progress`.                                  |
+| `brevio wiki page set-meta --page <doc-id> [--title] [--summary] [--tags] [--owner] [--covers-paths] [--status] [--nav-order]` | Changes the head tags of a page.                                                       |
+| `brevio wiki page move --page <doc-id> --dir <dir>`                                                | Moves a freeform page to another directory under `pages/`. The `doc-id` stays the same.                        |
+| `brevio wiki page remove --page <doc-id> [--force]`                                                | Deletes a freeform page. If a document in `.brevio/` references the page, the command fails with exit code `4` unless `--force` is present. |
+| `brevio wiki section set --page <doc-id> --section <id> --file <fragment> --expect-hash <hash>`     | Replaces the content of one section with the fragment in the file.                                            |
+| `brevio wiki section add --page <doc-id> --section <id> --title <title> --file <fragment> [--after <id>] [--parent <id>]` | Adds a new section.                                                                     |
+| `brevio wiki section remove --page <doc-id> --section <id> --expect-hash <hash>`                    | Removes a section. A required section of a core page cannot be removed.                                       |
+| `brevio wiki adr add --title <title> --slug <slug> [--intent-id <id>] [--supersedes <doc-id>]`      | Creates an ADR with the status `proposed` and the next free number.                                           |
+| `brevio wiki adr accept --adr <doc-id> --by <identity>`                                             | Sets `accepted`, `decided-at`, and `deciders`. If the ADR supersedes another, it also sets `superseded` and `superseded-by` on the old ADR. |
+| `brevio wiki adr deprecate --adr <doc-id> --by <identity>`                                          | Sets `deprecated`.                                                                                            |
+| `brevio wiki risk add --title <title> --likelihood <level> --impact <level> --owner <owner> --file <fragment>` | Adds a risk with the next free number, the status `open`, and a calculated rating.                 |
+| `brevio wiki risk set --risk <RISK-NNN> [--likelihood] [--impact] [--status] [--owner]`             | Changes the attributes of a risk and calculates the rating again.                                             |
+| `brevio wiki review --page <doc-id> --by <identity>`                                                | Sets `reviewed-at` and `reviewed-by`. The review state of the page becomes `current`.                         |
+| `brevio wiki index`                                                                                 | Makes sure that every page is valid, then rebuilds `index.json` and `index.html`.                             |
+| `brevio wiki check [--max-age-days <n>]`                                                            | Reports invalid pages, missing required sections, broken `data-wiki-ref` links, index drift, and `review_due` pages. It changes nothing. It exits with code `5` on a finding. |
 
 - A fragment file holds the content of one section as well-formed XHTML, with no `<section>` wrapper. The command adds
   the wrapper and the `id`.
@@ -672,16 +672,16 @@ matching tools. Both surfaces call the same code.
 
 | Tool                     | Input                                                                           | Result                                                                          |
 |:-------------------------|:--------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
-| `tosh_wiki_list`         | Optional `doc_type`, `tag`, `review_due`, `drafts`                              | Page records from the index, with no page bodies.                               |
-| `tosh_wiki_outline`      | `page`                                                                          | The sections of one page, with token estimates and hashes.                      |
-| `tosh_wiki_get`          | `page`, optional `sections`                                                     | The selected sections of one page.                                              |
-| `tosh_wiki_find`         | `text`, optional `doc_type`, `tag`, `limit`                                     | Matching section references, titles, and page summaries.                        |
-| `tosh_wiki_rules`        | `paths`, optional `level`                                                       | The rules that apply to the paths, with their identifiers, levels, and commands. |
-| `tosh_wiki_set_section`  | `page`, `section`, `content`, `expect_hash`, and for a new section `title` and optional `after` or `parent` | The new hash of the section.                         |
-| `tosh_wiki_add_page`     | `slug`, `title`, `summary`, optional `dir`, `tags`                              | The `doc-id` and the file path of the new draft page.                           |
-| `tosh_wiki_add_adr`      | `title`, `slug`, optional `intent_id`, `supersedes`                             | The `doc-id` and the file path of the new `proposed` ADR.                       |
-| `tosh_wiki_add_risk`     | `title`, `likelihood`, `impact`, `owner`, `content`                             | The risk identifier and the rating.                                             |
-| `tosh_wiki_check`        | Optional `max_age_days`                                                         | The list of findings.                                                           |
+| `brevio_wiki_list`         | Optional `doc_type`, `tag`, `review_due`, `drafts`                              | Page records from the index, with no page bodies.                               |
+| `brevio_wiki_outline`      | `page`                                                                          | The sections of one page, with token estimates and hashes.                      |
+| `brevio_wiki_get`          | `page`, optional `sections`                                                     | The selected sections of one page.                                              |
+| `brevio_wiki_find`         | `text`, optional `doc_type`, `tag`, `limit`                                     | Matching section references, titles, and page summaries.                        |
+| `brevio_wiki_rules`        | `paths`, optional `level`                                                       | The rules that apply to the paths, with their identifiers, levels, and commands. |
+| `brevio_wiki_set_section`  | `page`, `section`, `content`, `expect_hash`, and for a new section `title` and optional `after` or `parent` | The new hash of the section.                         |
+| `brevio_wiki_add_page`     | `slug`, `title`, `summary`, optional `dir`, `tags`                              | The `doc-id` and the file path of the new draft page.                           |
+| `brevio_wiki_add_adr`      | `title`, `slug`, optional `intent_id`, `supersedes`                             | The `doc-id` and the file path of the new `proposed` ADR.                       |
+| `brevio_wiki_add_risk`     | `title`, `likelihood`, `impact`, `owner`, `content`                             | The risk identifier and the rating.                                             |
+| `brevio_wiki_check`        | Optional `max_age_days`                                                         | The list of findings.                                                           |
 
 These actions need a named human, so the MCP server provides no tool for them:
 
@@ -705,7 +705,7 @@ Full Wiki Ingestion:
 │ ~34,000 Tokens                                         │
 └────────────────────────────────────────────────────────┘
 
-tosh Section Extraction:
+brevio Section Extraction:
 ┌───────────────────────────────────────┐
 │ Required rules for src/api/** only    │
 │ ~450 Tokens (98.7% reduction)         │
@@ -714,9 +714,9 @@ tosh Section Extraction:
 
 ### Agent Read Pattern
 
-1. Call `tosh_wiki_list` or `tosh_wiki_find` to get page summaries and section references.
-2. If the summary is not enough, call `tosh_wiki_outline` for the page. The outline shows the token cost of each section.
-3. Call `tosh_wiki_get` with only the sections that the task needs.
+1. Call `brevio_wiki_list` or `brevio_wiki_find` to get page summaries and section references.
+2. If the summary is not enough, call `brevio_wiki_outline` for the page. The outline shows the token cost of each section.
+3. Call `brevio_wiki_get` with only the sections that the task needs.
 
 ### High-Value Extraction Examples
 
@@ -789,7 +789,7 @@ graph LR
 - Work item pointers: an intent unit and a solution strategy list section references in their `references-wiki` tag,
   for example `WIKI:coding-standards#error-handling,WIKI:ADR-002`. A unit can list rule references, for example
   `WIKI:coding-standards#CS-013`.
-- Rule discovery: before a unit enters `converging`, the agent can call `tosh_wiki_rules` with the Target Scope of the
+- Rule discovery: before a unit enters `converging`, the agent can call `brevio_wiki_rules` with the Target Scope of the
   unit and add the result to `references-wiki`.
 - API pointers: a wiki page lists OpenAPI operation `doc-id` values in its `references-api` tag.
 - Code pointers: `covers-paths` on a page and `data-paths` on an architecture component link the wiki to the code.
@@ -802,9 +802,9 @@ graph LR
 1. Current state design: this document represents the current state of the design. Historical deliberations are
    recorded in [`topics/`](../../../topics/README.md).
 2. Single source of truth: the XHTML page is the content. No other file holds a copy of the content of a page.
-3. Index ownership: only `tosh wiki` commands write `index.json` and `index.html`. No person and no agent edits them by
+3. Index ownership: only `brevio wiki` commands write `index.json` and `index.html`. No person and no agent edits them by
    hand.
-4. Agent writes: an agent changes a wiki page only through `tosh wiki` commands or MCP tools, one section per write,
+4. Agent writes: an agent changes a wiki page only through `brevio wiki` commands or MCP tools, one section per write,
    with the expected section hash.
 5. Required core: the five core pages and their required sections always exist. A core page cannot be removed or
    renamed.

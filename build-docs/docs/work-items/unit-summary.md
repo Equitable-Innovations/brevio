@@ -1,7 +1,7 @@
 # Unit Summary Document Definition
 
 The Unit Summary Document (`units/{unit_id}/summary.html`) is the authoritative Tier 3 post-execution record in the
-`tosh` work item lifecycle. It documents the tangible outcomes of an atomic unit: the exact source code files created
+`brevio` work item lifecycle. It documents the tangible outcomes of an atomic unit: the exact source code files created
 and modified, unified git diff metrics, commit references, verification assertions from `verification.html`, and token
 consumption telemetry.
 
@@ -13,16 +13,16 @@ This document serves a dual purpose:
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) to present diff statistics, file touchpoint cards, commit metadata, and
    telemetry badges without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for automated ledger updates, sub-intent rollups, and PR preparation.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Unit Summaries
 
-In `tosh`, unit summaries document execution compliance against the four foundational dimensions:
+In `brevio`, unit summaries document execution compliance against the four foundational dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Unit Summary Manifestation                                                                                                           |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Unit Summary Manifestation                                                                                                           |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally catalogs the exact files created, modified, and deleted, verifying zero unauthorized changes to protected or "do not touch" files. |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Isolates code changes and git diff metrics strictly to the atomic unit's bounded responsibility, ensuring no cross-unit scope pollution.    |
@@ -55,7 +55,7 @@ Each unit summary document resides directly inside its isolated unit directory, 
 validation documents:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -74,7 +74,7 @@ validation documents:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 
 ---
 

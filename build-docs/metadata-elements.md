@@ -1,6 +1,6 @@
 # Metadata Elements
 
-This document lists every metadata element that the `tosh` build documents define. It covers the `<meta>` tags in XHTML documents, the fields in JSON and JSONL documents, and the metadata fields of Work Tracking System (WTS) files. The [document types catalog](document-types.md) lists the document types that carry these elements.
+This document lists every metadata element that the `brevio` build documents define. It covers the `<meta>` tags in XHTML documents, the fields in JSON and JSONL documents, and the metadata fields of Work Tracking System (WTS) files. The [document types catalog](document-types.md) lists the document types that carry these elements.
 
 Each domain specification stays the source of truth for its own tags. This list gathers them in one place.
 
@@ -76,7 +76,7 @@ The list holds every tag except the seven baseline tags. It is in alphabetical o
 | `adr-id` | `ADR-{NNN}`. | `wiki-adr` | WIKI |
 | `adr-status` | `proposed`, `accepted`, `superseded`, or `deprecated`. | `wiki-adr` | WIKI |
 | `agent-participants` | Comma-delimited list of the agents in the formulation. | `intent-conversation-summary` | WI |
-| `ai-tools` | MCP tools and servers that the intent uses, for example `mcp:ast-grep,cli:tosh`. | `solution-strategy` | WI |
+| `ai-tools` | MCP tools and servers that the intent uses, for example `mcp:ast-grep,cli:brevio`. | `solution-strategy` | WI |
 | `api-id` | The API identifier. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
 | `api-major` | The major version number of the version directory. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
 | `api-role` | `service` or `client`. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
@@ -121,7 +121,7 @@ The list holds every tag except the seven baseline tags. It is in alphabetical o
 | `gate-type` | `deterministic`, `adversarial`, or `human`. | `intent-verification`, `sub-intent-verification` | WI |
 | `gate-verdict` | The release gate verdict of the milestone. | `milestone` | PM |
 | `generated-by` | The identity of the agent that wrote the document, for example `agent:unit-builder@v1.4`. | Any work item document | WI |
-| `generator-version` | The version of the `tosh` generator that wrote the document. | All OpenAPI documents | OAS |
+| `generator-version` | The version of the `brevio` generator that wrote the document. | All OpenAPI documents | OAS |
 | `http-method` | The HTTP method in upper case. | `openapi-operation` | OAS |
 | `http-path` | The path template exactly as the source states it. | `openapi-operation` | OAS |
 | `implements-req` | Comma-delimited requirement IDs. In work items, these are evidence requirement IDs such as `EV-001`. In epics, these are FSD requirement IDs such as `FSD-FR-204`. | `solution-strategy`, `intent-decomposition`, `intent-unit-spec`, `epic` | WI, PM |
@@ -179,7 +179,7 @@ The list holds every tag except the seven baseline tags. It is in alphabetical o
 | `severity-important-count` | Count of Important findings. | `review-findings` | WI |
 | `severity-nit-count` | Count of Nit findings reported. | `review-findings` | WI |
 | `sibling-versions` | The `doc-id` values of the overviews of the other major versions. | `openapi-overview` | OAS |
-| `source-file` | The path of the entry file, relative to `.tosh/open-api/`. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
+| `source-file` | The path of the entry file, relative to `.brevio/open-api/`. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
 | `source-hash` | The SHA-256 hash of the source at generation time. | `openapi-overview`, `openapi-operation`, `openapi-schema` | OAS |
 | `sub-intent-id` | The sub-intent directory name, for example `sub_intent_01_auth_schema`. | `sub-intent-spec`, `sub-intent-verification`, `sub-intent-summary`, `intent-unit-spec`, `unit-verification`, `unit-summary` | WI |
 | `sub-intent-sequence` | Numeric order index of the sub-intent. | `sub-intent-spec`, `sub-intent-verification`, `sub-intent-summary` | WI |

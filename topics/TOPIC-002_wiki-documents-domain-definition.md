@@ -26,7 +26,7 @@ templates, structural standards, metadata schema, or how wiki content is authore
 Project-level knowledge (such as project overview, repository architecture, coding guidelines, setup instructions,
 architectural decisions, and risk registries) provides critical background context for both human developers and agentic
 LLMs. Without a clear specification for what the wiki domain contains and how it is structured, the data model for
-`tosh` remains incomplete.
+`brevio` remains incomplete.
 
 ---
 
@@ -34,7 +34,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 
 ### Goals
 
-- [ ] Define the exact role and boundaries of the project wiki domain within `tosh`.
+- [ ] Define the exact role and boundaries of the project wiki domain within `brevio`.
 - [ ] Identify and define the canonical wiki document types to be standardized (e.g., project overview, architecture
   guide, coding standards, ADRs, risk registry).
 - [ ] Establish structural, XHTML, and metadata requirements for wiki documents to enable single-pane visual rendering
@@ -50,7 +50,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 
 ## 3. Token Optimization & Performance Impact
 
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 - **Context Window & Token Economics**: Agents working on a task frequently need specific project conventions (e.g.
   error handling style, naming rules). Standardizing the wiki into queryable sections allows extracting only relevant
@@ -66,7 +66,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 - **Summary**: Specify a discrete set of canonical wiki document templates: `overview.html`, `architecture.html`,
   `coding-standards.html`, `setup-guide.html`, `risk-registry.html`, and `decisions/ADR-###.html`.
 - **Pros**:
-    - Consistent structure across all repositories utilizing `tosh`.
+    - Consistent structure across all repositories utilizing `brevio`.
     - Highly predictable XPath queries for agents (e.g. knowing exactly where style rules live).
     - Clean mapping to M3 Static UI views.
 - **Cons**:
@@ -76,7 +76,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 
 ### Option B: Freeform Hierarchical Wiki with Shared Metadata Standard
 
-- **Summary**: Allow arbitrary document names and hierarchy under `.tosh/wiki/`, enforcing only the baseline XHTML
+- **Summary**: Allow arbitrary document names and hierarchy under `.brevio/wiki/`, enforcing only the baseline XHTML
   metadata standard (`doc-id`, `doc-type="wiki-page"`, etc.) and basic sectioning.
 - **Pros**:
     - Maximum flexibility for teams to structure their wiki however they wish.
@@ -106,7 +106,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
   `decisions/`, and freeform pages under `pages/`.
 - [x] **Q2**: How should Architectural Decision Records (ADRs) be structured in the wiki while adhering to the rule that
   documents reflect current-state design? *(Owner: @team)*
-  Answer: the current-state rule applies to the `tosh` build-docs, not to the wiki of a target project. In the target
+  Answer: the current-state rule applies to the `brevio` build-docs, not to the wiki of a target project. In the target
   wiki, the core pages describe the current state and git holds their history. An ADR is a dated record. After
   acceptance only its status changes, and a changed decision is a new ADR with `supersedes`.
 - [x] **Q3**: How should the Static UI navigate wiki documents (tree navigation drawer vs flat tabs)? *(Owner: @team)*
@@ -131,12 +131,12 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 
 - **Decision**: Option C. Five required core pages with fixed file names and section identifiers, ADRs under
   `decisions/`, and freeform pages under `pages/`. The XHTML page is the single source of truth. People can edit pages
-  by hand. Agents write one section at a time through `tosh wiki` commands or MCP tools, with an expected section hash.
+  by hand. Agents write one section at a time through `brevio wiki` commands or MCP tools, with an expected section hash.
   A CLI-owned `index.json` lists every page and section with a summary, a hash, and a token estimate.
 - **Core Rationale**: Fixed section identifiers let agents find standards with one query. The index and the outline let
   an agent see the token cost of a section before it reads the section. Freeform pages keep the wiki useful for
-  project-specific topics. One XHTML source keeps the token-efficient query model of `tosh` and avoids a second copy.
-- **Accepted Trade-offs**: Hand-editing XHTML is harder than Markdown. `tosh wiki check` and `tosh wiki index` catch
+  project-specific topics. One XHTML source keeps the token-efficient query model of `brevio` and avoids a second copy.
+- **Accepted Trade-offs**: Hand-editing XHTML is harder than Markdown. `brevio wiki check` and `brevio wiki index` catch
   invalid hand edits. The fixed core adds structure that a small project can leave partly empty.
 - **Decision Date**: 2026-11-04.
 - **Sign-off**: @samsassin.
@@ -151,7 +151,7 @@ LLMs. Without a clear specification for what the wiki domain contains and how it
 
 - [x] Destination: [`build-docs/docs/wiki/README.md`](../build-docs/docs/wiki/README.md)
 - [x] Destination: [`build-docs/docs/README.md`](../build-docs/docs/README.md) (taxonomy, inventory, runtime layout)
-- [x] Destination: [`build-docs/cli/README.md`](../build-docs/cli/README.md) (`tosh wiki` command group)
+- [x] Destination: [`build-docs/cli/README.md`](../build-docs/cli/README.md) (`brevio wiki` command group)
 - [x] Destination: [`build-docs/mcp/README.md`](../build-docs/mcp/README.md) (wiki tools and resource)
 - [x] Destination: [`build-docs/static-ui/README.md`](../build-docs/static-ui/README.md) (Wiki template)
 

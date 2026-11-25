@@ -1,7 +1,7 @@
 # Solution Strategy Document Definition
 
 The Solution Strategy Document (`01_solution_strategy.html`) is the authoritative architectural specification in the
-`tosh` work item lifecycle. It translates the declared intent, invariants, and evidence requirements in
+`brevio` work item lifecycle. It translates the declared intent, invariants, and evidence requirements in
 `00_intent_spec.html` into a solution hypothesis: component and module boundaries, schema and contract changes, an
 invariant preservation strategy, AI components and agent tooling, flagged concerns, micro-architectural decision records
 (ADRs), and an evidence traceability matrix.
@@ -10,7 +10,7 @@ This document serves a dual purpose:
 
 1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
    Components (`@material/web` / **M3**) and inline diagrams without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `tosh`
+2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
    CLI for token-efficient decomposition and convergence agents.
 
 ---
@@ -46,7 +46,7 @@ The solution strategy document resides at the root of the work item directory, i
 specification:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {work-item-id}/
         ├── 00_intent_spec.html
@@ -57,7 +57,7 @@ specification:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `tosh` CLI.
+  via the `brevio` CLI.
 - **Authoring:** One agent session can author `00_intent_spec.html` and `01_solution_strategy.html`. A human accepts
   each document separately.
 
@@ -97,7 +97,7 @@ tooling declarations, and the Material Web ES module importmap loader:
     <!-- AI Components & Tooling Metadata -->
     <meta name="assigned-agents" content="agent:backend-engineer,agent:security-auditor"/>
     <meta name="required-skills" content="skill:spring-boot-jwt-auth,skill:owasp-verification"/>
-    <meta name="ai-tools" content="mcp:db-inspector,mcp:ast-grep,cli:tosh"/>
+    <meta name="ai-tools" content="mcp:db-inspector,mcp:ast-grep,cli:brevio"/>
     <meta name="new-ai-components" content="skill:spring-boot-jwt-auth,agent:auth-regression-tester"/>
     <meta name="policy-versions" content="secure-api-review@1.2.0"/>
 
@@ -126,7 +126,7 @@ tooling declarations, and the Material Web ES module importmap loader:
 |:--------------------|:----------------------|:---------------------------------------------------------------------------------------------|:----------------------------------------------------------|
 | `assigned-agents`   | Work Item / Strategy  | Comma-delimited list of agent types or identifiers assigned to converge units in this intent | `agent:backend-engineer,agent:security-auditor`           |
 | `required-skills`   | Work Item / Strategy  | Comma-delimited list of skill identifiers required to execute changes                        | `skill:spring-boot-jwt-auth,skill:owasp-verification`     |
-| `ai-tools`          | Work Item / Strategy  | Comma-delimited list of MCP servers and CLI tools available to agents during convergence     | `mcp:db-inspector,mcp:ast-grep,cli:tosh`                  |
+| `ai-tools`          | Work Item / Strategy  | Comma-delimited list of MCP servers and CLI tools available to agents during convergence     | `mcp:db-inspector,mcp:ast-grep,cli:brevio`                  |
 | `new-ai-components` | Work Item / Strategy  | Comma-delimited list of newly authored or configured AI assets introduced by this strategy   | `skill:spring-boot-jwt-auth,agent:auth-regression-tester` |
 | `policy-versions`   | Work Item / Strategy  | Comma-delimited list of policy skills and their versions in force when the strategy was written | `secure-api-review@1.2.0`                              |
 
@@ -175,7 +175,7 @@ Specifies public APIs, REST endpoints, CLI commands, or cross-module RPC interfa
 
 ### 3.7. AI Components & Agent Tooling Specification
 
-In `tosh`, the solution strategy treats the AI agent ecosystem as a first-class architectural layer. This section
+In `brevio`, the solution strategy treats the AI agent ecosystem as a first-class architectural layer. This section
 specifies the exact AI agents, skills, and coding tools participating in the convergence, as well as any **new AI
 components** that must be engineered or configured to deliver the change.
 
@@ -213,7 +213,7 @@ Specifies the existing skill packages and domain instructions that agents must l
 
 Details the Model Context Protocol (MCP) servers, CLI tools, AST analyzers, and testing sidecars available to agents:
 
-- **Server / Tool Identifier:** Formal tool provider (for example `mcp:db-inspector`, `mcp:ast-grep`, `cli:tosh`,
+- **Server / Tool Identifier:** Formal tool provider (for example `mcp:db-inspector`, `mcp:ast-grep`, `cli:brevio`,
   `tool:mvn-test`).
 - **Available Operations:** Specific functions exposed to the agent (for example `inspect_schema`, `execute_query`,
   `find_references`).

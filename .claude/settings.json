@@ -1,24 +1,25 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-settings.json",
-  "enableAllProjectMcpServers": true,
+  "cleanupPeriodDays": 30,
   "permissions": {
     "allow": [
       "Workflow(work-item-001-go-skeleton-and-init)"
     ]
+  },
+  "enableAllProjectMcpServers": true,
+  "worktree": {
+    "baseRef": "head",
+    "bgIsolation": "worktree"
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "simple-english@simple-english": true
+    "simple-english@simple-english": true,
+    "todo@ei-agent-marketplace": true
   },
   "outputStyle": "simple-english:simple-english",
-  "worktree": {
-    "baseRef": "head",
-    "bgIsolation": "worktree"
-  },
   "askUserQuestionTimeout": "10m",
-  "autoMemoryEnabled": true,
-  "cleanupPeriodDays": 30
+  "autoMemoryEnabled": true
 }

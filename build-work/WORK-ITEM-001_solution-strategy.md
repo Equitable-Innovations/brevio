@@ -1,10 +1,10 @@
-# WORK-ITEM-001 Solution Strategy: Go Project Skeleton and `tosh init` Command
+# WORK-ITEM-001 Solution Strategy: Go Project Skeleton and `brevio init` Command
 
 | Metadata | Value |
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:01:STRATEGY` |
 | `doc-type` | `solution-strategy` |
-| `parent-doc-id` | `WORK-ITEM-001:00:SPEC` ([intent specification](../todo/WORK-ITEM-001_go-project-skeleton-and-tosh-init-command.md)) |
+| `parent-doc-id` | `WORK-ITEM-001:00:SPEC` ([intent specification](../todo/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md)) |
 | `status` | `pending` (a human has not accepted this document) |
 | `architectural-domain` | `cli` |
 | `target-frameworks` | `go 1.26`, `cobra` |
@@ -20,28 +20,28 @@
 
 ## 1. Solution Hypothesis
 
-The repository gets one Go module. The module builds one binary, `tosh`. The binary has a root command with four global flags and one subcommand, `tosh init`.
+The repository gets one Go module. The module builds one binary, `brevio`. The binary has a root command with four global flags and one subcommand, `brevio init`.
 
 The design splits the code into three small parts. Each part has one reason to change.
 
-1. `cmd/tosh` holds `main`. It builds the dependencies, runs the root command, and turns the result into an exit code.
+1. `cmd/brevio` holds `main`. It builds the dependencies, runs the root command, and turns the result into an exit code.
 2. `internal/cli` holds the root command, the global flags, the output writer, and the exit codes.
-3. `internal/initcmd` holds the logic of `tosh init`. It knows nothing about `cobra` or about flags.
+3. `internal/initcmd` holds the logic of `brevio init`. It knows nothing about `cobra` or about flags.
 
 ```text
-cmd/tosh/main.go
+cmd/brevio/main.go
    |  builds Env (stdout, stderr, working directory)
    v
 internal/cli  (root command, global flags, exit codes, output writer)
    |  parses flags, resolves the root directory, then calls
    v
-internal/initcmd  (Run: create .tosh/ and .tosh/tosh.config.json)
+internal/initcmd  (Run: create .brevio/ and .brevio/brevio.config.json)
    |  uses only the standard library: os, path/filepath, encoding/json
    v
 the file system of the project
 ```
 
-`tosh init` takes the root directory as a plain value. It does not read global flags or the environment. Tests call it with a temporary directory and need no `cobra` code.
+`brevio init` takes the root directory as a plain value. It does not read global flags or the environment. Tests call it with a temporary directory and need no `cobra` code.
 
 ### Answers to the open questions of the intent specification
 
@@ -54,7 +54,7 @@ All three questions have an answer in the specification. This strategy keeps the
 | Invariant | Components at risk | Protective mechanism | Enforcement |
 | :--- | :--- | :--- | :--- |
 | `INV-001` | Every Go package | The CI workflow runs `go build ./... && go vet ./...` on every push and pull request. A unit does not reach `verified` until the command exits with code `0`. | `ci-gate` |
-| `INV-002` | `internal/initcmd`, `internal/cli`, `cmd/tosh` | No package in this work item imports `net/http` or `net`. `cobra` is the only third-party library. See `CONCERN-001` about the verification command. | `ci-gate` |
+| `INV-002` | `internal/initcmd`, `internal/cli`, `cmd/brevio` | No package in this work item imports `net/http` or `net`. `cobra` is the only third-party library. See `CONCERN-001` about the verification command. | `ci-gate` |
 | `INV-003` | `build-docs/`, `topics/` | This work item writes only to the Go source tree, `.github/workflows/`, and `build-work/`. The decomposition lists `build-docs/**` and `topics/**` as protected paths. A reviewer runs `git diff --quiet 24a304e -- build-docs topics` before the merge. | `human-gate` |
 
 ### Protected paths
@@ -68,15 +68,15 @@ All three questions have an answer in the specification. This strategy keeps the
 
 | Path | Responsibility | Symbols | Change |
 | :--- | :--- | :--- | :--- |
-| `go.mod`, `go.sum` | Declare the module `github.com/Equitable-Innovations/tosh`, Go 1.26, and the `cobra` dependency. | None | `create` |
-| `cmd/tosh/main.go` | Build the `Env`, run the root command, and call `os.Exit` with the exit code. This is the only place that calls `os.Exit`. | `main` | `create` |
+| `go.mod`, `go.sum` | Declare the module `github.com/Equitable-Innovations/brevio`, Go 1.26, and the `cobra` dependency. | None | `create` |
+| `cmd/brevio/main.go` | Build the `Env`, run the root command, and call `os.Exit` with the exit code. This is the only place that calls `os.Exit`. | `main` | `create` |
 | `internal/cli/exitcode.go` | Name each exit code of the CLI specification. | `ExitOK`, `ExitFailure`, `ExitUsage`, `ExitInvalidDocument`, `ExitGateFailed`, `ExitDrift`, `ExitConflict` | `create` |
 | `internal/cli/errors.go` | Carry an exit code and an error code with an error. | `ExitError`, `CodeOf` | `create` |
 | `internal/cli/env.go` | Hold the writers and the working directory that a command needs. | `Env` | `create` |
 | `internal/cli/output.go` | Print a result or an error in `text` or `json` format. Respect `--quiet`. | `Printer`, `Format` | `create` |
 | `internal/cli/root.go` | Build the root command, the global flags, and the flag checks. Add `init`. Turn off the `completion` command. | `NewRootCommand` | `create` |
-| `internal/cli/init.go` | Wire `tosh init` to `initcmd.Run`. Map its errors to exit codes. | `newInitCommand` | `create` |
-| `internal/initcmd/init.go` | Create `.tosh/` and an empty `tosh.config.json` in one atomic step. | `Run`, `ErrAlreadyInitialized` | `create` |
+| `internal/cli/init.go` | Wire `brevio init` to `initcmd.Run`. Map its errors to exit codes. | `newInitCommand` | `create` |
+| `internal/initcmd/init.go` | Create `.brevio/` and an empty `brevio.config.json` in one atomic step. | `Run`, `ErrAlreadyInitialized` | `create` |
 | `.github/workflows/ci.yml` | Run `go build`, `go vet`, and `go test` on push and pull request. | None | `create` |
 | `.gitignore` | Ignore `bin/`. See `CONCERN-002`. | None | `create` or `modify` |
 
@@ -86,12 +86,12 @@ Each file has one purpose. Unit tests sit next to the code that they test, in `_
 
 ## 4. Data Model and Schema Changes
 
-`tosh init` writes two items.
+`brevio init` writes two items.
 
 | Item | Content |
 | :--- | :--- |
-| `.tosh/` | A directory with mode `0755`. |
-| `.tosh/tosh.config.json` | The text `{}` and a final newline. The file has mode `0644`. The CLI specification defines no keys for this version. |
+| `.brevio/` | A directory with mode `0755`. |
+| `.brevio/brevio.config.json` | The text `{}` and a final newline. The file has mode `0644`. The CLI specification defines no keys for this version. |
 
 The code names the modes and the file content as constants.
 
@@ -105,15 +105,15 @@ The code names the modes and the file content as constants.
 
 | Command | Behavior |
 | :--- | :--- |
-| `tosh init` | Create `.tosh/` and `.tosh/tosh.config.json` in the root directory. Exit with code `0`. |
-| `tosh init` (directory already holds `.tosh/`) | Change no file. Print a message. Exit with code `2`. |
-| `tosh --help`, `tosh init --help` | Print help. Exit with code `0`. |
+| `brevio init` | Create `.brevio/` and `.brevio/brevio.config.json` in the root directory. Exit with code `0`. |
+| `brevio init` (directory already holds `.brevio/`) | Change no file. Print a message. Exit with code `2`. |
+| `brevio --help`, `brevio init --help` | Print help. Exit with code `0`. |
 
 ### Global flags
 
 | Flag | Rule |
 | :--- | :--- |
-| `--root <path>` | For `tosh init`, the default is the working directory, because no `.tosh/` exists to find. The path must exist and must be a directory. If it is not, the command exits with code `2`. |
+| `--root <path>` | For `brevio init`, the default is the working directory, because no `.brevio/` exists to find. The path must exist and must be a directory. If it is not, the command exits with code `2`. |
 | `--format <json\|text>` | Any other value exits with code `2`. If standard output is a terminal, the default is `text`. If not, the default is `json`. |
 | `--quiet` | The command prints nothing on success. Errors still print. |
 | `--help` | Provided by `cobra`. |
@@ -122,8 +122,8 @@ The code names the modes and the file content as constants.
 
 | Case | `text` format | `json` format |
 | :--- | :--- | :--- |
-| Success | `Created .tosh/` on standard output | `{"created":".tosh"}` on standard output |
-| Already initialized | `.tosh/ already exists. No change made.` on standard error | `{"error":"already_initialized","message":".tosh/ already exists. No change made."}` on standard error |
+| Success | `Created .brevio/` on standard output | `{"created":".brevio"}` on standard output |
+| Already initialized | `.brevio/ already exists. No change made.` on standard error | `{"error":"already_initialized","message":".brevio/ already exists. No change made."}` on standard error |
 
 ### Exit codes
 
@@ -153,8 +153,8 @@ No skill is required. The agents use the `go` toolchain and `git`. This work ite
 | ID | Description | Owner | Status |
 | :--- | :--- | :--- | :--- |
 | `CONCERN-001` | The old command of `INV-002` used the pattern `net/http\|net\.Dial`. A table renderer shows `\|` as `|`. A shell that copies the raw text gets a literal `\|`, so the pattern never matches. The work item now uses two `-e` patterns and no pipe. The command also reads `_test.go` files, so no test can contain those strings. | @samsassin | `resolved` |
-| `CONCERN-002` | `EV-001` and `EV-002` write the binary to `bin/tosh`. The repository has no ignore rule for `bin/`. The scope of the work item does not list `.gitignore`. The strategy adds it as a one-line change. | @samsassin | `open` |
-| `CONCERN-003` | Exit code `2` means "the arguments are not valid" in the CLI specification, and it also means "already initialized" for `tosh init`. A script cannot tell the two cases apart by the exit code. The JSON error code (`already_initialized` or `invalid_argument`) tells them apart. This strategy keeps the specified behavior. | @samsassin | `open` |
+| `CONCERN-002` | `EV-001` and `EV-002` write the binary to `bin/brevio`. The repository has no ignore rule for `bin/`. The scope of the work item does not list `.gitignore`. The strategy adds it as a one-line change. | @samsassin | `open` |
+| `CONCERN-003` | Exit code `2` means "the arguments are not valid" in the CLI specification, and it also means "already initialized" for `brevio init`. A script cannot tell the two cases apart by the exit code. The JSON error code (`already_initialized` or `invalid_argument`) tells them apart. This strategy keeps the specified behavior. | @samsassin | `open` |
 
 The intent cannot leave `formulating` while a concern is `open`.
 
@@ -162,10 +162,10 @@ The intent cannot leave `formulating` while a concern is `open`.
 
 ## 8. Technical Decisions (Micro-ADRs)
 
-### ADR-001: `tosh init` writes through a temporary directory
+### ADR-001: `brevio init` writes through a temporary directory
 
-- Context: A failed command must leave every file unchanged. A crash between two writes leaves `.tosh/` without its configuration file.
-- Decision: `initcmd.Run` makes sure that `.tosh/` does not exist. It then creates a temporary directory inside the root, writes the configuration file there, and renames the directory to `.tosh`. If any step fails, it removes the temporary directory.
+- Context: A failed command must leave every file unchanged. A crash between two writes leaves `.brevio/` without its configuration file.
+- Decision: `initcmd.Run` makes sure that `.brevio/` does not exist. It then creates a temporary directory inside the root, writes the configuration file there, and renames the directory to `.brevio`. If any step fails, it removes the temporary directory.
 - Trade-offs: The code is a few lines longer than two direct writes. A rename gives an all-or-nothing result on the same volume. A race between the existence check and the rename is still possible on some systems. The race is not in scope for a single-user CLI.
 - Impact: Later commands that write more than one file can reuse the same pattern, as the CLI specification requires.
 
@@ -196,8 +196,8 @@ The intent cannot leave `formulating` while a concern is `open`.
 
 | Evidence | Invariants | Target components | Data changes | Interface | ADR | Agent |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `EV-001` | `INV-001`, `INV-002` | `internal/initcmd`, `internal/cli/init.go`, `cmd/tosh` | `.tosh/`, `.tosh/tosh.config.json` | `tosh init`, `--root` | `ADR-001`, `ADR-002` | `agent:go-engineer` |
-| `EV-002` | `INV-001`, `INV-002` | `internal/initcmd`, `internal/cli/errors.go`, `internal/cli/exitcode.go` | None | `tosh init` exit code `2` | `ADR-001`, `ADR-004` | `agent:go-engineer` |
+| `EV-001` | `INV-001`, `INV-002` | `internal/initcmd`, `internal/cli/init.go`, `cmd/brevio` | `.brevio/`, `.brevio/brevio.config.json` | `brevio init`, `--root` | `ADR-001`, `ADR-002` | `agent:go-engineer` |
+| `EV-002` | `INV-001`, `INV-002` | `internal/initcmd`, `internal/cli/errors.go`, `internal/cli/exitcode.go` | None | `brevio init` exit code `2` | `ADR-001`, `ADR-004` | `agent:go-engineer` |
 | `EV-003` | `INV-001` | All `_test.go` files, `.github/workflows/ci.yml` | None | `go test ./...` | `ADR-002`, `ADR-004` | `agent:go-engineer`, `agent:code-reviewer` |
 
 `INV-003` has no evidence requirement. The `human-gate` reviewer covers it.

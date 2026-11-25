@@ -1,6 +1,6 @@
 # Topics: Product Ideation & Architectural Decision Framework
 
-Welcome to the `topics/` workspace for **`tosh` (Token Optimized Software Harness)**.
+Welcome to the `topics/` workspace for **`brevio` (Token Optimized Software Harness)**.
 
 During the initial product ideation stage and throughout the project's evolution, this directory serves as the
 collaborative incubator for brainstorming, architectural evaluation, trade-off analysis, and consensus-building across
@@ -30,7 +30,7 @@ documentation hygiene:
 
 | Dimension            | `topics/` (Ideation & Deliberation)                                                                                 | `build-docs/` (Canonical Specification)                                                  |
 |:---------------------|:--------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
-| **Purpose**          | Explore ideas, debate alternatives, evaluate token economics, capture consensus.                                    | Authoritative blueprint and specification for constructing `tosh`.                       |
+| **Purpose**          | Explore ideas, debate alternatives, evaluate token economics, capture consensus.                                    | Authoritative blueprint and specification for constructing `brevio`.                       |
 | **State**            | Divergent, exploratory, collaborative.                                                                              | Convergent, normative, prescriptive.                                                     |
 | **History & Debate** | Preserves discussions, rejected alternatives, trade-offs, and "why" decisions were made.                            | **Void of past decisions or alternatives**. Represents only current-state design.        |
 | **Lifecycle**        | Moves through states (`PROPOSED` &rarr; `GRADUATED` / `REJECTED`). Once graduated, acts as an immutable ADR record. | Living documents maintained throughout software development; updated only via revisions. |
@@ -120,7 +120,7 @@ Every topic document must follow this standardized format to ensure thorough ana
 
 ## 3. Token Optimization & Performance Impact
 
-*Because `tosh` is built for token conservation and speed, how does this topic align with those core tenets?*
+*Because `brevio` is built for token conservation and speed, how does this topic align with those core tenets?*
 
 - Estimated impact on LLM token consumption (prompt size, response overhead, context window usage).
 - Speed / local processing benefits (e.g., local XHTML parsing vs. remote cloud calls).

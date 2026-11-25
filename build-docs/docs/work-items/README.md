@@ -1,7 +1,7 @@
 # Work Item Documents Architecture & Specification
 
 > The authoritative master specification for the **Work Item Documents** domain within the **Token Optimized Software
-> Harness (`tosh`)**. This document defines the intent-driven hierarchy, the convergence state machine, invariant
+> Harness (`brevio`)**. This document defines the intent-driven hierarchy, the convergence state machine, invariant
 > enforcement, autonomy tiers, universal XHTML metadata standards, directory conventions, and targeted query patterns
 > that govern feature development from declaration through pull request merge.
 
@@ -33,16 +33,16 @@
 
 ## Scope & Architectural Role
 
-Work item documents represent the technical execution core of `tosh`. While project wikis and API references provide
+Work item documents represent the technical execution core of `brevio`. While project wikis and API references provide
 global context, work item documents drive the direct, tactical delivery of every software feature, bug fix, and
 architectural refactor.
 
 A work item declares an **intent**. An intent states what the system must achieve, which boundaries the system must
 keep (invariants), and which evidence proves that the intent is satisfied. The work item does not prescribe
-step-by-step edits. The agent chooses how to reach the desired state, and `tosh` checks the result against the
+step-by-step edits. The agent chooses how to reach the desired state, and `brevio` checks the result against the
 declared invariants and evidence.
 
-Each work item is self-contained within an isolated directory under `.tosh/work_items/`. The directory holds the intent
+Each work item is self-contained within an isolated directory under `.brevio/work_items/`. The directory holds the intent
 declaration, solution strategy, decomposition, sub-intent specifications, unit specifications, verification runs,
 review findings, conversation transcripts, and token metrics.
 
@@ -172,7 +172,7 @@ invariant holds and with a non-zero code when the invariant is broken.
   text to the agent.
 - An `ask` hook pauses the action until a named person approves. It implements the `human-gate` level and does not run
   during the build stage.
-- `tosh` ships Claude Code hook templates for `build-gate` invariants (protected paths, read-only test files during a
+- `brevio` ships Claude Code hook templates for `build-gate` invariants (protected paths, read-only test files during a
   fix, and a block message with the approval route). The MCP server exposes the gate state of each unit.
 - Changes to the invariant set, hook templates, and verification commands are changes to the agent configuration. The
   eval suite described in [Lessons Loop](#lessons-loop) can gate these changes.
@@ -262,7 +262,7 @@ document, and two project-level documents.
 
 ### Project-Level Documents
 
-These documents apply to every work item in the project. They sit at the root of `.tosh/work_items/`.
+These documents apply to every work item in the project. They sit at the root of `.brevio/work_items/`.
 
 | #  | Document Name     | Target Filename      | Format | Purpose & Canonical Specification                                                                                                                                                                                  |
 |:---|:------------------|:---------------------|:-------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -275,11 +275,11 @@ The metadata contract for all documents is in [`intent-document-metadata-definit
 
 ## Directory & File Organization Standards
 
-Work items follow strict naming conventions under `.tosh/work_items/`:
+Work items follow strict naming conventions under `.brevio/work_items/`:
 
 ```
 <repo-root>/
-└── .tosh/
+└── .brevio/
     └── work_items/
         ├── review_policy.html                      # Project-Level Review Policy
         ├── lessons.html                            # Project-Level Lessons Log
@@ -524,7 +524,7 @@ lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
     </script>
 </head>
 <body>
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <!-- Structured Document Body -->
 </main>
 </body>
@@ -620,7 +620,7 @@ Each stage ends when a document is committed and accepted. The accepted document
 - A human accepts or rejects each artifact at a gate. The ledger records the approver and a timestamp.
 - The solution strategy lists flagged concerns, one owner per concern. The originator resolves each concern with its
   owner before the intent moves to `converging`.
-- `tosh` and the originating system can be separate. `tosh` accepts a finding as a new `declared` intent and does not
+- `brevio` and the originating system can be separate. `brevio` accepts a finding as a new `declared` intent and does not
   run detection of production metrics.
 
 ### Intent Origin
@@ -641,8 +641,8 @@ experience declare an intent.
 
 ### Source of Truth
 
-The repository owns every `tosh` document. A document can carry an `external-ref` tag that holds the ID of a record in
-a legacy tracking system. The legacy record holds the commit SHA of the `tosh` document.
+The repository owns every `brevio` document. A document can carry an `external-ref` tag that holds the ID of a record in
+a legacy tracking system. The legacy record holds the commit SHA of the `brevio` document.
 
 ### Review
 

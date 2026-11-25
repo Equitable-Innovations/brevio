@@ -49,7 +49,7 @@ generation mechanism, and integration with partner tools like `CodeGraph` are cu
 
 ## 3. Token Optimization & Performance Impact
 
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 - **Context Window & Token Economics**: Reading an entire 1,000-line source file consumes ~3,000 to 5,000 tokens.
   Querying a structured `sdk-api` document for only the target method signature and docstring consumes ~80 tokens (>98%
@@ -76,7 +76,7 @@ generation mechanism, and integration with partner tools like `CodeGraph` are cu
 
 ### Option B: Integration with Standard Language Doc Generators (TypeDoc, Javadoc, Sphinx, Rustdoc)
 
-- **Summary**: Wrap standard doc generation outputs or adapt standard JSON doc outputs into `tosh` XHTML templates.
+- **Summary**: Wrap standard doc generation outputs or adapt standard JSON doc outputs into `brevio` XHTML templates.
 - **Pros**:
     - Leverages mature ecosystem tooling for each programming language.
     - Familiar formats for human developers.
@@ -91,8 +91,8 @@ generation mechanism, and integration with partner tools like `CodeGraph` are cu
 - **Summary**: Restrict the `sdk-api` domain to high-level module exports and public boundary interfaces, leaving
   internal symbol details to `CodeGraph` queries directly.
 - **Pros**:
-    - Keeps the `.tosh/sdk-api/` directory lean and manageable.
-    - Clear separation: `tosh` handles architecture/modules; `CodeGraph` handles granular internal symbols.
+    - Keeps the `.brevio/sdk-api/` directory lean and manageable.
+    - Clear separation: `brevio` handles architecture/modules; `CodeGraph` handles granular internal symbols.
 - **Cons**:
     - Agents must query two different systems depending on whether they need public or private symbols.
 - **Token / Latency Overhead**: Low.
@@ -103,8 +103,8 @@ generation mechanism, and integration with partner tools like `CodeGraph` are cu
 ## 5. Open Questions & Spikes
 
 - [ ] **Q1**: What specific document types and granularity should exist in the `sdk-api` domain? *(Owner: @team)*
-- [ ] **Q2**: How should `tosh` coordinate with `CodeGraph`—does `CodeGraph` generate `sdk-api` documents, or does
-  `tosh` query `CodeGraph` directly? *(Owner: @team)*
+- [ ] **Q2**: How should `brevio` coordinate with `CodeGraph`—does `CodeGraph` generate `sdk-api` documents, or does
+  `brevio` query `CodeGraph` directly? *(Owner: @team)*
 - [ ] **Q3**: What languages must the initial `sdk-api` specification support? *(Owner: @team)*
 
 ---
@@ -124,9 +124,9 @@ generation mechanism, and integration with partner tools like `CodeGraph` are cu
 
 *(Complete when updating status to `DECIDED`)*
 
-- **Decision**: Rejected. `tosh` has no `sdk-api` document domain.
+- **Decision**: Rejected. `brevio` has no `sdk-api` document domain.
 - **Core Rationale**: The domain had no defined document types. `CodeGraph` already serves code symbol queries.
-- **Accepted Trade-offs**: No `tosh` document for code interfaces. A later topic can add one.
+- **Accepted Trade-offs**: No `brevio` document for code interfaces. A later topic can add one.
 - **Decision Date**: 2026-11-04.
 - **Sign-off**: @team.
 

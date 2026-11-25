@@ -1,7 +1,7 @@
 # Intent Verification Document Definition
 
 The **Intent Verification Document** (`03_intent_verification.html`) is the authoritative Tier 1 master verification contract
-and gating authority in the **Token Optimized Software Harness (`tosh`)** work item lifecycle. It establishes the
+and gating authority in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It establishes the
 exhaustive verification criteria, test suites, deterministic command assertions, and quality standards that must be
 proven in order for the work item to be certified as `settled` and ready for pull request merge. It also checks that
 every declared system invariant holds.
@@ -38,7 +38,7 @@ This document fulfills a dual-purpose consumption model:
    pass gauges, evidence verification matrices, command execution logs, and sign-off checklists directly in any
    browser without requiring client-side bundlers or runtime servers.
 2. **Agent / Harness Interface (Machine Parseable):** Serves as a deterministic, structured XML document queryable via
-   XPath and the `tosh` CLI. The harness mechanically enforces this document as a hard gate: worker agents cannot
+   XPath and the `brevio` CLI. The harness mechanically enforces this document as a hard gate: worker agents cannot
    start a unit if the feasibility check fails, and the intent cannot reach `settled` in [
    `03_intent_ledger.json`](intent-ledger.md)
    until the final completion verdict is `pass` and a named human authorizes the release.
@@ -47,10 +47,10 @@ This document fulfills a dual-purpose consumption model:
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Verification
 
-In `tosh`, intent verification shifts verification from retrospective, informal human spot-checks to deterministic,
+In `brevio`, intent verification shifts verification from retrospective, informal human spot-checks to deterministic,
 upfront-defined gating across the four core dimensions:
 
-| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `tosh` Intent Verification Manifestation                                                                                                                                                        |
+| Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Verification Manifestation                                                                                                                                                        |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally catalogs test environments, databases, mock services, test fixtures, environment variables, and protected repository file boundaries ("do not touch") required for test execution. |
 | **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Structures validation into a multi-level testing pyramid: Tier 3 atomic unit/unit assertions, Tier 2 sub-intent integration suites, and Tier 1 work-item-wide end-to-end user journeys.          |
@@ -91,7 +91,7 @@ The intent verification document resides at the root of the work item directory 
 artifacts:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
         ├── 00_intent_spec.html                # Intent, Invariants & Evidence Requirements
@@ -111,7 +111,7 @@ artifacts:
 - **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
 - **Encoding:** UTF-8.
 - **Runtime:** Fully static, runnable directly in modern browsers via local filesystem (`file://`) or served locally via
-  the `tosh` CLI.
+  the `brevio` CLI.
 - **Paired Artifacts:**
     - Intent Specification: [
       `00_intent_spec.html`](intent-specification.md)
@@ -187,7 +187,7 @@ statistics, and the Material Web ES module importmap loader:
     </script>
 </head>
 <body>
-<main class="tosh-doc-container">
+<main class="brevio-doc-container">
     <!-- Structured Document Body -->
 </main>
 </body>
@@ -248,7 +248,7 @@ complete" means for the work item:
     5. Every invariant command exits with code `0`, and zero protected "do not touch" file boundaries are violated.
     6. Code quality, linting, formatting, and security vulnerability scans pass with zero errors.
     7. All mandatory manual verification checklist items are formally signed off.
-- **Verification Governance:** Deterministic gating rules executed by the `tosh` harness. A single failing test or
+- **Verification Governance:** Deterministic gating rules executed by the `brevio` harness. A single failing test or
   unhandled evidence requirement halts completion and triggers the automated remediation loop.
 
 ### 3.3. Evidence & Acceptance Criteria Verification Matrix

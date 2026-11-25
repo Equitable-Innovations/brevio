@@ -1,4 +1,4 @@
-// Package cli holds the command surface of tosh.
+// Package cli holds the command surface of brevio.
 package cli
 
 // Exit codes of the CLI, as listed in the CLI specification.

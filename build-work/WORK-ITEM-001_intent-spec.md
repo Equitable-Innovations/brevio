@@ -1,6 +1,6 @@
-# WORK-ITEM-001 Intent Specification: Go Project Skeleton and `tosh init` Command
+# WORK-ITEM-001 Intent Specification: Go Project Skeleton and `brevio init` Command
 
-This document is the runtime intent specification (`00_intent_spec.html`) in Markdown form. The source is the work item [`WORK-ITEM-001`](../todo/WORK-ITEM-001_go-project-skeleton-and-tosh-init-command.md). This document copies the declared intent, the invariants, and the evidence requirements. It adds no new requirement.
+This document is the runtime intent specification (`00_intent_spec.html`) in Markdown form. The source is the work item [`WORK-ITEM-001`](../todo/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md). This document copies the declared intent, the invariants, and the evidence requirements. It adds no new requirement.
 
 | Metadata | Value |
 | :--- | :--- |
@@ -8,7 +8,7 @@ This document is the runtime intent specification (`00_intent_spec.html`) in Mar
 | `doc-type` | `intent-spec` |
 | `schema-version` | `1.0.0` |
 | `domain` | `work-items` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` (the time part is a placeholder until `tosh wts start` runs) |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` (the time part is a placeholder until `brevio wts start` runs) |
 | `status` | `completed` |
 | `convergence-status` | `declared` |
 | `autonomy-tier` | `propose` |
@@ -28,10 +28,10 @@ This document is the runtime intent specification (`00_intent_spec.html`) in Mar
 
 Section id: `declared-intent`. Author: @samsassin. Status of the draft: accepted.
 
-- Problem: The repository holds only specifications. No Go module, no binary, and no command exists. A project cannot start to use `tosh` because nothing creates `.tosh/`.
-- Proposed outcome: The repository holds a Go project that builds the `tosh` binary. The command `tosh init` creates the `.tosh/` directory in the project that starts to use `tosh`.
-- Affected users and systems: Developers and agents that adopt `tosh` in a project. The `tosh` repository, which holds no code today.
-- Motivation: Every other command needs a binary and a `.tosh/` directory. This is the first code in the repository, so it sets the layout that later work items build on.
+- Problem: The repository holds only specifications. No Go module, no binary, and no command exists. A project cannot start to use `brevio` because nothing creates `.brevio/`.
+- Proposed outcome: The repository holds a Go project that builds the `brevio` binary. The command `brevio init` creates the `.brevio/` directory in the project that starts to use `brevio`.
+- Affected users and systems: Developers and agents that adopt `brevio` in a project. The `brevio` repository, which holds no code today.
+- Motivation: Every other command needs a binary and a `.brevio/` directory. This is the first code in the repository, so it sets the layout that later work items build on.
 
 ---
 
@@ -55,18 +55,18 @@ Section id: `boundary-envelope`.
 
 ### In scope
 
-- A Go module `github.com/Equitable-Innovations/tosh`, which targets Go 1.26, with the `cobra` library and a `cmd/tosh` entry point.
+- A Go module `github.com/Equitable-Innovations/brevio`, which targets Go 1.26, with the `cobra` library and a `cmd/brevio` entry point.
 - A root command with the global flags `--root`, `--format`, `--quiet`, and `--help`.
 - The exit code table from the CLI specification.
-- The command `tosh init`, which creates `.tosh/` and an empty `.tosh/tosh.config.json`.
-- Go unit tests for `tosh init` and the root command.
+- The command `brevio init`, which creates `.brevio/` and an empty `.brevio/brevio.config.json`.
+- Go unit tests for `brevio init` and the root command.
 - A GitHub Actions workflow that runs `go build`, `go vet`, and `go test`.
 
 ### Out of scope
 
-- Real behavior for any command other than `tosh init`. Later work items add it.
+- Real behavior for any command other than `brevio init`. Later work items add it.
 - Empty stub commands for the other groups in the command tree. Later work items add each group with its real behavior.
-- The `tosh assets install` logic.
+- The `brevio assets install` logic.
 - The MCP server.
 - Release packaging and distribution of the binary.
 
@@ -85,8 +85,8 @@ Section id: `evidence-requirements`. After every requirement has a `pass` verdic
 
 | ID | Observable outcome | Verification command |
 | :--- | :--- | :--- |
-| `EV-001` | In an empty directory, `tosh init` creates `.tosh/` and `.tosh/tosh.config.json` and exits with code `0`. | `go build -o bin/tosh ./cmd/tosh && d=$(mktemp -d) && ./bin/tosh init --root "$d" && test -f "$d/.tosh/tosh.config.json"` |
-| `EV-002` | In a directory that holds `.tosh/`, `tosh init` changes no file, prints a message, and exits with code `2`. | `d=$(mktemp -d) && ./bin/tosh init --root "$d" && ./bin/tosh init --root "$d"; test $? -eq 2` |
+| `EV-001` | In an empty directory, `brevio init` creates `.brevio/` and `.brevio/brevio.config.json` and exits with code `0`. | `go build -o bin/brevio ./cmd/brevio && d=$(mktemp -d) && ./bin/brevio init --root "$d" && test -f "$d/.brevio/brevio.config.json"` |
+| `EV-002` | In a directory that holds `.brevio/`, `brevio init` changes no file, prints a message, and exits with code `2`. | `d=$(mktemp -d) && ./bin/brevio init --root "$d" && ./bin/brevio init --root "$d"; test $? -eq 2` |
 | `EV-003` | All Go tests pass. | `go test ./...` |
 
 ---
@@ -108,7 +108,7 @@ Section id: `open-questions`.
 Section id: `related-items`.
 
 - Prerequisites: None.
-- Enables: Every later work item that adds a `tosh` command.
+- Enables: Every later work item that adds a `brevio` command.
 - External dependencies: The Go toolchain and the `cobra` library.
 - Related topics: None.
 - Target build-doc: [`build-docs/cli/README.md`](../build-docs/cli/README.md).

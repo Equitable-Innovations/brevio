@@ -4,7 +4,7 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:S01:U003:SPEC` |
 | `doc-type` | `intent-unit-spec` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_01_module_and_root_command` |
 | `unit-id` | `unit_003_env_and_printer` |
 | `parent-doc-id` | `WORK-ITEM-001:S01:SPEC` ([sub-intent specification](WORK-ITEM-001_sub-intent-01_module-and-root-command_spec.md)) |

@@ -1,11 +1,11 @@
 # Unit Conversation Metrics Document Definition
 
 The **Unit Conversation Metrics Document** (`units/{unit_id}/metrics.json`) is the authoritative Tier 3 telemetry record
-in the **Token Optimized Software Harness (`tosh`)** work item lifecycle. It records exact token consumption, model
+in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It records exact token consumption, model
 usage, prompt caching efficiency, tool execution trajectories, diff churn, and verification outcomes for an atomic
 engineering unit.
 
-In `tosh`, token optimization cannot be evaluated in isolation. Token savings achieved by withholding file context,
+In `brevio`, token optimization cannot be evaluated in isolation. Token savings achieved by withholding file context,
 stripping type definitions, or aggressively truncating compiler errors frequently backfires into multi-turn repair
 loops, premature failure, and bloated diff churn that exponentially increases aggregate compute.
 
@@ -14,14 +14,14 @@ This document serves a dual purpose:
 1. **Human & Platform Interface:** Enables platform engineers, engineering managers, and developers to audit unit-level
    token expenditure, diagnose runaway agent repair loops, compare model cost-to-performance ratios, and inspect
    surgical diff efficiency.
-2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `tosh` CLI and
+2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `brevio` CLI and
    evaluators for automated unit gating, ledger state synchronization, and dynamic prompt-cache tuning.
 
 ---
 
 ## Core Execution Paradigm: The 4-Layer Unit Telemetry Framework
 
-To extract actionable signals from raw unit session logs (`conversation.jsonl`), `tosh` organizes unit-level telemetry
+To extract actionable signals from raw unit session logs (`conversation.jsonl`), `brevio` organizes unit-level telemetry
 across four operational layers:
 
 ```mermaid
@@ -85,7 +85,7 @@ flowchart TD
 Each unit conversation metrics document resides directly inside its isolated unit directory within its parent sub-intent:
 
 ```text
-.tosh/
+.brevio/
 └── work_items/
     └── {intent-id}/
         └── sub_intents/
@@ -182,7 +182,7 @@ The following JSON Schema governs the structure and validation of `units/{unit_i
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://tosh.dev/schemas/work-items/unit-conversation-metrics.schema.json",
+  "$id": "https://brevio.dev/schemas/work-items/unit-conversation-metrics.schema.json",
   "title": "TaskConversationMetrics",
   "description": "Authoritative Tier 3 unit execution metrics and telemetry record.",
   "type": "object",
@@ -591,7 +591,7 @@ A typical passing atomic unit generates a tight, deterministic sequence of entri
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Harness as Tosh Harness
+    participant Harness as Brevio Harness
     participant Agent as Coding Agent
     participant Env as Shell / Workspace
     Harness ->> Agent: Turn 1: Ingest intent_unit_spec.html + Target Files
@@ -619,7 +619,7 @@ failures:
 
 ```bash
 # Surface units with high token consumption or runaway steps
-find .tosh/work_items -name "metrics.json" -exec jq -r '
+find .brevio/work_items -name "metrics.json" -exec jq -r '
   select(.tokenEfficiency.totalTokens > 30000 or .agenticTrajectory.turnsToSuccess > 8)
   | "\(.unitId): \(.tokenEfficiency.totalTokens) tokens, \(.agenticTrajectory.turnsToSuccess) turns, $\(.costRollup.totalCostUsd)"
 ' {} +
@@ -671,7 +671,7 @@ graph TD
     PSUM -->|" Rollup to Intent "| WISUM["Intent Summary<br/>(04_intent_summary.html)"]
 ```
 
-- **Direct Ledger Sync:** Upon unit completion, `tosh` writes the unit's execution duration, token count, and USD cost
+- **Direct Ledger Sync:** Upon unit completion, `brevio` writes the unit's execution duration, token count, and USD cost
   directly into `sub-intents[].units[].metrics` of
   [
   `03_intent_ledger.json`](intent-ledger.md).

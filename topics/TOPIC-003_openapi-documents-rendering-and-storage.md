@@ -23,7 +23,7 @@ rendered into the UI**. However, all other architectural and specification detai
 - Where and how raw OpenAPI JSON/YAML files are stored in the project workspace.
 - How they are transformed or rendered into the Material Design 3 static UI.
 - Whether external client service contracts are separated from internal server service contracts.
-- How the `tosh` CLI and MCP tools extract endpoint schemas for token-efficient agent consumption.
+- How the `brevio` CLI and MCP tools extract endpoint schemas for token-efficient agent consumption.
 
 ### 1.2 Context & Trigger
 
@@ -38,7 +38,7 @@ to specify `build-docs/docs/open-api/` fully.
 ### Goals
 
 - [x] Specify the mechanism for rendering OpenAPI JSON or YAML files into the static UI.
-- [x] Define the workspace directory structure under `.tosh/open-api/` for storing OpenAPI source files and rendered
+- [x] Define the workspace directory structure under `.brevio/open-api/` for storing OpenAPI source files and rendered
   views.
 - [x] Determine how internal application service endpoints vs. external consumed client endpoints are organized and
   distinguished.
@@ -54,7 +54,7 @@ to specify `build-docs/docs/open-api/` fully.
 
 ## 3. Token Optimization & Performance Impact
 
-*`tosh` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
 
 - **Context Window & Token Economics**: Comprehensive OpenAPI specifications often exceed 10,000 to 50,000 tokens. When
   an agent is implementing or calling a single endpoint, loading the full OpenAPI file exhausts context. Extracting only
@@ -67,10 +67,10 @@ to specify `build-docs/docs/open-api/` fully.
 
 ### Option A: Dual-Format (Raw YAML/JSON + Pre-Compiled XHTML M3 Templates)
 
-- **Summary**: Store canonical OpenAPI JSON/YAML files under `.tosh/open-api/` and have the `tosh` CLI compile them into
+- **Summary**: Store canonical OpenAPI JSON/YAML files under `.brevio/open-api/` and have the `brevio` CLI compile them into
   structured XHTML documents styled with M3 components.
 - **Pros**:
-    - Full consistency with the rest of `tosh` XHTML documents and the static UI.
+    - Full consistency with the rest of `brevio` XHTML documents and the static UI.
     - Native XPath queryability on the rendered XHTML for LLM agents.
     - Zero browser JavaScript runtime requirement for rendering.
 - **Cons**:
@@ -83,7 +83,7 @@ to specify `build-docs/docs/open-api/` fully.
 - **Summary**: Store raw OpenAPI JSON/YAML files directly, and embed a specialized web component (e.g., `@material/web`
   wrapper or lightweight OpenAPI web component) in the static UI shell that renders the spec on the fly in the browser.
 - **Pros**:
-    - No HTML pre-compilation needed; simply drop the YAML/JSON file into `.tosh/open-api/`.
+    - No HTML pre-compilation needed; simply drop the YAML/JSON file into `.brevio/open-api/`.
     - Immediate visual fidelity with rich interactive explorer.
 - **Cons**:
     - Agents cannot query the rendered DOM offline via XPath; they must parse raw JSON/YAML directly via CLI/MCP.
@@ -92,7 +92,7 @@ to specify `build-docs/docs/open-api/` fully.
 
 ### Option C: CLI-Served REST/MCP Schema Projection
 
-- **Summary**: The CLI reads raw OpenAPI files and exposes targeted MCP tools (e.g., `tosh_get_endpoint(route, method)`)
+- **Summary**: The CLI reads raw OpenAPI files and exposes targeted MCP tools (e.g., `brevio_get_endpoint(route, method)`)
   returning minimal JSON schema snippets to agents, while generating static HTML for human viewing.
 - **Pros**:
     - Ideal separation of concerns: optimal JSON fragments for agents, visual HTML for developers.
@@ -105,7 +105,7 @@ to specify `build-docs/docs/open-api/` fully.
 
 ## 5. Open Questions & Spikes
 
-- [x] **Q1**: What directory layout should be standardized under `.tosh/open-api/` (e.g. `services/` for exposed
+- [x] **Q1**: What directory layout should be standardized under `.brevio/open-api/` (e.g. `services/` for exposed
   endpoints vs `clients/` for consumed 3rd-party APIs)? *(Owner: @team)*
   - Answer: `{services|clients}/{api-id}/v{major}/`, with the source in `source/` and generated documents beside it.
 - [x] **Q2**: Which rendering approach best fulfills the static UI single-pane requirement while keeping OpenAPI specs
@@ -132,13 +132,13 @@ to specify `build-docs/docs/open-api/` fully.
 
 *(Complete when updating status to `DECIDED`)*
 
-- **Decision**: Option A. The OpenAPI 3.0/3.1 source file under `.tosh/open-api/{services|clients}/{api-id}/v{major}/source/`
-  is the source of truth. `tosh open-api generate` produces an overview, one XHTML document per operation, one per
+- **Decision**: Option A. The OpenAPI 3.0/3.1 source file under `.brevio/open-api/{services|clients}/{api-id}/v{major}/source/`
+  is the source of truth. `brevio open-api generate` produces an overview, one XHTML document per operation, one per
   component schema, and a project catalog (`catalog.json`, `catalog.html`). CLI commands and read-only MCP tools
   (from Option C) return single operation or schema fragments.
-- **Core Rationale**: Matches every other `tosh` domain (strict XHTML, M3, XPath), needs no browser-side OpenAPI
+- **Core Rationale**: Matches every other `brevio` domain (strict XHTML, M3, XPath), needs no browser-side OpenAPI
   renderer, and per-operation files keep agent reads to a few hundred tokens.
-- **Accepted Trade-offs**: A generation step is required after every source change. `tosh open-api check` and a
+- **Accepted Trade-offs**: A generation step is required after every source change. `brevio open-api check` and a
   source hash in every document detect stale output. Swagger 2.0 and remote `$ref` targets are not supported.
 - **Decision Date**: 2026-11-04.
 - **Sign-off**: @samsassin.

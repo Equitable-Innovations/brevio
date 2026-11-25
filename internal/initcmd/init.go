@@ -1,4 +1,4 @@
-// Package initcmd creates the .tosh directory and its configuration file.
+// Package initcmd creates the .brevio directory and its configuration file.
 package initcmd
 
 import (
@@ -10,30 +10,30 @@ import (
 )
 
 const (
-	// DirName is the name of the directory that tosh init creates.
-	DirName = ".tosh"
+	// DirName is the name of the directory that brevio init creates.
+	DirName = ".brevio"
 
-	configFileName = "tosh.config.json"
+	configFileName = "brevio.config.json"
 	configContent  = "{}\n"
-	tempDirPrefix  = ".tosh.tmp-"
+	tempDirPrefix  = ".brevio.tmp-"
 
 	dirMode  fs.FileMode = 0o755
 	fileMode fs.FileMode = 0o644
 )
 
-// ErrAlreadyInitialized means that the root already holds an entry named .tosh.
+// ErrAlreadyInitialized means that the root already holds an entry named .brevio.
 var ErrAlreadyInitialized = errors.New("already initialized")
 
 // Options holds the input of Run.
 type Options struct {
-	// Root is the directory that receives .tosh.
+	// Root is the directory that receives .brevio.
 	Root string
 
 	// writeFile is a test seam. When nil, os.WriteFile is used.
 	writeFile func(name string, data []byte, perm fs.FileMode) error
 }
 
-// Run creates .tosh/ and .tosh/tosh.config.json in the root in one atomic step.
+// Run creates .brevio/ and .brevio/brevio.config.json in the root in one atomic step.
 func Run(opts Options) error {
 	if err := checkRoot(opts.Root); err != nil {
 		return err
@@ -43,7 +43,7 @@ func Run(opts Options) error {
 		return err
 	}
 
-	// Build in a temporary directory, so a failure never leaves a partial .tosh.
+	// Build in a temporary directory, so a failure never leaves a partial .brevio.
 	tmp, err := os.MkdirTemp(opts.Root, tempDirPrefix)
 	if err != nil {
 		return fmt.Errorf("create temporary directory: %w", err)

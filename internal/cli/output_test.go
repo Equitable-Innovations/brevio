@@ -53,20 +53,20 @@ func TestDefaultFormatPipe(t *testing.T) {
 
 func TestPrinterSuccessText(t *testing.T) {
 	p, out, _ := newTestPrinter(FormatText, false)
-	if err := p.Success("Created .tosh/", map[string]string{"created": ".tosh"}); err != nil {
+	if err := p.Success("Created .brevio/", map[string]string{"created": ".brevio"}); err != nil {
 		t.Fatal(err)
 	}
-	if out.String() != "Created .tosh/\n" {
+	if out.String() != "Created .brevio/\n" {
 		t.Errorf("got %q", out.String())
 	}
 }
 
 func TestPrinterSuccessJSON(t *testing.T) {
 	p, out, _ := newTestPrinter(FormatJSON, false)
-	if err := p.Success("Created .tosh/", map[string]string{"created": ".tosh"}); err != nil {
+	if err := p.Success("Created .brevio/", map[string]string{"created": ".brevio"}); err != nil {
 		t.Fatal(err)
 	}
-	if out.String() != "{\"created\":\".tosh\"}\n" {
+	if out.String() != "{\"created\":\".brevio\"}\n" {
 		t.Errorf("got %q", out.String())
 	}
 }

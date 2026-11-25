@@ -1,7 +1,7 @@
 <!-- GENERATED FILE. Do not edit by hand. Source: backlog.jsonl. Template: backlog.template.md. Script: scripts/backlog.mjs -->
 # Product & Development Backlog
 
-This document is the central ledger for tracking all work items for **`tosh` (Token Optimized Software Harness)**.
+This document is the central ledger for tracking all work items for **`brevio` (Token Optimized Software Harness)**.
 
 A work item is the parent of all intent-driven SDLC documents. Every discrete unit of engineering work is represented by a dedicated work item file in this directory following the pattern [`WORK-ITEM-###_{file-name-slug}.md`](README.md). Each file declares one intent. The index of work items lives in [`backlog.jsonl`](backlog.jsonl), and this file is generated from it.
 

@@ -1,6 +1,6 @@
-# TOSH Document System Specification
+# Brevio Document System Specification
 
-> The master architectural specification for the `tosh` document system. It defines the requirements, schemas, and metadata of every document type that `tosh` creates, manages, and reads. It also defines the domain taxonomy and the query models.
+> The master architectural specification for the `brevio` document system. It defines the requirements, schemas, and metadata of every document type that `brevio` creates, manages, and reads. It also defines the domain taxonomy and the query models.
 
 ---
 
@@ -14,7 +14,7 @@
    2. [Project Wiki Documents (`wiki/`)](#2-project-wiki-documents)
    3. [OpenAPI Specifications (`open-api/`)](#3-openapi-specifications)
 5. [Domain Specification Inventory & Blueprint](#domain-specification-inventory--blueprint)
-6. [Target Project Runtime Layout (`.tosh/`)](#target-project-runtime-layout-tosh)
+6. [Target Project Runtime Layout (`.brevio/`)](#target-project-runtime-layout-brevio)
 7. [Targeted Querying & XPath Extraction Patterns](#targeted-querying--xpath-extraction-patterns)
 8. [Cross-Domain Graph Traversal & Traceability](#cross-domain-graph-traversal--traceability)
 9. [Subsystem Integration Matrix](#subsystem-integration-matrix)
@@ -26,9 +26,9 @@
 
 ## Scope & Role within Build-Docs
 
-During the product ideation and design phase, the [`build-docs/`](../README.md) directory establishes canonical specifications for constructing `tosh`. Within this hierarchy, `build-docs/docs/` is the master specification of the data layer of `tosh`:
+During the product ideation and design phase, the [`build-docs/`](../README.md) directory establishes canonical specifications for constructing `brevio`. Within this hierarchy, `build-docs/docs/` is the master specification of the data layer of `brevio`:
 
-- **Normative Document Contracts:** Governs the required structure, XHTML schemas, semantic `<head>` metadata, and body sectioning for every artifact `tosh` generates.
+- **Normative Document Contracts:** Governs the required structure, XHTML schemas, semantic `<head>` metadata, and body sectioning for every artifact `brevio` generates.
 - **Token-Optimized Schema Design:** Ensures documents are structured specifically for fast local extraction via XML parsers and XPath queries, minimizing LLM prompt bloat.
 - **Single-Pane Visual Integration:** Guarantees every document complies with the Material Design 3 static UI specifications defined in [`build-docs/static-ui/`](../static-ui/README.md).
 - **Subsystem Alignment:** Informs the command tree of the [`CLI`](../cli/README.md) and the tool catalog of the [`MCP Server`](../mcp/README.md).
@@ -46,7 +46,7 @@ flowchart TD
     DocsMaster --> Wiki
     DocsMaster --> OAS
 
-    subgraph Subsystems [Consuming Tosh Subsystems]
+    subgraph Subsystems [Consuming Brevio Subsystems]
         CLI[cli/<br/>CLI Commands & Parsers]
         MCP[mcp/<br/>MCP Tools & Resources]
         UI[static-ui/<br/>M3 Static Templates]
@@ -61,9 +61,9 @@ flowchart TD
 
 ## Core Principles & Token Economics
 
-The TOSH document architecture is governed by four fundamental operational tenets:
+The Brevio document architecture is governed by four fundamental operational tenets:
 
-1. **Local-First Processing:** All documents reside directly within the local workspace under `.tosh/`. Reading, querying, and updating documents occur locally without cloud latency or remote API roundtrips.
+1. **Local-First Processing:** All documents reside directly within the local workspace under `.brevio/`. Reading, querying, and updating documents occur locally without cloud latency or remote API roundtrips.
 2. **Polyglot XHTML Standard:** Documents use strict XHTML 1.0/5 syntax. They are valid XML for programmatic engines (DOM, XPath, SAX) while functioning natively in standard web browsers with CSS and web components.
 3. **Granular Sub-Tree Ingestion:** Agentic tools query specific XML subtrees (for example, only `//section[@id='acceptance-criteria']` or `/html/head/meta[@name='status']`). Delivering only necessary fragments achieves dramatic token savings (typically 80%–95% reduction compared to full document dumping).
 4. **Graph Traceability via Metadata:** Documents keep explicit parent-child and cross-domain references in standard `<head>` tags. These references form a directed acyclic graph (DAG), a graph with no loops. The graph connects intents, strategies, units, code, tests, and API contracts.
@@ -126,7 +126,7 @@ Every `.html` document must include these seven baseline metadata tags within th
     </script>
 </head>
 <body>
-    <main class="tosh-doc-container">
+    <main class="brevio-doc-container">
         <!-- Structured, semantic document content -->
     </main>
 </body>
@@ -137,15 +137,15 @@ Every `.html` document must include these seven baseline metadata tags within th
 
 ## Document Domain Taxonomy
 
-The TOSH documentation ecosystem is partitioned into three distinct domains:
+The Brevio documentation ecosystem is partitioned into three distinct domains:
 
 | Domain | Target Directory | Primary Focus | Canonical Specification |
 |:---|:---|:---|:---|
-| **Work Items** | `.tosh/work_items/` | End-to-end feature and bug execution lifecycle | [`work-items/README.md`](work-items/README.md) |
-| **Project Wiki** | `.tosh/wiki/` | Long-term project knowledge, setup, standards, ADRs | [`wiki/README.md`](wiki/README.md) |
-| **OpenAPI** | `.tosh/open-api/` | Host service schemas and consumed client contracts | [`open-api/README.md`](open-api/README.md) |
+| **Work Items** | `.brevio/work_items/` | End-to-end feature and bug execution lifecycle | [`work-items/README.md`](work-items/README.md) |
+| **Project Wiki** | `.brevio/wiki/` | Long-term project knowledge, setup, standards, ADRs | [`wiki/README.md`](wiki/README.md) |
+| **OpenAPI** | `.brevio/open-api/` | Host service schemas and consumed client contracts | [`open-api/README.md`](open-api/README.md) |
 
-The [project manager](../project-mgr/README.md) adds a fifth set of documents. They use the `project-mgr` value in the `domain` tag. They live in `.tosh/project-mgr/` and hold the PRD, the FSD, initiatives, epics, milestones, and the traceability matrix. The project manager specification defines these documents. The work item backlog lives in `.tosh/wts/`, as the [WTS specification](../project-mgr/wts/README.md) defines.
+The [project manager](../project-mgr/README.md) adds a fifth set of documents. They use the `project-mgr` value in the `domain` tag. They live in `.brevio/project-mgr/` and hold the PRD, the FSD, initiatives, epics, milestones, and the traceability matrix. The project manager specification defines these documents. The work item backlog lives in `.brevio/wts/`, as the [WTS specification](../project-mgr/wts/README.md) defines.
 
 ---
 
@@ -173,7 +173,7 @@ The [project manager](../project-mgr/README.md) adds a fifth set of documents. T
   - `sub_intents/sub_intent_##/units/unit_###/summary.html`: Implemented file changes, git diff summary, and PR links.
   - `sub_intents/sub_intent_##/units/unit_###/conversation.jsonl`: Raw agentic interaction and tool invocation log.
   - `sub_intents/sub_intent_##/units/unit_###/metrics.json`: Granular token, cost, and latency telemetry.
-  - `review_policy.html` and `lessons.html`: Project-level review policy and lessons log at the root of `.tosh/work_items/`.
+  - `review_policy.html` and `lessons.html`: Project-level review policy and lessons log at the root of `.brevio/work_items/`.
 - **Detailed Specification:** See [`work-items/README.md`](work-items/README.md).
 
 ---
@@ -219,14 +219,14 @@ To complete the design phase for the document ecosystem, each domain under `buil
 
 ---
 
-## Target Project Runtime Layout (`.tosh/`)
+## Target Project Runtime Layout (`.brevio/`)
 
-When `tosh` operates inside a project repository, it generates and maintains all document domains within a dedicated `.tosh/` root:
+When `brevio` operates inside a project repository, it generates and maintains all document domains within a dedicated `.brevio/` root:
 
 ```
 <repo-root>/
-├── .tosh/
-│   ├── tosh.config.json                     # Workspace configuration & schema settings
+├── .brevio/
+│   ├── brevio.config.json                     # Workspace configuration & schema settings
 │   │
 │   ├── project-mgr/                         # Project Manager Documents (see project-mgr/README.md)
 │   │   ├── prd.html
@@ -302,7 +302,7 @@ When `tosh` operates inside a project repository, it generates and maintains all
 
 ## Targeted Querying & XPath Extraction Patterns
 
-The core mechanism for token conservation in `tosh` is selective XPath extraction. Instead of ingesting a 15,000-token document, the agent or CLI retrieves only the specific targeted XML subtree.
+The core mechanism for token conservation in `brevio` is selective XPath extraction. Instead of ingesting a 15,000-token document, the agent or CLI retrieves only the specific targeted XML subtree.
 
 ### High-Value Extraction Patterns
 
@@ -324,7 +324,7 @@ Full Document Ingestion (Standard AI Dev Flow):
 │ ~12,500 Tokens                                         │
 └────────────────────────────────────────────────────────┘
 
-TOSH XPath Subtree Extraction:
+Brevio XPath Subtree Extraction:
 ┌───────────────────────────────────────┐
 │ Goal + Invariants + Scope Only        │
 │ ~380 Tokens (96.9% reduction)         │
@@ -369,8 +369,8 @@ How `build-docs/docs/` specifications interact with other `build-docs/` subcompo
 
 | Subsystem | Specification Path | Interface with Document System |
 |:---|:---|:---|
-| **CLI** | [`build-docs/cli/`](../cli/README.md) | Parses XHTML via XML DOM, evaluates XPath expressions, creates/updates ledger JSON, and runs schema validation. The `tosh work-item` command group exposes work item operations and ships hook templates for `build-gate` invariants. |
-| **MCP Server** | [`build-docs/mcp/`](../mcp/README.md) | Exposes fine-grained tool calls (`tosh_query_doc`, `tosh_update_unit`, `tosh_get_schema`) to LLMs without loading full files, and exposes the gate state of each unit. |
+| **CLI** | [`build-docs/cli/`](../cli/README.md) | Parses XHTML via XML DOM, evaluates XPath expressions, creates/updates ledger JSON, and runs schema validation. The `brevio work-item` command group exposes work item operations and ships hook templates for `build-gate` invariants. |
+| **MCP Server** | [`build-docs/mcp/`](../mcp/README.md) | Exposes fine-grained tool calls (`brevio_query_doc`, `brevio_update_unit`, `brevio_get_schema`) to LLMs without loading full files, and exposes the gate state of each unit. |
 | **Static UI** | [`build-docs/static-ui/`](../static-ui/README.md) | Provides the Material 3 web component templates and layout shells that render each document domain in a browser. |
 | **Project Manager** | [`build-docs/project-mgr/`](../project-mgr/README.md) | Defines the PRD, FSD, epic, initiative, and milestone documents. Links work items to requirements through `implements-req` and the `epic` field. |
 
@@ -378,12 +378,12 @@ How `build-docs/docs/` specifications interact with other `build-docs/` subcompo
 
 ## Storage & Version Control Guidelines
 
-All documents under `.tosh/` are plain text (XHTML, JSON, JSONL, CSS) designed for Git version control:
+All documents under `.brevio/` are plain text (XHTML, JSON, JSONL, CSS) designed for Git version control:
 
-1. **Source Control Tracking:** All `.tosh/` files must be committed to the repository alongside code changes. This synchronizes project knowledge across distributed human and agent collaborators.
+1. **Source Control Tracking:** All `.brevio/` files must be committed to the repository alongside code changes. This synchronizes project knowledge across distributed human and agent collaborators.
 2. **Deterministic Diffing:** Strict XHTML indentation and clean DOM hierarchy ensure human-readable git diffs during code reviews and PR evaluations.
 3. **No Binary Blobs:** Binary assets (images, coverage graphs) must be linked externally or stored in dedicated asset directories. Documents contain only markup and, where necessary, embedded SVG.
-4. **Automated State Commit:** The `tosh` CLI commits document state updates atomically with the corresponding code changes to maintain ledger integrity.
+4. **Automated State Commit:** The `brevio` CLI commits document state updates atomically with the corresponding code changes to maintain ledger integrity.
 
 ---
 
@@ -407,8 +407,8 @@ All documents under `.tosh/` are plain text (XHTML, JSON, JSONL, CSS) designed f
 | 2026-11-04 | 0.8.0 | Replaced the OpenAPI placeholder with the specified layout, artifacts, query example, and graph node. | TOPIC-003 |
 | 2026-11-04 | 0.7.0 | Removed the REST API subsystem from the architecture diagram, the subsystem alignment list, and the subsystem integration matrix. | Build Docs Harmonization |
 | 2026-11-02 | 0.6.0 | Removed the Report & Telemetry domain from the taxonomy, inventory, runtime layout, and metadata examples. The taxonomy now has four domains. | Build Docs Harmonization |
-| 2026-11-01 | 0.5.0 | Added the `project-mgr` domain value, the `.tosh/project-mgr/` and `.tosh/wts/` runtime layout, and the project manager row in the subsystem matrix. | TOPIC-006 |
+| 2026-11-01 | 0.5.0 | Added the `project-mgr` domain value, the `.brevio/project-mgr/` and `.brevio/wts/` runtime layout, and the project manager row in the subsystem matrix. | TOPIC-006 |
 | 2026-10-31 | 0.4.0 | Rebuilt the Work Items domain inventory, runtime layout, query patterns, traceability graph, and subsystem matrix around declarative intent. | TOPIC-005 |
 | 2026-09-06 | 0.3.0 | Added `task.diff` (Task Diff) specification to Work Items domain artifact inventory and directory layout. | Work Item Architecture Alignment |
-| 2026-09-05 | 0.2.0 | Built out the document ecosystem architecture. Added the 5-domain taxonomy, the specification inventory, the subsystem integration matrix, and the `.tosh/` runtime layout. Added the universal XHTML baseline, token query patterns, the cross-domain DAG, and links to TOPIC-001 through TOPIC-004. | Build Docs Harmonization |
+| 2026-09-05 | 0.2.0 | Built out the document ecosystem architecture. Added the 5-domain taxonomy, the specification inventory, the subsystem integration matrix, and the `.brevio/` runtime layout. Added the universal XHTML baseline, token query patterns, the cross-domain DAG, and links to TOPIC-001 through TOPIC-004. | Build Docs Harmonization |
 | 2026-08-30 | 0.1.0 | Initial outline of document domain breakdown. | Initial Document |

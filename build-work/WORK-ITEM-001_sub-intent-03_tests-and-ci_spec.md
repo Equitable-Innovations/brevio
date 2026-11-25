@@ -5,7 +5,7 @@
 | `doc-id` | `WORK-ITEM-001:S03:SPEC` |
 | `doc-type` | `sub-intent-spec` |
 | `schema-version` | `1.0.0` |
-| `intent-id` | `20261104T000000Z_go_project_skeleton_and_tosh_init` |
+| `intent-id` | `20261104T000000Z_go_project_skeleton_and_brevio_init` |
 | `sub-intent-id` | `sub_intent_03_tests_and_ci` |
 | `sub-intent-sequence` | 3 |
 | `parent-doc-id` | `WORK-ITEM-001:02:DECOMP` ([decomposition](WORK-ITEM-001_intent-decomposition.md)) |
@@ -22,7 +22,7 @@
 
 Section id: `sub-intent-objective`.
 
-- Primary objective: Every important behavior of the root command and of `tosh init` has an automated test. GitHub Actions runs `go build`, `go vet`, and `go test` on every push and pull request.
+- Primary objective: Every important behavior of the root command and of `brevio init` has an automated test. GitHub Actions runs `go build`, `go vet`, and `go test` on every push and pull request.
 - Architectural boundary: `*_test.go` files in `internal/cli/` and `internal/initcmd/`, and `.github/workflows/ci.yml`.
 - Prerequisite gate: `sub_intent_02_init_command` is `verified`.
 - Evidence this sub-intent delivers: `EV-003`.
