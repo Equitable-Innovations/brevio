@@ -12,7 +12,7 @@
 | `depends-on` | None |
 | `implements-req` | `EV-001` |
 | `target-files` | `go.mod`, `cmd/brevio/main.go`, `.gitignore` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -48,7 +48,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`.
+"Do not touch": `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`.
 
 ---
 

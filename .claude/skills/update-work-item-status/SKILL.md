@@ -3,7 +3,7 @@ name: update-work-item-status
 description: >-
   Transition a single brevio work item to a new lifecycle status (BACKLOG -> PLANNED -> READY ->
   IN_PROGRESS -> IN_REVIEW -> DONE, plus BLOCKED / CANCELLED), updating the
-  WORK-ITEM-###_*.md file and its record in todo/backlog.jsonl together (todo/scripts/backlog.mjs regenerates todo/backlog.md). Checks that the intent has
+  WORK-ITEM-###_*.md file and its record in backlog/backlog.jsonl together (backlog/scripts/backlog.mjs regenerates backlog/backlog.md). Checks that the intent has
   invariants and evidence before READY and DONE. Warns and asks before a non-standard jump.
   Use for "move WORK-ITEM-x to ...", "mark work item done/blocked/ready", or
   /update-work-item-status.
@@ -12,17 +12,17 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion
 
 # Update Work Item Status Skill (`/update-work-item-status`)
 
-Move one work item to a new lifecycle status. Apply the state machine rules, update the dates and the activity log, and update `todo/backlog.jsonl` with `todo/scripts/backlog.mjs` in the same operation.
+Move one work item to a new lifecycle status. Apply the state machine rules, update the dates and the activity log, and update `backlog/backlog.jsonl` with `backlog/scripts/backlog.mjs` in the same operation.
 
 A work item is the parent of all intent-driven SDLC documents. Its status is the backlog status. It is separate from the `convergence-status` of the runtime intent package.
 
 ## Execution Steps
 
 ### 1. Resolve the Work Item and Read State
-1. Find the file with `Glob` (`todo/WORK-ITEM-*.md`) or `Grep` by ID (for example `WORK-ITEM-001`) or slug.
+1. Find the file with `Glob` (`backlog/WORK-ITEM-*.md`) or `Grep` by ID (for example `WORK-ITEM-001`) or slug.
 2. Read the metadata table and Section 11 (Activity Log).
 3. Extract: current status, title, domain, autonomy tier, target milestone, `Created Date`, `Active Date`, `Last Updated`.
-4. Read the "Work Item Lifecycle and State Machine" section of `todo/README.md` to confirm the permitted edges.
+4. Read the "Work Item Lifecycle and State Machine" section of `backlog/README.md` to confirm the permitted edges.
 
 ### 2. Validate the Transition
 Compare the current status (`<old>`) with the requested status (`<new>`).
@@ -58,7 +58,7 @@ These checks apply to the work item content. Read the work item sections 3 and 5
 Run `date +%Y-%m-%d` with `Bash`.
 
 ### 5. Edit the Work Item File
-Use `Edit` on `todo/WORK-ITEM-###_{slug}.md`:
+Use `Edit` on `backlog/WORK-ITEM-###_{slug}.md`:
 1. In the metadata table:
    - Set `| **Status** | <new> |`.
    - Set `| **Last Updated** | YYYY-MM-DD |`.
@@ -67,13 +67,13 @@ Use `Edit` on `todo/WORK-ITEM-###_{slug}.md`:
    `- **YYYY-MM-DD** (@user): <old> -> <new>[ — <note, or "Override confirmed: skipped standard progression">]`
 
 ### 6. Update the Backlog with the Script
-Never edit `todo/backlog.md` by hand. It is generated. Run this with `Bash`:
+Never edit `backlog/backlog.md` by hand. It is generated. Run this with `Bash`:
 ```bash
-node todo/scripts/backlog.mjs edit --id <N> --status <new>
+node backlog/scripts/backlog.mjs edit --id <N> --status <new>
 ```
-The script updates the record in `todo/backlog.jsonl`. It sets `updated`, stamps `active` the first time the item leaves `BACKLOG`, and sets `completed` for `DONE` or `CANCELLED`. It then rebuilds `todo/backlog.md`, including the table placement, the sort order, and the metrics.
+The script updates the record in `backlog/backlog.jsonl`. It sets `updated`, stamps `active` the first time the item leaves `BACKLOG`, and sets `completed` for `DONE` or `CANCELLED`. It then rebuilds `backlog/backlog.md`, including the table placement, the sort order, and the metrics.
 
 ### 7. Confirm
-Return a short summary: the ID and title, the transition (`<old>` -> `<new>`), the files changed, and the metrics change. Read the metrics from the `Backlog Metrics` table in the regenerated `todo/backlog.md`.
+Return a short summary: the ID and title, the transition (`<old>` -> `<new>`), the files changed, and the metrics change. Read the metrics from the `Backlog Metrics` table in the regenerated `backlog/backlog.md`.
 
 **Constraint**: Do not invoke any other skills.

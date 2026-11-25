@@ -4,7 +4,7 @@
 | :--- | :--- |
 | `doc-id` | `WORK-ITEM-001:01:STRATEGY` |
 | `doc-type` | `solution-strategy` |
-| `parent-doc-id` | `WORK-ITEM-001:00:SPEC` ([intent specification](../todo/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md)) |
+| `parent-doc-id` | `WORK-ITEM-001:00:SPEC` ([intent specification](../backlog/WORK-ITEM-001_go-project-skeleton-and-brevio-init-command.md)) |
 | `status` | `pending` (a human has not accepted this document) |
 | `architectural-domain` | `cli` |
 | `target-frameworks` | `go 1.26`, `cobra` |

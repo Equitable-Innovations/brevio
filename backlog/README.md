@@ -1,6 +1,6 @@
 # Backlog & Work Item Management Framework
 
-Welcome to the `todo/` workspace for **`brevio` (Token Optimized Software Harness)**.
+Welcome to the `backlog/` workspace for **`brevio` (Token Optimized Software Harness)**.
 
 This directory serves as the centralized backlog and development work item hub. It bridges the gap between high-level architectural ideation in [`topics/`](../topics/README.md), canonical specifications in [`build-docs/`](../build-docs/README.md), and granular code implementation.
 
@@ -23,9 +23,9 @@ Every discrete feature, enhancement, or bug fix is represented by an individual 
 
 ## Role & Relationship in Brevio
 
-Understanding how `todo/` fits into the overall `brevio` documentation ecosystem ensures clear separation of concerns:
+Understanding how `backlog/` fits into the overall `brevio` documentation ecosystem ensures clear separation of concerns:
 
-| Dimension | `topics/` (Ideation & Deliberation) | `build-docs/` (Canonical Specs) | `todo/` (Development Backlog) | `.brevio/work_items/` (Execution Harness) |
+| Dimension | `topics/` (Ideation & Deliberation) | `build-docs/` (Canonical Specs) | `backlog/` (Development Backlog) | `.brevio/work_items/` (Execution Harness) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Purpose** | Brainstorming, evaluating trade-offs, architectural consensus. | Authoritative blueprints, contracts, schemas, and current-state design. | Intent-declaring work items, prioritized backlog. | Runtime machine-parseable XHTML documents, telemetry, and execution logs. |
 | **Document Format** | Markdown (`TOPIC-###_slug.md`) | Markdown specs across component domains | Markdown (`WORK-ITEM-###_slug.md` & `backlog.md`) | Strict XHTML 1.0/5 documents and JSON ledgers |
@@ -35,7 +35,7 @@ Understanding how `todo/` fits into the overall `brevio` documentation ecosystem
 ```mermaid
 flowchart LR
     A[topics/<br/>Ideation & Trade-offs] -->|Graduates to| B[build-docs/<br/>Canonical Specifications]
-    B -->|Decomposes into| C[todo/<br/>Work Items & Backlog]
+    B -->|Decomposes into| C[backlog/<br/>Work Items & Backlog]
     C -->|Activates into| D[.brevio/work_items/<br/>Tier 1-3 Execution Harness]
 ```
 
@@ -82,7 +82,7 @@ flowchart LR
 
 To ensure uniform parsing across human developers and automated tools, work item files adhere to a strict naming pattern:
 
-$$\mathbf{\text{todo/###\_\{file-name-slug\}.md}}$$
+$$\mathbf{\text{backlog/###\_\{file-name-slug\}.md}}$$
 
 ### Breakdown:
 
@@ -94,10 +94,10 @@ $$\mathbf{\text{todo/###\_\{file-name-slug\}.md}}$$
 
 ### Valid Examples:
 
-- `todo/001_initialize-cli-skeleton-and-root-command.md`
-- `todo/002_xhtml-metadata-parser-and-xpath-evaluator.md`
-- `todo/003_mcp-server-protocol-handshake-and-tools.md`
-- `todo/004_static-ui-dashboard-scaffold.md`
+- `backlog/001_initialize-cli-skeleton-and-root-command.md`
+- `backlog/002_xhtml-metadata-parser-and-xpath-evaluator.md`
+- `backlog/003_mcp-server-protocol-handshake-and-tools.md`
+- `backlog/004_static-ui-dashboard-scaffold.md`
 
 > [!WARNING]
 > Do not use a hyphen `-` as the separator between the ID and the slug (e.g., avoid `WORK-ITEM-001-slug.md`). Use an underscore `_` (e.g., `WORK-ITEM-001_slug.md`) to maintain clear syntactic distinction between the work item identifier and the descriptive slug.
@@ -115,13 +115,13 @@ $$\mathbf{\text{todo/###\_\{file-name-slug\}.md}}$$
 Run the script with Node.js from the repository root:
 
 ```bash
-node todo/scripts/backlog.mjs next-id
-node todo/scripts/backlog.mjs add --title "Initialize CLI Skeleton" --domain CLI --priority P1
-node todo/scripts/backlog.mjs edit --id 1 --status PLANNED
-node todo/scripts/backlog.mjs remove --id 1
-node todo/scripts/backlog.mjs generate
-node todo/scripts/backlog.mjs list --status READY
-node todo/scripts/backlog.mjs check
+node backlog/scripts/backlog.mjs next-id
+node backlog/scripts/backlog.mjs add --title "Initialize CLI Skeleton" --domain CLI --priority P1
+node backlog/scripts/backlog.mjs edit --id 1 --status PLANNED
+node backlog/scripts/backlog.mjs remove --id 1
+node backlog/scripts/backlog.mjs generate
+node backlog/scripts/backlog.mjs list --status READY
+node backlog/scripts/backlog.mjs check
 ```
 
 | Command | Effect |
@@ -185,7 +185,7 @@ A work item declares an intent. It states what the system must achieve, which in
 
 When creating a work item manually:
 
-1. **Copy the Template**: Copy [`todo/template.md`](template.md) to `todo/WORK-ITEM-###_{file-name-slug}.md`.
+1. **Copy the Template**: Copy [`backlog/template.md`](template.md) to `backlog/WORK-ITEM-###_{file-name-slug}.md`.
 2. **Fill the Metadata Table**: Set the ID, status, priority, domain, autonomy tier, author, and `Active Date` (`—` if `BACKLOG`, stamped if `PLANNED` or later).
 3. **Declare the Intent**: Write the desired outcome, the affected users and systems, and the motivation.
 4. **Add Context**: Link the problem to [`topics/`](../topics/README.md) and [`build-docs/`](../build-docs/README.md).
@@ -193,7 +193,7 @@ When creating a work item manually:
 6. **Set the Boundary Envelope**: List in-scope items, out-of-scope items, and constraints.
 7. **Define Evidence**: Write each observable outcome with a verification command.
 8. **List Candidate Sub-Intents**: Name the milestones and their dependencies.
-9. **Register in the Backlog**: Run `node todo/scripts/backlog.mjs add ...`. The script updates `backlog.jsonl` and rebuilds `backlog.md`.
+9. **Register in the Backlog**: Run `node backlog/scripts/backlog.mjs add ...`. The script updates `backlog.jsonl` and rebuilds `backlog.md`.
 
 ---
 
@@ -297,4 +297,4 @@ A work item is the parent of all intent-driven SDLC documents. It plays the role
 
 The backlog status (`BACKLOG` to `DONE`) is separate from the `convergence-status` of the runtime package. The work item moves to `DONE` after the intent is `settled` and the pull request is merged.
 
-This keeps end-to-end traceability from ideation in `topics/`, through canonical architecture in `build-docs/`, planned work in `todo/`, and live execution in `.brevio/work_items/`.
+This keeps end-to-end traceability from ideation in `topics/`, through canonical architecture in `build-docs/`, planned work in `backlog/`, and live execution in `.brevio/work_items/`.

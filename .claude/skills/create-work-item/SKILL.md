@@ -1,18 +1,18 @@
 ---
 name: create-work-item
 description: >-
-  Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in todo/ for brevio. A work
+  Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in backlog/ for brevio. A work
   item is the parent of all intent-driven SDLC documents. Asks the user structured questions
   to capture the declared intent, invariants, boundary envelope, evidence requirements, and
-  autonomy tier, then writes the file from todo/template.md and registers it in
-  todo/backlog.jsonl (via todo/scripts/backlog.mjs, which regenerates todo/backlog.md). Use for "new work item", "create a work item", "add a backlog item",
+  autonomy tier, then writes the file from backlog/template.md and registers it in
+  backlog/backlog.jsonl (via backlog/scripts/backlog.mjs, which regenerates backlog/backlog.md). Use for "new work item", "create a work item", "add a backlog item",
   "new story", or /create-work-item.
 allowed-tools: Read, Glob, Bash, Write, Edit, AskUserQuestion
 ---
 
 # Create Work Item Skill (`/create-work-item`)
 
-Create a new work item in `todo/`, write it from `todo/template.md`, and register it in `todo/backlog.jsonl` with `todo/scripts/backlog.mjs`.
+Create a new work item in `backlog/`, write it from `backlog/template.md`, and register it in `backlog/backlog.jsonl` with `backlog/scripts/backlog.mjs`.
 
 A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC. The work item holds the intent. The runtime intent package (`00_intent_spec.html`, solution strategy, decomposition, sub-intents, intent units, verification, and review) is seeded from it. The work item does not hold a user story, story points, or implementation steps.
 
@@ -20,12 +20,12 @@ A work item is the parent of all intent-driven SDLC documents. It plays the role
 
 ### 1. Read Canonical References
 Read these files:
-- `todo/README.md` (File Naming, Work Item Template Structure, Using `backlog.md`)
-- `todo/template.md`
+- `backlog/README.md` (File Naming, Work Item Template Structure, Using `backlog.md`)
+- `backlog/template.md`
 - `build-docs/docs/work-items/intent-specification.md` (Section 3, for invariant and evidence rules)
 
 ### 2. Allocate Sequential Work Item ID
-Run `node todo/scripts/backlog.mjs next-id` with `Bash`. The script checks `todo/backlog.jsonl` and the `WORK-ITEM-*.md` files, and prints the next zero-padded identifier, for example `WORK-ITEM-001`.
+Run `node backlog/scripts/backlog.mjs next-id` with `Bash`. The script checks `backlog/backlog.jsonl` and the `WORK-ITEM-*.md` files, and prints the next zero-padded identifier, for example `WORK-ITEM-001`.
 
 ### 3. Interactive Intent Capture
 Ask in short, grouped rounds with `AskUserQuestion`. If the user already gave the information, skip or pre-fill that round. Always allow free-text answers. Describe outcomes, not steps. If the user gives steps, ask what outcome the steps serve.
@@ -69,8 +69,8 @@ Run `date +%Y-%m-%d` with `Bash`.
 
 ### 5. Write the Work Item File
 1. Make the slug from the title: lowercase kebab-case, alphanumeric words joined by hyphens.
-2. Path: `todo/WORK-ITEM-###_{slug}.md`.
-3. Fill every section of `todo/template.md`:
+2. Path: `backlog/WORK-ITEM-###_{slug}.md`.
+3. Fill every section of `backlog/template.md`:
    - Header: `# WORK-ITEM-###: {Title}`
    - Metadata table (including `Autonomy Tier`, `Runtime Directory` set to `—`, and all three dates)
    - Section 1: Declared Intent
@@ -87,11 +87,11 @@ Run `date +%Y-%m-%d` with `Bash`.
 4. Write the file with `Write`.
 
 ### 6. Register with the Backlog Script
-Never edit `todo/backlog.md` by hand. It is generated. Run this with `Bash`:
+Never edit `backlog/backlog.md` by hand. It is generated. Run this with `Bash`:
 ```bash
-node todo/scripts/backlog.mjs add --id <N> --title "<Title>" --slug <slug> --status <Status> --priority <P0-P3> --domain "<Domain>" --tier <tier> --assignee "<Assignee>" --milestone <milestone>
+node backlog/scripts/backlog.mjs add --id <N> --title "<Title>" --slug <slug> --status <Status> --priority <P0-P3> --domain "<Domain>" --tier <tier> --assignee "<Assignee>" --milestone <milestone>
 ```
-The script appends one line to `todo/backlog.jsonl`, stamps the dates, and rebuilds `todo/backlog.md` (rows, sort order, and metrics). Use the same slug as the file name from Step 5.
+The script appends one line to `backlog/backlog.jsonl`, stamps the dates, and rebuilds `backlog/backlog.md` (rows, sort order, and metrics). Use the same slug as the file name from Step 5.
 
 ### 7. Confirm
 Print a short summary: the ID, the file path, the status, the title, the domain, the autonomy tier, and the number of invariants and evidence requirements.

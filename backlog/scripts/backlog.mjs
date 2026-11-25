@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Backlog manager for brevio. Source of truth: todo/backlog.jsonl. Output: todo/backlog.md.
-// Every command that changes backlog.jsonl regenerates backlog.md from todo/backlog.template.md.
-// Usage: node todo/scripts/backlog.mjs <command> [options]   (run `help` for details)
+// Backlog manager for brevio. Source of truth: backlog/backlog.jsonl. Output: backlog/backlog.md.
+// Every command that changes backlog.jsonl regenerates backlog.md from backlog/backlog.template.md.
+// Usage: node backlog/scripts/backlog.mjs <command> [options]   (run `help` for details)
 
 import { parseArgs } from 'node:util';
 import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, renameSync } from 'node:fs';
@@ -217,7 +217,7 @@ const commands = {
   },
 
   help() {
-    console.log(`node todo/scripts/backlog.mjs <command> [options]
+    console.log(`node backlog/scripts/backlog.mjs <command> [options]
 
   next-id                          print the next free WORK-ITEM-### id
   add --title T [--slug S --priority P2 --domain Core --tier propose

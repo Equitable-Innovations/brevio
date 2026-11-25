@@ -36,7 +36,7 @@ Section id: `sub-intent-constraints`.
 | Type | Entry |
 | :--- | :--- |
 | Write whitelist | `internal/initcmd/init.go`, `internal/initcmd/init_test.go`, `internal/cli/init.go`, `internal/cli/init_test.go`, `internal/cli/root.go` |
-| `do-not-touch` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**` |
+| `do-not-touch` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**` |
 | `do-not-touch` | `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/env.go`, `internal/cli/output.go` (the code from sub-intent 01) |
 | Signature invariant | `NewRootCommand`, `Env`, `Printer`, and `ExitError` keep their exported signatures. |
 | Inviolable | `internal/initcmd` imports only the standard library. It does not import `cobra` or `internal/cli`. |

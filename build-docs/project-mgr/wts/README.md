@@ -300,4 +300,4 @@ When `brevio wts start` seeds the intent package, WTS maps the work item as foll
 | 2026-11-04 | 0.3.1   | Removed `SDK/API` from the domain list. | TOPIC-004 |
 | 2026-11-04 | 0.3.0   | Removed the REST API from the interface statement, the domain list, and the operations statement. | Removal of the REST API |
 | 2026-11-01 | 0.2.0   | Linked to the project manager parent. Added the `Epic` and `Implements` fields, the dependency edge consistency check, and the epic and requirement traceability rows. | TOPIC-006 |
-| 2026-11-01 | 0.1.0   | Initial specification of the Work Tracking System: layout, lifecycle, work item file, backlog index and view, command surface, agent assets. | `../../../todo` workspace |
+| 2026-11-01 | 0.1.0   | Initial specification of the Work Tracking System: layout, lifecycle, work item file, backlog index and view, command surface, agent assets. | `../../../backlog` workspace |

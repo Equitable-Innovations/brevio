@@ -12,7 +12,7 @@
 | `depends-on` | `unit_005_init_logic` |
 | `implements-req` | `EV-001`, `EV-002` |
 | `target-files` | `internal/cli/init.go`, `internal/cli/init_test.go`, `internal/cli/root.go` |
-| `protected-files` | `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `internal/initcmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/env.go`, `internal/cli/output.go`, `go.mod`, `go.sum` |
+| `protected-files` | `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `internal/initcmd/**`, `internal/cli/exitcode.go`, `internal/cli/errors.go`, `internal/cli/env.go`, `internal/cli/output.go`, `go.mod`, `go.sum` |
 | `invariant-ids` | `INV-001`, `INV-002`, `INV-003` |
 | `convergence-status` | `declared` |
 | `test-files-locked` | `false` |
@@ -54,7 +54,7 @@ Section id: `invariants`.
 | `INV-002` | The CLI makes no network call. | `! grep -r -e "net/http" -e "net\.Dial" --include=*.go .` | `ci-gate` |
 | `INV-003` | No change in `build-docs/` or `topics/`. | `git diff --quiet 24a304e -- build-docs topics` | `human-gate` |
 
-"Do not touch": `build-docs/**`, `topics/**`, `todo/**`, `build-work/**`, `internal/initcmd/**`, and the four non-test files from units 002 and 003.
+"Do not touch": `build-docs/**`, `topics/**`, `backlog/**`, `build-work/**`, `internal/initcmd/**`, and the four non-test files from units 002 and 003.
 
 Signature invariants: `NewRootCommand` and `Run` keep their signatures from unit 004. The change to `root.go` adds one command and nothing else.
 
