@@ -25,7 +25,7 @@
 
 Section id: `unit-goal`.
 
-The repository holds a Go module that builds a `brevio` binary. The binary runs, prints nothing, and exits with code `0`. The directory `bin/` is ignored by git.
+The repository holds a Go module that builds a `brevio` binary. The binary runs, prints nothing, and exits with code `0`. Git ignores the directory `bin/`.
 
 - Preconditions: The repository holds no `go.mod`, no Go file, and no `.gitignore`.
 - Postconditions: `go.mod` declares the module `github.com/Equitable-Innovations/brevio` and the Go version `1.26`. `cmd/brevio/main.go` holds a `main` function. `.gitignore` holds the line `bin/`.
@@ -117,3 +117,4 @@ Section id: `acceptance-criteria`.
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial unit specification. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

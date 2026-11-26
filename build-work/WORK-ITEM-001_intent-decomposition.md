@@ -34,7 +34,7 @@ Each sub-intent keeps the number and the goal from the intent specification. The
 ### `sub_intent_01_module_and_root_command` (SI-1)
 
 - Milestone: The repository builds a `brevio` binary with the global flags and the named exit codes. The binary has no subcommand yet.
-- Agents: `agent:go-engineer` converges. `agent:code-reviewer` verifies.
+- Agents: `agent:go-engineer` converges. `agent:code-reviewer` does the verification.
 - Estimated units: 4.
 - Target scope: `go.mod`, `go.sum`, `cmd/brevio/`, `internal/cli/`, `.gitignore`.
 - Entrance: The work item is `READY`. The strategy is accepted.
@@ -46,12 +46,12 @@ Each sub-intent keeps the number and the goal from the intent specification. The
 | `unit_001_module_and_main` | A module that builds a binary which runs and exits with code `0`. | `go.mod`, `cmd/brevio/main.go`, `.gitignore` | `go build -o bin/brevio ./cmd/brevio && ./bin/brevio` |
 | `unit_002_exit_codes_and_errors` | Named exit codes and an `ExitError` type that carries an exit code. | `internal/cli/exitcode.go`, `internal/cli/errors.go`, tests | `go test ./internal/cli/...` |
 | `unit_003_env_and_printer` | An `Env` value and a `Printer` that writes results and errors in `text` or `json` format and respects `--quiet`. | `internal/cli/env.go`, `internal/cli/output.go`, tests | `go test ./internal/cli/...` |
-| `unit_004_root_command_and_flags` | A root command with the four global flags. It validates the flag values, maps every error to an exit code, and has no `completion` command. | `internal/cli/root.go`, `cmd/brevio/main.go`, `go.mod`, `go.sum`, tests | `go test ./internal/cli/...` and `./bin/brevio --format xml; test $? -eq 2` |
+| `unit_004_root_command_and_flags` | A root command with the four global flags. It makes sure that the flag values are valid, maps every error to an exit code, and has no `completion` command. | `internal/cli/root.go`, `cmd/brevio/main.go`, `go.mod`, `go.sum`, tests | `go test ./internal/cli/...` and `./bin/brevio --format xml; test $? -eq 2` |
 
 ### `sub_intent_02_init_command` (SI-2)
 
 - Milestone: `brevio init` creates `.brevio/` and `.brevio/brevio.config.json`. If `.brevio/` exists, the command changes nothing.
-- Agents: `agent:go-engineer` converges. `agent:code-reviewer` verifies.
+- Agents: `agent:go-engineer` converges. `agent:code-reviewer` does the verification.
 - Estimated units: 2.
 - Target scope: `internal/initcmd/`, `internal/cli/init.go`, `internal/cli/root.go`.
 - Entrance: `sub_intent_01_module_and_root_command` is `verified`.
@@ -66,7 +66,7 @@ Each sub-intent keeps the number and the goal from the intent specification. The
 ### `sub_intent_03_tests_and_ci` (SI-3)
 
 - Milestone: Every important behavior has an automated test, and GitHub Actions runs the build, the vet, and the tests.
-- Agents: `agent:go-engineer` converges. `agent:code-reviewer` verifies.
+- Agents: `agent:go-engineer` converges. `agent:code-reviewer` does the verification.
 - Estimated units: 2.
 - Target scope: `internal/cli/*_test.go`, `internal/initcmd/*_test.go`, `.github/workflows/ci.yml`.
 - Entrance: `sub_intent_02_init_command` is `verified`.
@@ -118,7 +118,7 @@ Every evidence requirement maps to at least one sub-intent.
 | `topics/**` | Agents must not create, change, or delete a file. | `human-gate` (same command) |
 | The CLI contract in `build-docs/cli/README.md` | Frozen. Names, flags, and exit codes must match it. A mismatch is a defect in the code, not in the specification. | `human-gate` |
 
-Resource limits: one unit changes five files or fewer, not counting `go.sum`. A unit that needs more is split.
+Resource limits: one unit changes five files or fewer, not counting `go.sum`. If a unit needs more, split it.
 
 ---
 
@@ -129,7 +129,7 @@ Resource limits: one unit changes five files or fewer, not counting `go.sum`. A 
 | `RISK-001` | `high` | A crash leaves `.brevio/` without `brevio.config.json`, so a later run of `brevio init` reports "already exists" for a broken directory. | The temporary directory and rename pattern (`ADR-001`). A test makes the file write fail and makes sure that `.brevio/` does not exist afterward. |
 | `RISK-002` | `medium` | The `INV-002` command never matches (`CONCERN-001` in the strategy). The invariant looks enforced but is not. | Fix the grep pattern before the work item becomes `READY`. |
 | `RISK-003` | `medium` | `--root` points to a path that does not exist, is a file, or is read-only. | The command makes sure that the path is valid before any write. Tests cover each case. A read-only directory must produce exit code `1`, with no partial change. |
-| `RISK-004` | `medium` | An agent adds a stub command or the default `completion` command by habit. | `unit_004_root_command_and_flags` verifies that the help output lists only `init` and the four flags. |
+| `RISK-004` | `medium` | An agent adds a stub command or the default `completion` command by habit. | `unit_004_root_command_and_flags` makes sure that the help output lists only `init` and the four flags. |
 | `RISK-005` | `low` | An agent edits the CLI specification to match its code. | `INV-003` and the `human-gate` diff command. |
 | `RISK-006` | `low` | The existing `.brevio` is a file, not a directory. | Treat any existing `.brevio` entry as "already initialized". A test covers it. |
 | `RISK-007` | `low` | The Windows rename behavior differs from POSIX. | The CI workflow stays on one Linux runner in this version. Windows support is a later work item. A local run on Windows must still pass the tests. |
@@ -188,3 +188,4 @@ No guideline is broken.
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial intent decomposition for WORK-ITEM-001. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

@@ -1,20 +1,18 @@
 ---
 name: create-work-item
-description: >-
-  Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in backlog/ for brevio. A work
-  item is the parent of all intent-driven SDLC documents. Asks the user structured questions
-  to capture the declared intent, invariants, boundary envelope, evidence requirements, and
-  autonomy tier, then writes the file from backlog/template.md and registers it in
-  backlog/backlog.jsonl (via backlog/scripts/backlog.mjs, which regenerates backlog/backlog.md). Use for "new work item", "create a work item", "add a backlog item",
-  "new story", or /create-work-item.
-allowed-tools: Read, Glob, Bash, Write, Edit, AskUserQuestion
+description: "Interactively create a new intent-driven WORK-ITEM-###_{slug}.md in backlog/ for brevio. A work item is the parent of all intent-driven SDLC documents. Asks the user structured questions to capture the declared intent, invariants, boundary envelope, evidence requirements, and autonomy tier, then writes the file from backlog/template.md and registers it in backlog/backlog.jsonl (via backlog/scripts/backlog.mjs, which regenerates backlog/backlog.md). Use for \"new work item\", \"create a work item\", \"add a backlog item\", \"new story\", or /create-work-item."
+metadata:
+  node_type: memory
+  allowed-tools: "Read, Glob, Bash, Write, Edit, AskUserQuestion"
+  originSessionId: 09e260c8-5e25-4d75-a62b-60bdd5d44d1e
+  modified: 2026-11-26T00:02:42.661Z
 ---
 
 # Create Work Item Skill (`/create-work-item`)
 
 Create a new work item in `backlog/`, write it from `backlog/template.md`, and register it in `backlog/backlog.jsonl` with `backlog/scripts/backlog.mjs`.
 
-A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC. The work item holds the intent. The runtime intent package (`00_intent_spec.html`, solution strategy, decomposition, sub-intents, intent units, verification, and review) is seeded from it. The work item does not hold a user story, story points, or implementation steps.
+A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC. The work item holds the intent. The runtime intent package (`00_intent_spec.html`, solution strategy, decomposition, sub-intents, intent units, verification, and review) gets its initial content from the work item. The work item does not hold a user story, story points, or implementation steps.
 
 ## Execution Steps
 
@@ -25,32 +23,32 @@ Read these files:
 - `build-docs/docs/work-items/intent-specification.md` (Section 3, for invariant and evidence rules)
 
 ### 2. Allocate Sequential Work Item ID
-Run `node backlog/scripts/backlog.mjs next-id` with `Bash`. The script checks `backlog/backlog.jsonl` and the `WORK-ITEM-*.md` files, and prints the next zero-padded identifier, for example `WORK-ITEM-001`.
+Run `node backlog/scripts/backlog.mjs next-id` with `Bash`. The script reads `backlog/backlog.jsonl` and the `WORK-ITEM-*.md` files. Then it prints the next zero-padded identifier, for example `WORK-ITEM-001`.
 
 ### 3. Interactive Intent Capture
 Ask in short, grouped rounds with `AskUserQuestion`. If the user already gave the information, skip or pre-fill that round. Always allow free-text answers. Describe outcomes, not steps. If the user gives steps, ask what outcome the steps serve.
 
-- **Round 1: Title and Declared Intent**
+- Round 1: Title and Declared Intent
   - Work item title (for example "Initialize CLI Skeleton and Root Command")
   - Desired outcome: what the system must achieve, in the originator's own words
   - Affected users and systems
   - Motivation: why this matters now
 
-- **Round 2: Context**
+- Round 2: Context
   - Problem description
   - Related topic(s) (`TOPIC-###` in `topics/`, or none)
   - Target build-doc(s) (`build-docs/...`, or none)
 
-- **Round 3: Invariants and Boundary Envelope**
-  - System invariants: conditions that must hold before, during, and after the work. For each one, capture a description, a class (`must-preserve`, `do-not-touch`, `performance-budget`, `security-boundary`), a shell command that exits with `0` when the invariant holds, and an enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`). If the user has no command yet, write `TBD` and add an Open Question.
+- Round 3: Invariants and Boundary Envelope
+  - System invariants: conditions that must stay true before, during, and after the work. For each invariant, capture a description and a class (`must-preserve`, `do-not-touch`, `performance-budget`, `security-boundary`). Also capture a shell command that exits with `0` if the invariant is true, and an enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`). If the user has no command yet, write `TBD` and add an Open Question.
   - In-scope capabilities
   - Out-of-scope capabilities
   - Constraints that bind the solution
 
-- **Round 4: Evidence Requirements**
-  - 2 to 4 observable outcomes that prove the intent is satisfied. For each one, capture a verification command with a pass or fail result. If the user has no command yet, write `TBD` and add an Open Question.
+- Round 4: Evidence Requirements
+  - 2 to 4 observable outcomes that prove that the intent is satisfied. For each outcome, capture a verification command with a pass or fail result. If the user has no command yet, write `TBD` and add an Open Question.
 
-- **Round 5: Work Item Metadata**
+- Round 5: Work Item Metadata
   - Priority: `P0 - Blocker`, `P1 - High`, `P2 - Medium` (default), or `P3 - Low`
   - Domain / Component: `CLI`, `MCP`, `Static UI`, `Work Items`, `Wiki`, `OpenAPI`, or `Core`
   - Autonomy tier: `observe`, `propose` (default), `change-with-review`, or `scoped-automation`
@@ -91,9 +89,9 @@ Never edit `backlog/backlog.md` by hand. It is generated. Run this with `Bash`:
 ```bash
 node backlog/scripts/backlog.mjs add --id <N> --title "<Title>" --slug <slug> --status <Status> --priority <P0-P3> --domain "<Domain>" --tier <tier> --assignee "<Assignee>" --milestone <milestone>
 ```
-The script appends one line to `backlog/backlog.jsonl`, stamps the dates, and rebuilds `backlog/backlog.md` (rows, sort order, and metrics). Use the same slug as the file name from Step 5.
+The script appends one line to `backlog/backlog.jsonl`, writes the dates, and rebuilds `backlog/backlog.md` (rows, sort order, and metrics). Use the same slug as the file name from Step 5.
 
 ### 7. Confirm
 Print a short summary: the ID, the file path, the status, the title, the domain, the autonomy tier, and the number of invariants and evidence requirements.
 
-**Constraint**: Do not invoke any other skills.
+Constraint: Do not invoke any other skills.

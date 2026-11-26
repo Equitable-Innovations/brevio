@@ -8,13 +8,13 @@ reference anchors, and the verification contract that proves satisfaction.
 A unit specification states what must be true when the unit is done. It does not prescribe step-by-step edits. The agent
 reads the codebase, chooses how to reach the goal, and converges against the verification contract and the invariants.
 
-This document serves a dual purpose:
+This document has two purposes:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) displaying the unit goal, target scope chips, invariant list, and verification
-   commands without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for zero-overhead agent ingestion. A typical extraction (goal, scope, invariants, verification commands) is
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) to show the unit goal, target scope chips, invariant list, and
+   verification commands. It needs no client-side bundler and no build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Agents query it through XPath
+   and the `brevio` CLI with zero overhead. A typical extraction (goal, scope, invariants, verification commands) is
    300 to 450 tokens.
 
 ---
@@ -27,7 +27,7 @@ tools:
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Unit Specification Manifestation                                                                                                                  |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Declares the required target scope, provides clickable links and line-range anchors to existing patterns, and itemizes protected paths and signatures.       |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Restricts unit scope strictly to a single responsibility (e.g., author one DDL file or implement one endpoint handler), eliminating multi-module sprawl. |
+| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Restricts unit scope strictly to a single responsibility (for example author one DDL file or implement one endpoint handler). This prevents multi-module sprawl. |
 | **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Declares a verification contract of terminal commands (test target, lint, build), process exit codes (`0`), and regex matchers. Each assertion has a pass or fail result.                |
 | **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Pre-defines an edge case and negative scenario matrix that the solution and the verification contract must satisfy.                                    |
 
@@ -54,7 +54,7 @@ tools:
 
 ## 1. File Location & Organization Standard
 
-Each unit specification resides inside its dedicated unit directory within its parent sub-intent:
+Each unit specification is in its dedicated unit directory in its parent sub-intent:
 
 ```text
 .brevio/
@@ -72,11 +72,15 @@ Each unit specification resides inside its dedicated unit directory within its p
                         └── metrics.json            # Token Consumption & Cost Telemetry
 ```
 
-- **File Name:** `intent_unit_spec.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+For an intent with `layout="light"`, the unit directory sits under `units/` at the work item root:
+`.brevio/work_items/{intent-id}/units/unit_{NNN}_{unit_slug}/`. The `parent-doc-id` tag then points to the Intent
+Decomposition `doc-id`.
+
+- File Name: `intent_unit_spec.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
@@ -155,61 +159,62 @@ the Material Web ES module importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Intent Unit Specification document contains 8 standardized sections combining semantic XHTML elements, Material Design 3
-Web Components (`md-*`), typography classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Intent Unit Specification document contains 8 standardized sections. The sections use semantic XHTML elements and
+Material Design 3 Web Components (`md-*`). They also use typography classes (`md-typescale-*`) and explicit data
+attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the unit document with the work item ID, sub-intent ID, unit ordinal, unit title, convergence status chip,
-evidence cross-references, and parent sub-intent specification navigation link.
+Anchors the unit document with the work item ID, sub-intent ID, unit ordinal, unit title, and convergence status chip. It
+also shows the evidence cross-references and the navigation link to the parent sub-intent specification.
 
 ### 3.2. Unit Goal & Atomic Responsibility Scope
 
 Section id: `unit-goal`. Defines the isolated boundary of the unit:
 
-- **Single Responsibility Statement:** An exact, concise definition of the outcome that the unit delivers (for example,
+- Single Responsibility Statement: An exact, short definition of the outcome that the unit delivers (for example,
   "The `users` and `refresh_tokens` tables exist with an email uniqueness constraint and a cascading foreign key").
   The statement names the outcome and does not list edits.
-- **Preconditions:** The state of the repository and database required before convergence begins.
-- **Postconditions:** The state of the filesystem and artifacts when the unit is `verified`.
+- Preconditions: The state of the repository and database required before convergence begins.
+- Postconditions: The state of the filesystem and artifacts when the unit is `verified`.
 
 ### 3.3. Target Scope, Invariants & "Do Not Touch" Constraints
 
 Section id: `invariants`. Removes ambiguity about file system touchpoints and rules that must hold:
 
-- **Target Scope (required):** Explicit file paths or globs that the unit can create or modify, with the planned change
+- Target Scope (required): Explicit file paths or globs that the unit can create or modify, with the planned change
   class (`create`, `modify`). The same list appears in the `target-files` tag. A diff that touches a file outside this
   list moves the unit to `drift_detected`.
-- **Invariants:** Each invariant is an `md-list-item` with a `data-invariant-id`, a description, a shell command that
-  exits with code `0` when the invariant holds, and an enforcement level (`advisory`, `build-gate`, `ci-gate`,
-  `human-gate`).
-- **"Do Not Touch" Manifest:** File paths, classes, and packages that the agent must not edit or reformat (for example
+- Invariants: Each invariant is an `md-list-item` with a `data-invariant-id`, a description, a shell command, and an
+  enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`). When the invariant holds, the command exits
+  with code `0`.
+- "Do Not Touch" Manifest: File paths, classes, and packages that the agent must not edit or reformat (for example
   existing models, foreign key tables, and base configuration). The same list appears in the `protected-files` tag.
-- **Signature Invariants:** Methods or public contracts that must keep their exact signatures.
+- Signature Invariants: Methods or public contracts that must keep their exact signatures.
 
 ### 3.4. Reference Anchors & Structural Conventions
 
 Section id: `reference-anchors`. Links to canonical patterns in the project so that the agent replicates existing
 conventions:
 
-- **Codebase Pattern Anchors:** Clickable links to reference files with exact line ranges (for example
+- Codebase Pattern Anchors: Clickable links to reference files with exact line ranges (for example
   `src/main/resources/db/migration/V0__base.sql:L1-L35`).
-- **Stylistic Conventions:** Indentation, casing conventions, SQL keyword styles, annotation usage, and import sorting.
+- Stylistic Conventions: Indentation, casing conventions, SQL keyword styles, annotation usage, and import sorting.
 
 ### 3.5. Verification Contract
 
 Section id: `verification-contract`. Declares the commands that prove the unit goal. Every assertion has a pass or fail
 result that a command produces:
 
-- **Test Execution Command:** `mvn test -Dtest=UserMigrationTest`
-- **Lint / Style Command:** `mvn spotless:check`
-- **Build Verification:** `mvn compile`
-- **Invariant Commands:** The shell command of each invariant in Section 3.3.
-- **Expected Return Codes:** Exit code `0` for all commands.
-- **Output Parsing Rules:** Assert `BUILD SUCCESS` in stdout, `Failures: 0`, and `Errors: 0`.
-- **Measurable Targets:** Each target is quantifiable (for example "all tests in `UserMigrationTest` pass" or "the
+- Test Execution Command: `mvn test -Dtest=UserMigrationTest`
+- Lint / Style Command: `mvn spotless:check`
+- Build Verification: `mvn compile`
+- Invariant Commands: The shell command of each invariant in Section 3.3.
+- Expected Return Codes: Exit code `0` for all commands.
+- Output Parsing Rules: Assert `BUILD SUCCESS` in stdout, `Failures: 0`, and `Errors: 0`.
+- Measurable Targets: Each target is quantifiable (for example "all tests in `UserMigrationTest` pass" or "the
   endpoint returns 200 with the new field"). A UI unit adds a screenshot comparison against an attached mock.
-- **Evidence:** `verification.html` stores the literal output of each command. A summary that the agent wrote is not
+- Evidence: `verification.html` stores the literal output of each command. A summary that the agent wrote is not
   evidence.
 
 ### 3.6. Edge Cases & Boundary Scenarios
@@ -227,21 +232,24 @@ Section id: `edge-cases`. Catalogs boundary conditions and negative scenarios to
 
 Section id: `unit-constraints`. Optional constraints that change how the agent works on this unit:
 
-- **Failing Test First:** For a bug fix, the unit requires a committed test that reproduces the bug and fails for the
+- Failing Test First: For a bug fix, the unit requires a committed test that reproduces the bug and fails for the
   expected reason before the fix starts.
-- **Tests Read-Only:** When `test-files-locked` is `true`, a `build-gate` hook blocks edits to test files during the
+- Tests Read-Only: When `test-files-locked` is `true`, a `build-gate` hook blocks edits to test files during the
   unit. An agent that fixes code cannot weaken the check on that code.
-- **Fresh-Context Verifier:** The unit requires a verifier run in a fresh context after the agent reports the work as
+- Fresh-Context Verifier: The unit requires a verifier run in a fresh context after the agent reports the work as
   done.
 
 ### 3.8. Acceptance Criteria Checklist
 
-Centralizes checklist items marked with `data-criteria-id` for verification against `verification.html`:
+Section id: `acceptance-criteria`. Lists checklist items marked with `data-criteria-id`. Each criterion is a statement
+and a command with a pass or fail result. `verification.html` records the output of each command:
 
-- `AC-001`: Migration file exists at `src/main/resources/db/migration/V1__init_auth.sql`.
-- `AC-002`: `users` table schema satisfies all EV-001 column requirements.
-- `AC-003`: `refresh_tokens` foreign key references `users(id)` with cascade delete.
-- `AC-004`: Migration applies cleanly on a fresh database instance with exit code 0.
+| Criterion | Statement                                                                 | Command                                                          |
+|:----------|:--------------------------------------------------------------------------|:-----------------------------------------------------------------|
+| `AC-001`  | The migration file exists.                                                | `test -f src/main/resources/db/migration/V1__init_auth.sql`      |
+| `AC-002`  | The `users` table schema meets all EV-001 column requirements.            | `mvn test -Dtest=UserMigrationTest#testUsersColumns`             |
+| `AC-003`  | The `refresh_tokens` foreign key references `users(id)` with cascade delete. | `mvn test -Dtest=UserMigrationTest#testCascadeDelete`         |
+| `AC-004`  | The migration applies on a fresh database instance.                       | `mvn flyway:clean flyway:migrate`                                |
 
 ---
 
@@ -302,6 +310,8 @@ Converging agents, subagents, and tools query precise subsections of the unit sp
 
 | Date       | Version | Description                                                                                                                                                                                                                 | Source                           |
 |:-----------|:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.4.1   | Rewrote the prose in plain English. No change to the design. | User request |
+| 2026-11-25 | 0.4.0   | Made each acceptance criterion a command with a pass or fail result. Added the light path unit location. Evidence requirement IDs come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 0.3.0   | Replaced step-by-step instructions with the unit goal, required target scope, invariants with enforcement levels, reference anchors, verification contract, and optional unit constraints. | TOPIC-005 |
 | 2026-09-06 | 0.2.0   | Added `intent.diff` to unit directory layout and artifact catalog.                                                                                                                                                            | [Work Item Documents](README.md) |
 | 2026-09-06 | 0.1.0   | Initial canonical unit specification (`intent_unit_spec.html`) detailing the 4-dimension paradigm (explicit context, atomic granularity, deterministic validation, upfront edge cases), verification commands, and XPath patterns. | [Work Item Documents](README.md) |

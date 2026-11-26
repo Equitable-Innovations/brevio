@@ -135,3 +135,4 @@ Section id: `acceptance-criteria`.
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial unit specification. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

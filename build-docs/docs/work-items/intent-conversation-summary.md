@@ -1,45 +1,42 @@
 # Intent Conversation Summary Document Definition
 
-The **Intent Conversation Summary Document** (`05_intent_conversation_summary.html`) is the authoritative Tier 1
-post-planning narrative synthesis in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It distills
-the multi-agent LLM dialogue, architectural debates, trade-off analyses, and alignment rounds that produced the
-requirements ([
-`00_intent_spec.html`](intent-specification.md)), technical
-design ([
-`01_solution_strategy.html`](solution-strategy.md)), and
-implementation roadmap ([
-`02_intent_decomposition.html`](intent-decomposition.md)).
+The Intent Conversation Summary Document (`05_intent_conversation_summary.html`) is the authoritative Tier 1 narrative
+summary of planning. `brevio` (Token Optimized Software Harness) writes it after planning in the work item lifecycle. It
+summarizes
+the multi-agent LLM dialogue, the architecture debates, the trade-off analyses, and the alignment rounds. These produced
+the intent ([`00_intent_spec.html`](intent-specification.md)), the requirements and technical design
+([`01_solution_strategy.html`](solution-strategy.md)), and the implementation roadmap
+([`02_intent_decomposition.html`](intent-decomposition.md)).
 
-While [
-`06_intent_conversation_metrics.json`](intent-conversation-metrics.md)
-captures granular turn-by-turn telemetry (token counts, latencies, tool execution arrays) and `plan_conversation.jsonl`
-preserves the raw interaction stream, `05_intent_conversation_summary.html` provides the human-readable, executive
-evaluation of planning efficacy. It synthesizes high-level telemetry, reviews conversational performance, identifies
-friction points, and delivers targeted improvement recommendations for the participating AI components.
+[`06_intent_conversation_metrics.json`](intent-conversation-metrics.md) records detailed telemetry for each turn (token
+counts, latencies, tool execution arrays). `plan_conversation.jsonl` keeps the raw interaction stream.
+`05_intent_conversation_summary.html` gives the evaluation of how well planning worked, in a form that people can read.
+It summarizes the high-level telemetry, reviews the performance of the conversation, and identifies friction points. It
+also gives targeted recommendations to improve the AI components that took part.
 
-This document fulfills a dual-purpose consumption model:
+This document has two uses:
 
-1. **Human Interface (Static UI):** Renders as a local, fully interactive, static XHTML web page utilizing Material
-   Design 3 Web Components (`@material/web` / **M3**). Engineering leaders and developers review decision timelines,
-   high-level economic KPIs, multi-agent collaboration evaluations, and concrete AI component tuning suggestions without
-   requiring client-side bundlers or runtime servers.
-2. **Agent / Harness Interface (Machine Parseable):** Serves as a structured XML document queryable via XPath and the
-   `brevio` CLI. Evaluation harnesses and orchestrators ingest conversational performance ratings, token benchmarks, and
-   AI component recommendations to dynamically calibrate model selection, prompt templates, and agent skill
-   configurations across future work items.
+1. Human Interface (Static UI): The document renders as a local, interactive, static XHTML web page. It uses Material
+   Design 3 Web Components (`@material/web`, M3). Engineering leaders and developers review decision timelines,
+   high-level economic KPIs, evaluations of multi-agent collaboration, and specific tuning suggestions for AI
+   components. The page needs no client-side bundler or runtime server.
+2. Agent / Harness Interface (Machine Parseable): The document is a structured XML document. You can query it with XPath
+   and the `brevio` CLI. Evaluation harnesses and orchestrators read the performance ratings of the conversation, the
+   token benchmarks, and the AI component recommendations. They use them to tune model selection, prompt templates, and
+   the configuration of agent skills for future work items.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Conversation Summaries
 
-In `brevio`, the plan conversation summary evaluates planning execution against the four foundational dimensions:
+In `brevio`, the plan conversation summary evaluates the planning work against the four basic dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Conversation Summary Manifestation                                                                                                                                                                                                    |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Audits context retrieval precision and repository exploration during planning, ensuring agents grounded their designs in real codebase facts without prompt bloat.                                                                                |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Evaluates whether multi-agent dialogue remained focused and progressive, avoiding circular debates or monolithic requirements in favor of atomic sub-intent milestones.                                                                                |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Reviews the dialogue leading into pre-execution intent verification ([`03_intent_verification.html`](intent-verification.md)), certifying that all gates passed on the first pass (FPSR). |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Documents how effectively conversational participants surfaced adversarial edge cases, schema boundary failures, and security risks during planning debates.                                                                                      |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Audits how precisely agents retrieved context and explored the repository during planning. Makes sure that agents based their designs on real codebase facts, without prompt bloat.                                                             |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Evaluates whether the multi-agent dialogue stayed focused and moved forward. Circular debates and monolithic requirements are absent, and atomic sub-intent milestones are present.                                                                    |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Reviews the dialogue that led into pre-execution intent verification ([`03_intent_verification.html`](intent-verification.md)). Certifies that all gates passed on the first pass (FPSR).                                                   |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Records how well the participants in the conversation found adversarial edge cases, schema boundary failures, and security risks during the planning debates.                                                                                  |
 
 ---
 
@@ -75,16 +72,16 @@ In `brevio`, the plan conversation summary evaluates planning execution against 
 
 ## 1. File Location & Organization Standard
 
-The plan conversation summary document resides at the root of the work item directory alongside the core Tier 1 planning
+The plan conversation summary document is at the root of the work item directory, next to the core Tier 1 planning
 artifacts:
 
 ```text
 .brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-        ├── 00_intent_spec.html                # Requirements & Checklists
-        ├── 01_solution_strategy.html                 # Technical Architecture & Micro-ADRs
-        ├── 02_intent_decomposition.html         # Multi-Sub-Intent Roadmap & Risk Strategy
+        ├── 00_intent_spec.html                # Originator's Intent (Frozen at Acceptance)
+        ├── 01_solution_strategy.html                 # Requirements, Invariants, Evidence & Design
+        ├── 02_intent_decomposition.html         # Implementation Plan & Sub-Intent DAG
         ├── 03_intent_ledger.json       # State Machine & Unit Dependency DAG
         ├── 03_intent_verification.html             # Pre-Execution Plan Gating Verdict
         ├── 04_intent_summary.html                # Execution Rollup Summary
@@ -94,23 +91,18 @@ artifacts:
             └── ...
 ```
 
-- **File Name:** `05_intent_conversation_summary.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in modern browsers via local filesystem (`file://`) or served locally via
-  the `brevio` CLI.
-- **Paired Artifacts:**
-    - Requirements: [
-      `00_intent_spec.html`](intent-specification.md)
-    - Solution Strategy: [
-      `01_solution_strategy.html`](solution-strategy.md)
-    - Implementation Roadmap: [
-      `02_intent_decomposition.html`](intent-decomposition.md)
-    - Intent Verification Gate: [
-      `03_intent_verification.html`](intent-verification.md)
-    - Comprehensive Telemetry: [
-      `06_intent_conversation_metrics.json`](intent-conversation-metrics.md)
-    - Verbatim Transcript: `plan_conversation.jsonl` (or conversational session store)
+- File Name: `05_intent_conversation_summary.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in modern browsers from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
+- Paired Artifacts:
+    - Intent Specification: [`00_intent_spec.html`](intent-specification.md)
+    - Solution Strategy: [`01_solution_strategy.html`](solution-strategy.md)
+    - Implementation Roadmap: [`02_intent_decomposition.html`](intent-decomposition.md)
+    - Intent Verification Gate: [`03_intent_verification.html`](intent-verification.md)
+    - Full Telemetry: [`06_intent_conversation_metrics.json`](intent-conversation-metrics.md)
+    - Verbatim Transcript: `plan_conversation.jsonl` (or the session store for the conversation)
 
 ---
 
@@ -118,8 +110,8 @@ artifacts:
 
 ### 2.1. XHTML Header Example
 
-Every `05_intent_conversation_summary.html` begins with universal baseline `<meta>` tags, planning dialogue metrics,
-participant lists, and the Material Web ES module importmap loader:
+Every `05_intent_conversation_summary.html` starts with the universal baseline `<meta>` tags, the planning dialogue
+metrics, the participant lists, and the Material Web ES module importmap loader:
 
 ```xhtml
 <!DOCTYPE html>
@@ -180,61 +172,61 @@ participant lists, and the Material Web ES module importmap loader:
 
 | Metadata Tag           | Scope               | Purpose                                                              | Example                                 |
 |:-----------------------|:--------------------|:---------------------------------------------------------------------|:----------------------------------------|
-| `parent-doc-id`        | Work Item / Summary | Points to the parent Intent Decomposition `doc-id`                    | `WI-20260830T170936Z:02:DECOMP`           |
-| `metrics-ref`          | Work Item / Summary | Relative path pointer to the Intent Conversation Metrics JSON          | `06_intent_conversation_metrics.json`     |
-| `agent-participants`   | Work Item / Summary | Comma-delimited list of all AI agent roles participating in planning | `agent:orchestrator,agent:architect`    |
-| `turn-count`           | Work Item / Summary | Total round-trip conversational turns across all participants        | `18`                                    |
-| `planning-duration-ms` | Work Item / Summary | Total elapsed wall-clock time for the planning sub-intent in milliseconds | `48200`                                 |
-| `total-tokens`         | Work Item / Summary | Aggregated token expenditure across all planning exchanges           | `45200`                                 |
-| `total-cost-usd`       | Work Item / Summary | Estimated financial API expenditure for planning in USD              | `0.1356`                                |
-| `conversation-verdict` | Work Item / Summary | Final planning conversation outcome classification                   | `approved` \| `reworked` \| `escalated` |
-| `fpsr`                 | Work Item / Summary | First-Pass Success Rate for pre-execution intent verification            | `1.0` \| `0.0`                          |
+| `parent-doc-id`        | Work Item / Summary | Points to the `doc-id` of the parent Intent Decomposition            | `WI-20260830T170936Z:02:DECOMP`           |
+| `metrics-ref`          | Work Item / Summary | Relative path to the Intent Conversation Metrics JSON                | `06_intent_conversation_metrics.json`     |
+| `agent-participants`   | Work Item / Summary | Comma-delimited list of all AI agent roles that took part in planning | `agent:orchestrator,agent:architect`    |
+| `turn-count`           | Work Item / Summary | Total round-trip turns of the conversation across all participants   | `18`                                    |
+| `planning-duration-ms` | Work Item / Summary | Total elapsed wall-clock time for the planning sub-intent, in milliseconds | `48200`                                 |
+| `total-tokens`         | Work Item / Summary | Total tokens spent across all planning exchanges                     | `45200`                                 |
+| `total-cost-usd`       | Work Item / Summary | Estimated money spent on the API for planning, in USD                | `0.1356`                                |
+| `conversation-verdict` | Work Item / Summary | Class of the final outcome of the planning conversation             | `approved` \| `reworked` \| `escalated` |
+| `fpsr`                 | Work Item / Summary | First-Pass Success Rate for pre-execution intent verification        | `1.0` \| `0.0`                          |
 
 ---
 
 ## 3. Required Sections & M3 Component Structure
 
-The Intent Conversation Summary document contains 7 standardized sections combining semantic XHTML elements, Material
-Design 3 Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Intent Conversation Summary document contains 7 standardized sections. Each section uses semantic XHTML elements and
+Material Design 3 Web Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data
+attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the summary with work item identification, status chip (`completed`), conversation verdict chip (`approved`),
-duration badge, total tokens badge, financial expenditure badge, and quick navigation links back to [
-`02_intent_decomposition.html`](intent-decomposition.md)
-and [
-`06_intent_conversation_metrics.json`](intent-conversation-metrics.md).
+This section starts the summary. It shows the work item identification, the status chip (`completed`), and the
+conversation verdict chip (`approved`). It shows badges for duration, total tokens, and money spent. It also gives quick navigation links
+back to [`02_intent_decomposition.html`](intent-decomposition.md) and
+[`06_intent_conversation_metrics.json`](intent-conversation-metrics.md).
 
 ### 3.2. Executive Planning Dialogue Synthesis & Decision Log
 
-Synthesizes the core trajectory of the planning session, articulating how the user requirements evolved into a validated
+This section summarizes the main path of the planning session. It explains how the user requirements became a validated
 engineering roadmap:
 
-- **Executive Dialogue Narrative:** Concise summary of the problem formulation, architectural consensus, and key risks
-  raised by participating agents.
-- **Chronological Dialogue Milestone Timeline:**
-    1. **Sub-Intent 1: Requirements Ingestion & Scope Clarification (Turns 1–4):** Ingested user prompt, queried existing
-       wiki standards, and resolved ambiguous auth requirements (Argon2id hashing vs bcrypt).
-    2. **Sub-Intent 2: Architectural Modeling & Trade-off Analysis (Turns 5–10):** Architect agent debated token storage
-       strategies (stateless JWT vs stateful Redis revocation), drafting Micro-ADR-001.
-    3. **Sub-Intent 3: Work Breakdown & Sub-Intent Decomposition (Turns 11–14):** Partitioned execution into 3 discrete sub-intents and
-       9 atomic units with deterministic prerequisites.
-    4. **Sub-Intent 4: Security & Validation Gating (Turns 15–16):** Security Auditor agent inspected target files and
-       verified OWASP password storage compliance.
-    5. **Sub-Intent 5: Plan Approval & Document Synthesis (Turns 17–18):** Pre-execution validation suite executed;
+- Executive Dialogue Narrative: A short summary of how the agents stated the problem, reached architecture consensus, and
+  raised the main risks.
+- Chronological Dialogue Milestone Timeline:
+    1. Stage 1: Requirements Ingestion & Scope Clarification (Turns 1–4): The agents read the user prompt, queried
+       the existing wiki standards, and resolved unclear auth requirements (Argon2id hashing vs bcrypt).
+    2. Stage 2: Architectural Modeling & Trade-off Analysis (Turns 5–10): The architect agent debated token storage
+       strategies (stateless JWT vs stateful Redis revocation) and drafted Micro-ADR-001.
+    3. Stage 3: Work Breakdown & Sub-Intent Decomposition (Turns 11–14): The agents divided execution into 3
+       separate sub-intents and 9 atomic units with deterministic prerequisites.
+    4. Stage 4: Security & Validation Gating (Turns 15–16): The Security Auditor agent inspected target files and
+       made sure that the password storage complied with OWASP.
+    5. Stage 5: Plan Approval & Document Synthesis (Turns 17–18): The pre-execution validation suite ran.
        `03_intent_verification.html` recorded `pass`.
-- **Architectural Decisions & Trade-offs Log:**
+- Architectural Decisions & Trade-offs Log:
 
 | Decision ID | Domain / Scope   | Adopted Architecture           | Rejected Alternative    | Core Rationale                                              | Deciding Agent              |
 |:------------|:-----------------|:-------------------------------|:------------------------|:------------------------------------------------------------|:----------------------------|
-| `ADR-001`   | Password Hashing | Argon2id ($m=65536, t=3, p=4$) | PBKDF2 / BCrypt         | OWASP 2026 recommended password storage baseline            | `agent:security-auditor`    |
-| `ADR-002`   | Token Revocation | DB-backed refresh token table  | In-memory Redis cluster | Avoids introducing new infrastructure dependency in Sub-Intent 1 | `agent:architect`           |
-| `ADR-003`   | Schema Migration | Flyway versioned SQL           | Hibernate auto-ddl      | Guarantees deterministic, auditable schema states in CI     | `agent:database-specialist` |
+| `ADR-001`   | Password Hashing | Argon2id ($m=65536, t=3, p=4$) | PBKDF2 / BCrypt         | OWASP 2026 recommended baseline for password storage        | `agent:security-auditor`    |
+| `ADR-002`   | Token Revocation | DB-backed refresh token table  | In-memory Redis cluster | Adds no new infrastructure dependency in Sub-Intent 1       | `agent:architect`           |
+| `ADR-003`   | Schema Migration | Flyway versioned SQL           | Hibernate auto-ddl      | Gives deterministic schema states in CI that you can audit  | `agent:database-specialist` |
 
 ### 3.3. High-Level Planning Telemetry & Metrics Rollup
 
-Presents an executive scorecard of planning economics, surfacing high-level KPIs linked directly to [
-`06_intent_conversation_metrics.json`](intent-conversation-metrics.md):
+This section shows a scorecard of planning economics for executives. It shows high-level KPIs that link directly to
+[`06_intent_conversation_metrics.json`](intent-conversation-metrics.md):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -246,132 +238,128 @@ Presents an executive scorecard of planning economics, surfacing high-level KPIs
 └───────────────────┴───────────────────┴───────────────────┴───────────────────┴─────────────┘
 ```
 
-- **Total Token Breakdown:** Input prompt tokens (32,100), completion tokens (13,100), and cached prompt tokens
-  (25,160).
-- **Economic Efficiency:** Total financial expenditure ($0.1356) and cost-per-planned-unit ($0.0151 / unit).
-- **Prompt Caching Effectiveness:** High cache read rate (78.4%) proving that system prompts, tool schemas, and
-  repository maps maintained stable prefix positions.
-- **Overhead Assessment:** Planning compute represented 14.2% of estimated execution tokens, comfortably within the
-  healthy 10%–25% target window.
+- Total Token Breakdown: Input prompt tokens (32,100), completion tokens (13,100), and cached prompt tokens (25,160).
+- Economic Efficiency: Total money spent ($0.1356) and cost for each planned unit ($0.0151 / unit).
+- Prompt Caching Effectiveness: A high cache read rate (78.4%). This proves that system prompts, tool schemas, and
+  repository maps kept stable prefix positions.
+- Overhead Assessment: Planning compute was 14.2% of the estimated execution tokens. This is inside the healthy target
+  window of 10%–25%.
 
 ### 3.4. LLM Conversational Performance & Trajectory Analysis
 
-Provides a rigorous qualitative and quantitative evaluation of how well the planning session performed from an LLM
-conversation perspective:
+This section gives a strict qualitative and quantitative evaluation of how well the planning session worked as an LLM
+conversation:
 
-- **Multi-Agent Collaboration & Role Specialization:**
-    - Evaluates how cleanly agent roles (Orchestrator, Architect, Security Auditor, Database Specialist) were preserved.
-    - Assesses whether agents respected hierarchy bounds, delegated sub-units efficiently, and avoided talking past each
-      other.
-    - Verifies that cross-agent handoffs utilized structured formats rather than conversational pleasantries.
-- **Trajectory Directness & Convergence Velocity:**
-    - Measures the directness of the path from initial prompt to approved plan.
-    - Evaluates **Turns-to-Plan-Approval** (18 turns vs $\le 15$ turn optimal benchmark).
-    - Confirms zero circular argument loops; each turn advanced the specification state monotonically.
-- **Context Window Discipline & Prompt Economy:**
+- Multi-Agent Collaboration & Role Specialization:
+    - Evaluates how clearly the agents kept their roles (Orchestrator, Architect, Security Auditor, Database
+      Specialist).
+    - Evaluates whether agents stayed inside hierarchy bounds, delegated sub-units efficiently, and understood each other.
+    - Makes sure that handoffs between agents used structured formats, not conversational pleasantries.
+- Trajectory Directness & Convergence Velocity:
+    - Measures how direct the path was from the first prompt to the approved plan.
+    - Evaluates Turns-to-Plan-Approval (18 turns vs an optimal benchmark of $\le 15$ turns).
+    - Makes sure that there are zero circular argument loops. Each turn moved the specification state forward and never back.
+- Context Window Discipline & Prompt Economy:
     - Measures the Context Accumulation Rate ($\Delta\text{Tokens}/\text{Turn} = 1,180$ tokens/turn, safely linear).
-    - Confirms that agents did not perform unrestricted repository dumping or dump raw unparsed build logs.
-- **Specification Precision & First-Pass Quality:**
-    - Highlights the **Plan First-Pass Approval Rate (FPSR: 100%)**: `03_intent_verification.html` passed on the very first
-      evaluation without requiring plan rework turns.
-    - 100% of requirement IDs (`EV-001`, `EV-002`) were bound to concrete units, classes, and verification commands.
+    - Makes sure that agents did not dump the repository without limits or dump raw unparsed build logs.
+- Specification Precision & First-Pass Quality:
+    - Shows the Plan First-Pass Approval Rate (FPSR: 100%). `03_intent_verification.html` passed on the first
+      evaluation, with no plan rework turns.
+    - 100% of requirement IDs (`EV-001`, `EV-002`) had a link to specific units, classes, and verification commands.
 
 ### 3.5. Conversational Friction & Inefficiency Post-Mortem
 
-To ensure continuous harness optimization, this section honestly audits all friction points and micro-inefficiencies
-encountered during the dialogue:
+This section supports continuous improvement of the harness. It audits all friction points and small inefficiencies in
+the dialogue honestly:
 
-- **Identified Friction Points:**
-    1. *Redundant File Inspection:* `agent:architect` and `agent:database-specialist` both executed independent read
-       calls against `pom.xml` in consecutive turns, consuming ~1,400 redundant input tokens.
-    2. *Schema Exploration Churn:* 3 exploration turns were spent surveying repository directories via broad
-       `find_by_name` queries when a structured repository symbol map would have delivered the target classes in 1 turn.
-    3. *Minor Parameter Hesitation:* In turn 8, the architect re-queried the database schema because table foreign key
-       relationships were not captured in the initial tool return payload.
+- Identified Friction Points:
+    1. Redundant File Inspection: `agent:architect` and `agent:database-specialist` both made separate read calls against
+       `pom.xml` in consecutive turns. This used ~1,400 redundant input tokens.
+    2. Schema Exploration Churn: The agents spent 3 exploration turns on broad `find_by_name` queries over repository
+       directories. A structured repository symbol map can deliver the target classes in 1 turn.
+    3. Minor Parameter Hesitation: In turn 8, the architect queried the database schema again. The first tool return
+       payload did not include the foreign key relationships of the tables.
 
 ### 3.6. Suggested Improvements to AI Components
 
-Based on the conversational performance and friction analysis, this section delivers concrete, actionable architectural
-recommendations to optimize the participating AI components for future work items.
+This section uses the analysis of conversation performance and friction. It gives specific architecture recommendations
+that teams can act on, to improve the AI components that took part, for future work items.
 
 #### 3.6.1. Model Selection, Routing & Right-Sizing
 
-- **Enforce Smallest-Capable Model Routing:**
-    - Many exploration and file-reading turns during planning were executed using top-tier frontier models (`pro`).
-    - *Recommendation:* Route low-complexity discovery steps (reading existing configs, directory listing, symbol
-      lookups) to lightweight models (`flash` or `flash_lite`).
-    - Keep AI components as small and lightweight as possible, reserving large reasoning models strictly for
-      architectural trade-offs, Micro-ADR drafting, and security reviews.
-- **Dynamic Reasoning Effort:**
-    - Set reasoning effort to `low` or `medium` during straightforward unit manifest decomposition, reserving `high`
-      reasoning effort for multi-sub-intent dependency DAG resolution.
+- Enforce Smallest-Capable Model Routing:
+    - Top-tier frontier models (`pro`) ran many exploration and file-reading turns during planning.
+    - Recommendation: Send low-complexity discovery steps (reading existing configuration files, directory listing,
+      symbol lookups) to lightweight models (`flash` or `flash_lite`).
+    - Keep AI components as small and light as possible. Use large reasoning models only for architecture trade-offs,
+      Micro-ADR drafting, and security reviews.
+- Dynamic Reasoning Effort:
+    - Set reasoning effort to `low` or `medium` for simple unit manifest decomposition. Use `high` reasoning effort only
+      for the dependency DAG across many sub-intents.
 
 #### 3.6.2. Agent Personas, System Prompts & Delegation Protocols
 
-- **Sharpen Role Boundaries:**
-    - Provide explicit negative constraints in system prompts (e.g., instructing `agent:architect` to never query
-      migration files directly if `agent:database-specialist` is active in the session).
-- **Structured Proposal Protocols:**
-    - Mandate that multi-agent proposals (e.g., proposing an ADR or schema change) be transmitted between agents in
-      compact JSON envelopes rather than natural language paragraphs, reducing turn completion tokens by an estimated
+- Sharpen Role Boundaries:
+    - Give explicit negative constraints in system prompts. For example, if `agent:database-specialist` is active in the
+      session, tell `agent:architect` to never query migration files directly.
+- Structured Proposal Protocols:
+    - Require agents to send multi-agent proposals (for example, a proposed ADR or schema change) to each other in
+      compact JSON envelopes, not in natural language paragraphs. This reduces turn completion tokens by an estimated
       25%–35%.
-- **Zero-Pleasantry Invariance:**
+- Zero-Pleasantry Invariance:
     - System instructions must forbid conversational fillers ("Certainly! I will now examine...", "Great point! Let's
-      proceed to..."), ensuring raw technical information density.
+      proceed to..."). This keeps the density of raw technical information high.
 
 #### 3.6.3. Custom Skills & Procedural Guidance Packages
 
-- **Author Missing Domain Skills:**
-    - When agents spend multiple turns debating standard industry patterns (e.g., Spring Security JWT filter chains),
-      package those patterns into dedicated skills under `.agents/skills/` (e.g., `skill:spring-boot-jwt-auth`).
-    - Loading a pre-authored skill provides instant, battle-tested boilerplate, eliminating 4–6 conversational discovery
-      turns.
-- **Upfront Edge-Case Playbooks:**
-    - Equip planning agents with a generalized `skill:edge-case-cataloger` that automatically prompts for token expiry,
-      race conditions, null safety, and timezone handling during the initial requirements pass.
+- Author Missing Domain Skills:
+    - If agents spend many turns debating standard industry patterns (for example, Spring Security JWT filter chains),
+      put those patterns into dedicated skills under `.agents/skills/` (for example, `skill:spring-boot-jwt-auth`).
+    - A skill that someone wrote before gives tested boilerplate at once. It removes 4–6 discovery turns from the
+      conversation.
+- Upfront Edge-Case Playbooks:
+    - Give planning agents a general `skill:edge-case-cataloger`. During the first requirements pass, it automatically
+      asks about token expiry, race conditions, null safety, and timezone handling.
 
 #### 3.6.4. Coding Tools & MCP Server Ergonomics
 
-- **Harness-Level Tool Call Caching:**
-    - Implement a session-scoped in-memory cache for read-only tool calls (`view_file`, `grep_search`). If an agent
-      requests an unmodified file that another agent already read in the same planning session, return the cached result
-      instantly with zero OS overhead.
-- **AST Outline Viewers over Raw File Dumps:**
-    - Enhance code search MCP servers to provide AST class and method signatures rather than full file source code
-      during architectural discovery, saving 80%+ tokens per file read.
-- **Enriched Schema Payloads:**
-    - Upgrade database inspection tools to return foreign key constraints and index definitions alongside table columns
-      in a single invocation, eliminating follow-up inquiry turns.
+- Harness-Level Tool Call Caching:
+    - Implement an in-memory cache, scoped to the session, for read-only tool calls (`view_file`, `grep_search`). If an
+      agent requests an unmodified file that another agent already read in the same planning session, return the cached
+      result at once with zero OS overhead.
+- AST Outline Viewers over Raw File Dumps:
+    - Change code search MCP servers to give AST class and method signatures, not the full source code of the file,
+      during architecture discovery. This saves 80%+ tokens for each file read.
+- Enriched Schema Payloads:
+    - Change database inspection tools to return foreign key constraints and index definitions together with table
+      columns in one call. This removes follow-up question turns.
 
 #### 3.6.5. Prompt Caching & Prefix Stability Optimization
 
-- **Strict Prefix Hierarchy:**
-    - Ensure the harness arranges prompts in immutable prefix order:
+- Strict Prefix Hierarchy:
+    - Make sure that the harness puts prompts in this fixed prefix order:
         1. System Prompts & Behavioral Invariants
         2. MCP Tool Definitions & Parameter Schemas
         3. Static Project Wiki Guidelines & Code Conventions
         4. Active Ephemeral Conversation History
-    - Moving dynamic project timestamps or random session IDs out of the prefix block ensures cache read hit rates
-      exceed 85% across all planning turns.
+    - Move dynamic project timestamps and random session IDs out of the prefix block. This keeps cache read hit rates
+      above 85% across all planning turns.
 
 ### 3.7. Downstream Execution Handoff & Plan Approval Sign-off
 
-Formal sign-off authorizing the transition from planning to execution:
+This section is the formal sign-off that authorizes the move from planning to execution:
 
-- **Intent Verification Confirmation:** [
-  `03_intent_verification.html`](intent-verification.md)
-  verdict confirmed as `PASS`.
-- **Ledger Status:** [
-  `03_intent_ledger.json`](intent-ledger.md)
-  updated to `status: "in_progress"`.
-- **Sub-Intent 1 Activation:** Sub-Intent `sub_intent_01_database_migration` authorized for immediate worker agent activation.
+- Intent Verification Result: The verdict of [`03_intent_verification.html`](intent-verification.md) is `PASS`.
+- Ledger Status: [`03_intent_ledger.json`](intent-ledger.md) changes to `status: "in_progress"`.
+- Sub-Intent 1 Activation: Sub-Intent `sub_intent_01_database_migration` is authorized for immediate worker agent
+  activation.
 
 ---
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Downstream orchestrators, CLI tools, and platform analytics extract exact narrative and telemetry fragments from
-`05_intent_conversation_summary.html` using targeted XPath queries:
+Downstream orchestrators, CLI tools, and platform analytics use targeted XPath queries to extract exact narrative and
+telemetry fragments from `05_intent_conversation_summary.html`:
 
 ### Querying Conversation Verdict & Approval Status
 
@@ -407,7 +395,7 @@ Downstream orchestrators, CLI tools, and platform analytics extract exact narrat
 
 ## 5. Lineage, Rollup & Ledger Integration
 
-The plan conversation summary links planning interactions to execution reality:
+The plan conversation summary links the planning interactions to what happened in execution:
 
 ```mermaid
 graph TD
@@ -419,31 +407,28 @@ graph TD
     SUM -->|" Rollup to Final Sign-off "| WSUM["04_intent_summary.html"]
 ```
 
-- **Ledger Pointer:** Referenced in [
-  `03_intent_ledger.json`](intent-ledger.md)
-  under root work item metadata.
-- **Summary Link:** Cited in [
-  `04_intent_summary.html`](intent-summary.md) as the
-  authoritative planning post-mortem.
-- **Metrics Pairing:** Binds bi-directionally with [
-  `06_intent_conversation_metrics.json`](intent-conversation-metrics.md).
+- Ledger Pointer: [`03_intent_ledger.json`](intent-ledger.md) refers to this document in the root work item metadata.
+- Summary Link: [`04_intent_summary.html`](intent-summary.md) cites this document as the authoritative planning
+  post-mortem.
+- Metrics Pairing: This document links in both directions with
+  [`06_intent_conversation_metrics.json`](intent-conversation-metrics.md).
 
 ---
 
 ## 6. Rules & Constraints
 
-1. **Truthful Synthesis:** Narrative summaries and decision logs must faithfully reflect the actual interactions
-   recorded in `plan_conversation.jsonl`; agents must not invent unrecorded consensus.
-2. **Strict Metrics Alignment:** High-level token counts, duration, costs, and cache hit percentages cited in
-   `05_intent_conversation_summary.html` must match the numerical data in [
-   `06_intent_conversation_metrics.json`](intent-conversation-metrics.md)
-   exactly.
-3. **Mandatory AI Improvements Section:** Every plan conversation summary must include actionable recommendations for
-   improving AI components (model routing, prompts, skills, tools, cache).
-4. **Current-State Prescriptive Architecture:** Recommendations must be concrete and technical, directly applicable to
-   future harness runs.
-5. **Strict XHTML Conformance:** `05_intent_conversation_summary.html` must parse as valid XML
-   (`xmlns="http://www.w3.org/1999/xhtml"`), with all tags closed, attributes quoted, and ampersands escaped (`&amp;`).
+1. Truthful Synthesis: Narrative summaries and decision logs must reflect exactly the interactions that
+   `plan_conversation.jsonl` records. Agents must not invent consensus that the transcript does not record.
+2. Strict Metrics Alignment: The high-level token counts, duration, costs, and cache hit percentages in
+   `05_intent_conversation_summary.html` must match the numbers in
+   [`06_intent_conversation_metrics.json`](intent-conversation-metrics.md) exactly.
+3. Mandatory AI Improvements Section: Every plan conversation summary must include recommendations that teams can act on
+   to improve AI components (model routing, prompts, skills, tools, cache).
+4. Current-State Prescriptive Architecture: Recommendations must be specific and technical, and apply directly to future
+   harness runs.
+5. Strict XHTML Conformance: `05_intent_conversation_summary.html` must parse as valid XML
+   (`xmlns="http://www.w3.org/1999/xhtml"`). All tags must be closed, attributes quoted, and ampersands escaped
+   (`&amp;`).
 
 ---
 
@@ -451,6 +436,8 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                          | Source                |
 |:-----------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------|
+| 2026-11-25 | 1.2.1 | Rewrote the prose in plain English. No change to the design. | User request |
+| 2026-11-25 | 1.2.0 | Updated the roles of the intent specification and the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 1.1.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Intent Conversation Summary (`05_intent_conversation_summary.html`) establishing the decision log schema, high-level metrics scorecard, LLM conversation performance evaluation, and AI component improvement framework. | Feature Specification |
 | 2026-08-30 | 0.1.0   | Initial baseline stub in document catalog.                                                                                                                                                                                                           | Initial Specification |

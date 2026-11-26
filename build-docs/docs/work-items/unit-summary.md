@@ -1,33 +1,33 @@
 # Unit Summary Document Definition
 
 The Unit Summary Document (`units/{unit_id}/summary.html`) is the authoritative Tier 3 post-execution record in the
-`brevio` work item lifecycle. It documents the tangible outcomes of an atomic unit: the exact source code files created
-and modified, unified git diff metrics, commit references, verification assertions from `verification.html`, and token
-consumption telemetry.
+`brevio` work item lifecycle. It records the real outcomes of an atomic unit: the exact source code files created and
+modified, the unified git diff metrics, and the commit references. It also records the verification assertions from
+`verification.html` and the token use telemetry.
 
-Unit summary closes the loop on atomic unit execution, providing an immutable audit trail from declared goal to code
-commits.
+The unit summary closes the loop on atomic unit execution. It gives an immutable audit trail from the declared goal to
+the code commits.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) to present diff statistics, file touchpoint cards, commit metadata, and
-   telemetry badges without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for automated ledger updates, sub-intent rollups, and PR preparation.
+1. Human Interface: The document renders as a local, interactive, static XHTML web page. It uses Material Design 3 Web
+   Components (`@material/web`, M3) and needs no client-side bundler or build step. The page shows diff statistics,
+   file touchpoint cards, commit metadata, and telemetry badges.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. Tools use it for automated ledger updates, sub-intent rollups, and PR preparation.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Unit Summaries
 
-In `brevio`, unit summaries document execution compliance against the four foundational dimensions:
+In `brevio`, unit summaries record execution compliance against the four basic dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Unit Summary Manifestation                                                                                                           |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally catalogs the exact files created, modified, and deleted, verifying zero unauthorized changes to protected or "do not touch" files. |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Isolates code changes and git diff metrics strictly to the atomic unit's bounded responsibility, ensuring no cross-unit scope pollution.    |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Surfaces deterministic verification evidence: process exit codes, test pass rates, lint compliance, and automated test coverage deltas.     |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Audits execution against the upfront edge case catalog (`EC-###`), verifying that all negative scenarios and boundary tests were satisfied. |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally lists the exact files created, modified, and deleted. Makes sure that no protected or "do not touch" file has an unauthorized change. |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Keeps code changes and git diff metrics strictly inside the bounded responsibility of the atomic unit. No scope pollution crosses units.    |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Shows deterministic verification evidence: process exit codes, test pass rates, lint compliance, and changes in automated test coverage. |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Audits execution against the edge case catalog that the plan listed (`EC-###`). Makes sure that the work satisfied all negative scenarios and boundary tests. |
 
 ---
 
@@ -51,8 +51,8 @@ In `brevio`, unit summaries document execution compliance against the four found
 
 ## 1. File Location & Organization Standard
 
-Each unit summary document resides directly inside its isolated unit directory, paired with its specification and
-validation documents:
+Each unit summary document is directly inside its isolated unit directory, next to its specification and validation
+documents:
 
 ```text
 .brevio/
@@ -70,18 +70,18 @@ validation documents:
                         └── metrics.json            # Token & Latency Telemetry
 ```
 
-- **File Name:** `summary.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `summary.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `summary.html` begins with universal baseline `<meta>` tags, unit outcome tags, file paths, and the Material Web
-ES module importmap loader:
+Every `summary.html` starts with the universal baseline `<meta>` tags, the unit outcome tags, the file paths, and the
+Material Web ES module importmap loader:
 
 ```xhtml
 
@@ -135,98 +135,100 @@ ES module importmap loader:
 
 | Metadata Tag            | Scope          | Purpose                                                | Example                             |
 |:------------------------|:---------------|:-------------------------------------------------------|:------------------------------------|
-| `unit-id`               | Unit / Summary | Unique unit directory identifier                       | `unit_001_create_tables`            |
-| `sub-intent-id`              | Unit / Summary | Parent sub-intent directory identifier                      | `sub_intent_01_database_migration`       |
-| `parent-doc-id`         | Unit / Summary | Points to the parent Intent Unit Specification `doc-id`       | `WI-20260830T170936Z:S01:U001:SPEC` |
-| `unit-verdict`          | Unit / Summary | Final outcome classification of unit execution         | `success` \| `failed`               |
-| `execution-duration-ms` | Unit / Summary | Total elapsed time for unit execution in milliseconds  | `26200`                             |
+| `unit-id`               | Unit / Summary | Unique identifier of the unit directory                | `unit_001_create_tables`            |
+| `sub-intent-id`              | Unit / Summary | Identifier of the parent sub-intent directory     | `sub_intent_01_database_migration`       |
+| `parent-doc-id`         | Unit / Summary | Points to the `doc-id` of the parent Intent Unit Specification | `WI-20260830T170936Z:S01:U001:SPEC` |
+| `unit-verdict`          | Unit / Summary | Class of the final outcome of unit execution           | `success` \| `failed`               |
+| `execution-duration-ms` | Unit / Summary | Total elapsed time for unit execution, in milliseconds | `26200`                             |
 | `files-created`         | Unit / Summary | Comma-delimited relative paths of new source files     | `src/db/V1__init.sql`               |
 | `files-modified`        | Unit / Summary | Comma-delimited relative paths of edited source files  | `src/app/User.java`                 |
-| `commit-hash`           | Unit / Summary | Git commit SHA containing the atomic unit code changes | `a86d7c2ca972b77f...`               |
-| `diff-ref`              | Unit / Summary | Relative path pointer to the unit's unified diff patch | `intent.diff`                         |
-| `metrics-ref`           | Unit / Summary | Relative path pointer to the unit's token metrics JSON | `metrics.json`                      |
-| `conversation-ref`      | Unit / Summary | Relative path pointer to the unit's conversation JSONL | `conversation.jsonl`                |
+| `commit-hash`           | Unit / Summary | SHA of the git commit that contains the code changes of the atomic unit | `a86d7c2ca972b77f...`               |
+| `diff-ref`              | Unit / Summary | Relative path to the unified diff patch of the unit    | `intent.diff`                         |
+| `metrics-ref`           | Unit / Summary | Relative path to the token metrics JSON of the unit    | `metrics.json`                      |
+| `conversation-ref`      | Unit / Summary | Relative path to the conversation JSONL of the unit    | `conversation.jsonl`                |
 
 ---
 
 ## 3. Required Sections & M3 Component Structure
 
-The Unit Summary document contains 8 standardized sections combining semantic XHTML elements, Material Design 3 Web
-Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Unit Summary document contains 8 standardized sections. Each section uses semantic XHTML elements and Material
+Design 3 Web Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data attributes
+(`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the unit summary document with the work item ID, sub-intent ID, unit ID, execution outcome chip (`success`,
-`failed`), commit hash chip, duration, and navigation link back to `intent_unit_spec.html`.
+This section starts the document. It shows the work item ID, the sub-intent ID, the unit ID, and the execution outcome
+chip (`success`, `failed`). It also shows the commit hash chip, the duration, and a navigation link back to
+`intent_unit_spec.html`.
 
 ### 3.2. Unit Execution Outcome & Verdict Summary
 
-Executive summary of the completed atomic work:
+This section is the executive summary of the completed atomic work:
 
-- **Verdict Banner:** High-contrast indicator displaying `SUCCESS` or `FAILED`.
-- **Solution Narrative:** Summary of the concrete technical solution delivered, symbols created, and schemas
-  applied.
-- **Precondition vs. Postcondition State:** Proof that expected postconditions were achieved on the filesystem.
+- Verdict Banner: A high-contrast indicator that shows `SUCCESS` or `FAILED`.
+- Solution Narrative: A summary of the specific technical solution that the unit delivered, the symbols it created, and
+  the schemas it applied.
+- Precondition vs. Postcondition State: Proof that the file system reached the expected postconditions.
 
 ### 3.3. File Modification Manifest & Diff Metrics
 
-Granular breakdown of source code modifications:
+This section gives a detailed breakdown of the source code changes:
 
 | File Path                                           | Change Type | Lines Added | Lines Deleted | Net Delta | Language |
 |:----------------------------------------------------|:------------|:------------|:--------------|:----------|:---------|
 | `src/main/resources/db/migration/V1__init_auth.sql` | `CREATED`   | +48         | -0            | +48       | SQL      |
 | `src/test/resources/fixtures/auth_seed.sql`         | `MODIFIED`  | +12         | -2            | +10       | SQL      |
 
-- **Diff View:** Syntax-highlighted unified diff snippets illustrating key structural modifications.
+- Diff View: Syntax-highlighted unified diff snippets that show the main structural changes.
 
 ### 3.4. Git Commit & Repository State
 
-Records the version control metadata for the change:
+This section records the version control metadata for the change:
 
-- **Git Commit Hash:** Full 40-character SHA and short hash.
-- **Commit Message:** Formatted commit message adhering to project commit standards (e.g.,
+- Git Commit Hash: The full 40-character SHA and the short hash.
+- Commit Message: A formatted commit message that follows the project commit standards (for example,
   `feat(auth): add users and refresh_tokens migration`).
-- **Working Tree Cleanliness:** Assertion that the git working tree was left clean after the commit.
+- Working Tree Cleanliness: An assertion that the git working tree was clean after the commit.
 
 ### 3.5. Verification & Assertion Rollup
 
-Synthesizes the validation results recorded in `verification.html`:
+This section summarizes the validation results that `verification.html` records:
 
-- **Process Exit Code:** Verification that all terminal commands returned exit code `0`.
-- **Assertion Scorecard:** Total assertions evaluated, passed, and failed (`8 passed, 0 failed`).
-- **Code Coverage Delta:** Net test coverage change resulting from the unit (`+2.4%`).
+- Process Exit Code: Makes sure that all terminal commands returned exit code `0`.
+- Assertion Scorecard: The total assertions evaluated, passed, and failed (`8 passed, 0 failed`).
+- Code Coverage Delta: The net change in test coverage that the unit caused (`+2.4%`).
 
 ### 3.6. Context & "Do Not Touch" Compliance Sign-off
 
-Audits and proves adherence to context boundaries:
+This section audits and proves that the work stayed inside its context boundaries:
 
-- **Boundary Compliance:** Confirmation that zero files outside `target-files` were touched.
-- **"Do Not Touch" Sign-off:** Assertion that all protected files and frozen API signatures remained untouched.
+- Boundary Compliance: A statement that zero files outside `target-files` were touched.
+- "Do Not Touch" Sign-off: An assertion that all protected files and frozen API signatures stayed untouched.
 
 ### 3.7. Edge Case Satisfaction Audit
 
-Cross-references each upfront edge case from `intent_unit_spec.html` (`EC-001` through `EC-004`) with verified outcomes:
+This section compares each edge case that `intent_unit_spec.html` listed (`EC-001` through `EC-004`) with the verified
+outcomes:
 
-- Confirmation that duplicate keys, null tokens, cascade deletes, and timezone offsets behave according to spec.
+- A statement that duplicate keys, null tokens, cascade deletes, and timezone offsets behave as the specification
+  states.
 
 ### 3.8. Token & Execution Telemetry Summary
 
-Links execution cost and latency telemetry:
+This section links the execution cost and latency telemetry:
 
-- **Duration:** Wall-clock execution time in milliseconds.
-- **Tokens Used:** Prompt, completion, and cache tokens consumed.
-- **Estimated Cost:** API expenditure in USD.
-- **Telemetry Links:** Links to [
-  `intent.diff`](intent-diff.md), [
-  `metrics.json`](unit-conversation-metrics.md),
-  and [`conversation.jsonl`](unit-conversation.md).
+- Duration: Wall-clock execution time, in milliseconds.
+- Tokens Used: The prompt, completion, and cache tokens used.
+- Estimated Cost: The API cost, in USD.
+- Telemetry Links: Links to [`intent.diff`](intent-diff.md), [`metrics.json`](unit-conversation-metrics.md), and
+  [`conversation.jsonl`](unit-conversation.md).
 
 ---
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Downstream orchestrators, ledger synchronizers, and PR authoring agents query specific summary fragments via targeted
-XPath:
+Downstream orchestrators, ledger synchronizers, and PR authoring agents use targeted XPath to query specific summary
+fragments:
 
 ### Querying Unit Verdict & Commit Hash
 
@@ -264,6 +266,7 @@ XPath:
 
 | Date       | Version | Description                                                                                                                                                                                                              | Source                           |
 |:-----------|:--------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.3.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 0.3.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.2.0   | Integrated `intent.diff` reference in file structure, metadata header (`diff-ref`), and artifact links.                                                                                                                    | [Work Item Documents](README.md) |
 | 2026-09-06 | 0.1.0   | Initial canonical unit summary specification (`summary.html`) detailing the 4-dimension paradigm (context diffs, atomic boundaries, validation rollups, edge case satisfaction), git commit tracking, and XPath queries. | [Work Item Documents](README.md) |

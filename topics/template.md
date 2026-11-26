@@ -16,7 +16,7 @@
 ## 1. Problem Statement & Context
 
 ### 1.1 Problem Description
-What specific problem, feature set, or architectural gap are we addressing?
+What specific problem, feature set, or architectural gap does this topic solve?
 
 ### 1.2 Context & Trigger
 Why are we discussing this now during the product ideation stage? What background or constraints are relevant?
@@ -36,10 +36,10 @@ Why are we discussing this now during the product ideation stage? What backgroun
 ---
 
 ## 3. Token Optimization & Performance Impact
-*`brevio` prioritizes minimizing LLM token consumption and maximizing development velocity through local processing.*
+*`brevio` uses local processing to use as few LLM tokens as possible and to make development as fast as possible.*
 
-- **Context Window & Token Economics**: How does this design impact input/output tokens? Does it avoid loading unneeded documentation?
-- **Speed & Latency**: Does this enable local parsing (e.g. XPath / XHTML queries) or fast offline command execution?
+- **Context Window & Token Economics**: How does this design affect input/output tokens? Does it avoid the load of documentation that is not necessary?
+- **Speed & Latency**: Does this make local parsing (for example, XPath / XHTML queries) or fast offline command execution possible?
 
 ---
 
@@ -84,27 +84,27 @@ Why are we discussing this now during the product ideation stage? What backgroun
 ---
 
 ## 7. Decision & Rationale
-*(Complete when updating status to `DECIDED`)*
+*(When you change the status to `DECIDED`, complete this section.)*
 
-- **Decision**: Selected approach (e.g., Option A, Option B, or Hybrid).
-- **Core Rationale**: Why was this chosen over the alternatives?
-- **Accepted Trade-offs**: What limitations or additional complexities did we consciously accept?
+- **Decision**: Selected approach (for example, Option A, Option B, or Hybrid).
+- **Core Rationale**: Why did the team choose this over the alternatives?
+- **Accepted Trade-offs**: What limits or added complexity did the team knowingly accept?
 - **Decision Date**: YYYY-MM-DD
 - **Sign-off**: @stakeholder1, @stakeholder2
 
 ---
 
 ## 8. Build-Docs Conversion Plan
-*(Complete during transition from `DECIDED` to `GRADUATED`)*
+*(Complete this section during the transition from `DECIDED` to `GRADUATED`.)*
 
 ### 8.1 Target Build-Docs Destinations
-- [ ] Destination: `build-docs/...` (e.g. `build-docs/cli/README.md`)
+- [ ] Destination: `build-docs/...` (for example, `build-docs/cli/README.md`)
 
 ### 8.2 Specification Authoring Checklist
 - [ ] Drafted normative, prescriptive technical specifications.
-- [ ] Verified compliance with [`build-docs/README.md`](../build-docs/README.md) rules:
-  - [ ] Content represents the **current state** of the design.
-  - [ ] Content is **strictly void** of references to past decisions, debate, or rejected alternatives (those remain here in this topic).
-- [ ] Added entry to the `## Revisions` table in the target build-doc referencing this `TOPIC-###`.
+- [ ] Made sure that the content follows the rules in [`build-docs/README.md`](../build-docs/README.md):
+  - [ ] Content shows the current state of the design.
+  - [ ] Content contains no references to past decisions, debate, or rejected alternatives (those stay here in this topic).
+- [ ] Added an entry to the `## Revisions` table in the target build-doc. The entry references this `TOPIC-###`.
 - [ ] Updated status in this topic to `GRADUATED`.
 - [ ] Updated Topic Registry table in [`topic-registry.md`](topic-registry.md).

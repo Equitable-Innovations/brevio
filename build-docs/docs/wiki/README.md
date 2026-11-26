@@ -695,8 +695,8 @@ A call that tries one of them returns `forbidden`.
 
 ## Token Optimization & XPath Query Patterns
 
-An agent that works on a unit needs the rules for the files in its Target Scope and perhaps one architecture section.
-It does not need the full wiki.
+An agent that works on a unit needs the rules for the files in its Target Scope. In some cases, it also needs one
+architecture section. It does not need the full wiki.
 
 ```
 Full Wiki Ingestion:
@@ -799,8 +799,8 @@ graph LR
 
 ## Rules & Constraints
 
-1. Current state design: this document represents the current state of the design. Historical deliberations are
-   recorded in [`topics/`](../../../topics/README.md).
+1. Current state design: this document represents the current state of the design. The
+   [`topics/`](../../../topics/README.md) directory records the historical deliberations.
 2. Single source of truth: the XHTML page is the content. No other file holds a copy of the content of a page.
 3. Index ownership: only `brevio wiki` commands write `index.json` and `index.html`. No person and no agent edits them by
    hand.
@@ -821,7 +821,7 @@ graph LR
 13. No secrets: a page must not contain credentials, tokens, keys, or personal data. The Setup Guide names environment
     variables and does not hold their secret values.
 14. Assets: an asset lives in `assets/` and is never larger than 1 MiB.
-15. Revision tracking: document revision history is tracked only in the `## Revisions` table at the bottom of each
+15. Revision tracking: each document tracks its revision history only in the `## Revisions` table at the bottom of the
     document.
 
 ---
@@ -830,5 +830,6 @@ graph LR
 
 | Date       | Version | Description                                                                                                                                                                                                                                   | Source           |
 |:-----------|:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|
+| 2026-11-25 | 0.2.1   | Rewrote the prose in plain English. No change to the design.                                                                                                                                                                                  | User request     |
 | 2026-11-04 | 0.2.0   | Full domain specification. It adds the authoring model, the wiki structure, the lifecycle, and the review state. It also adds the document catalog, `index.json`, metadata, body sections, UI rules, commands, XPath patterns, and traceability. | TOPIC-002        |
 | 2026-08-30 | 0.1.0   | Initial placeholder.                                                                                                                                                                                                                          | Initial Document |

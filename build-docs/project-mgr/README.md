@@ -175,9 +175,9 @@ flowchart LR
 | `DRAFT` | The epic names its FSD requirements. No work item exists yet. |
 | `ACTIVE` | At least one work item is past `BACKLOG`. |
 | `RESOLVED` | Every work item is `DONE` or `CANCELLED`, and at least one is `DONE`. |
-| `CANCELLED` | The epic is unnecessary or superseded. The reason is recorded in the file. |
+| `CANCELLED` | The epic is unnecessary or superseded. The file records the reason. |
 
-An epic cannot become `RESOLVED` while a child work item is open. This rule rolls the health of children up to the parent.
+An epic cannot become `RESOLVED` while a child work item is open. With this rule, the state of the parent shows the state of its children.
 
 ### Milestone
 
@@ -242,7 +242,7 @@ Verification and review produce findings. A finding that needs a fix returns its
 
 The ledger counts each return to remediation in the `retries` field of the unit. The retry budget is 3 by default. When `retries` exceeds the budget, the ledger places a `retry_budget_exceeded` hold on the unit and on its parent sub-intent.
 
-`project-mgr` reads that hold and acts on it.
+`project-mgr` reads that hold and acts on it as follows:
 
 - The work item moves to `BLOCKED`.
 - A named human must approve a new approach before the work item returns to `IN_PROGRESS`.
@@ -264,7 +264,7 @@ If every gate passes, the milestone moves from `GATED` to `RELEASED`. If any gat
 | Coverage | Every `PRD-REQ` inside the milestone boundary leads to at least one `DONE` work item. |
 | Authorization | A named human authorizes the release. |
 
-The agent can run the first four gates. The agent cannot pass the Authorization gate. The result of each gate is recorded in the milestone document.
+The agent can run the first four gates. The agent cannot pass the Authorization gate. The milestone document records the result of each gate.
 
 ---
 
@@ -389,6 +389,7 @@ The MCP server exposes the same operations. It calls the same code as the CLI.
 
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
+| 2026-11-25 | 0.2.2 | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-04 | 0.2.1 | Removed the link to the SDK & API domain from the scope statement. | TOPIC-004 |
 | 2026-11-04 | 0.2.0 | Removed the REST API from the report path, the operations statement, and the subsystem table. | Removal of the REST API |
 | 2026-11-01 | 0.1.0 | Initial specification of project-mgr: PRD and FSD, work hierarchy, epics, milestones, dependency graph, remediation loop, release gates, traceability matrix, and command surface. | TOPIC-006 |

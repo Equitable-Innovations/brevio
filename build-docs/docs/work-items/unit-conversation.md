@@ -1,43 +1,42 @@
 # Unit Conversation Log Document Definition
 
-The **Unit Conversation Log Document** (`units/{unit_id}/conversation.jsonl`) is the authoritative Tier 3 interaction
-record in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It provides an immutable, append-only,
-turn-by-turn log of the entire agentic LLM dialogue, system prompts, reasoning traces, tool executions, terminal command
-streams, and verification feedback from atomic unit activation through unit closure.
+The Unit Conversation Log Document (`units/{unit_id}/conversation.jsonl`) is the authoritative Tier 3 interaction
+record for one unit. It is part of the work item lifecycle of `brevio` (Token Optimized Software Harness). It is an immutable, append-only log of
+each turn, from atomic unit activation to unit closure. It covers the full agent LLM dialogue, system prompts, reasoning
+traces, tool executions, terminal command streams, and verification feedback.
 
-In `brevio`, unit conversation logs are not mere debugging dumps. They form the foundational telemetry data lake powering
-**systemic feedback loops**, including:
+In `brevio`, unit conversation logs are more than debugging dumps. They are the telemetry data lake that drives
+systemic feedback loops. These loops include:
 
-- **Offline Model Fine-Tuning & Distillation (SFT/DPO):** Mining successful execution trajectories for high-performance
-  coding models.
-- **Harness Tool Ergonomics Optimization:** Pinpointing confusing tool argument schemas, high-failure bash invocations,
-  and uninformative error outputs.
-- **Prompt Engineering & Context Pruning:** Experimenting with context compression algorithms against historical session
-  replays to maximize prompt-cache hit rates without degrading code correctness.
+- Offline Model Fine-Tuning & Distillation (SFT/DPO): The logs supply successful execution trajectories for
+  high-performance coding models.
+- Harness Tool Ergonomics Optimization: The logs show confusing tool argument schemas, bash invocations that fail often,
+  and error outputs that give no useful information.
+- Prompt Engineering & Context Pruning: Teams test context compression algorithms against replays of past sessions. The
+  goal is to maximize prompt-cache hit rates without making the code less correct.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human & Platform Interface:** Enables developers and platform teams to inspect the full verbatim dialogue, audit
-   agent decision-making, evaluate chain-of-thought reasoning, and investigate execution anomalies in a standardized,
-   streamable format.
-2. **Agent / Harness Interface:** Serves as the machine-parseable event stream from which the harness deterministically
-   derives [
-   `metrics.json`](unit-conversation-metrics.md),
-   validates boundary compliance, and feeds downstream dataset generators.
+1. Human & Platform Interface: Developers and platform teams use the log to inspect the full dialogue word for word and
+   to audit how the agent made decisions. They also evaluate chain-of-thought reasoning and investigate execution
+   anomalies, in a standardized format that can be streamed.
+2. Agent / Harness Interface: The log is the event stream that machines parse. From it, the harness deterministically
+   derives [`metrics.json`](unit-conversation-metrics.md), makes sure that the unit complies with its boundaries, and
+   feeds downstream dataset generators.
 
 ---
 
 ## Core Execution Paradigm: Applying the 4 Dimensions to Unit Conversations
 
-In `brevio`, the unit conversation log mechanically records the agent's interaction across the four core
+In `brevio`, the unit conversation log mechanically records the interaction of the agent across the four core
 dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Unit Conversation Log Manifestation                                                                                                    |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Logs exact system prompt states, injected file contents, and scratchpad memory for every turn, tracking context drift and cache invalidation. |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Strictly isolates conversation turns to the bounded lifecycle of an individual unit, eliminating multi-unit chatter and context dilution.     |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Captures verbatim terminal tool inputs, stdout, stderr, process return codes, and test assertions that prompted agent code adjustments.       |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Records the exact dialogue steps where the agent encountered, reasoned through, and satisfied the unit's itemized edge cases (`EC-###`).      |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Logs the exact system prompt states, injected file contents, and scratchpad memory for every turn. Tracks context drift and cache invalidation. |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Keeps conversation turns strictly inside the bounded lifecycle of one unit. This removes multi-unit chatter and context dilution.             |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Records the exact terminal tool inputs, stdout, stderr, process return codes, and test assertions that caused the agent to adjust code. |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Records the exact dialogue steps where the agent met, reasoned through, and satisfied the listed edge cases of the unit (`EC-###`).          |
 
 ---
 
@@ -64,8 +63,8 @@ dimensions:
 
 ## 1. File Location & Organization Standard
 
-The unit conversation log resides directly inside the isolated unit directory alongside its paired specification,
-validation, summary, and telemetry documents:
+The unit conversation log is directly inside the isolated unit directory, next to its paired specification, validation,
+summary, and telemetry documents:
 
 ```text
 .brevio/
@@ -83,11 +82,11 @@ validation, summary, and telemetry documents:
                         └── metrics.json            # Derived Token, Trajectory & Cost Telemetry
 ```
 
-- **File Name:** `conversation.jsonl` (also referenced as `unit-conversation.jsonl` in conversational workflows).
-- **Format:** JSON Lines (`application/x-ndjson`, UTF-8, exactly one JSON object per line).
-- **Lifecycle Scope:** Initiated when the unit is activated (`status: "in-progress"`) and closed when validation passes
-  and `summary.html` is committed.
-- **Paired Artifacts:**
+- File Name: `conversation.jsonl` (conversational workflows also call it `unit-conversation.jsonl`).
+- Format: JSON Lines (`application/x-ndjson`, UTF-8, exactly one JSON object per line).
+- Lifecycle Scope: At unit activation (`status: "in-progress"`), the log starts. After validation passes and
+  `summary.html` is committed, the log closes.
+- Paired Artifacts:
     - Instructions: [`intent_unit_spec.html`](intent-unit-specification.md)
     - Verification Evidence: [`verification.html`](unit-verification.md)
     - Diff: [intent.diff](intent-diff.md) 
@@ -98,11 +97,11 @@ validation, summary, and telemetry documents:
 
 ## 2. Event Stream Architecture & Hybrid Schema Standard
 
-`conversation.jsonl` implements a **comprehensive hybrid model**: it pairs verbatim LLM inputs and outputs (full
-prompts, assistant reasoning, and raw tool payloads) with structured telemetry metadata envelopes (usage, prompt
-caching, intermediate verification checks, and context statistics).
+`conversation.jsonl` uses a full hybrid model. It records the exact LLM inputs and outputs: full prompts, assistant
+reasoning, and raw tool payloads. It pairs them with structured telemetry metadata envelopes: usage, prompt caching,
+intermediate verification checks, and context statistics.
 
-The event stream follows a 3-sub-intent structural lifecycle:
+The event stream follows a 3-stage structural lifecycle:
 
 ```mermaid
 sequenceDiagram
@@ -110,16 +109,16 @@ sequenceDiagram
     participant Harness as Brevio Harness
     participant Log as conversation.jsonl
     participant LLM as Agent Model
-    Note over Harness, Log: Sub-Intent 1: Activation
+    Note over Harness, Log: Stage 1: Activation
     Harness ->> Log: Append Event 1: event = "metadata" (Unit Identity & Config)
-    Note over Harness, LLM: Sub-Intent 2: Iterative Execution Loop
+    Note over Harness, LLM: Stage 2: Iterative Execution Loop
     loop Unit Execution Turns (1 to N)
         Harness ->> LLM: Ingest User / Tool Context
         LLM -->> Harness: Reasoning + Tool Call / Text Response
         Harness ->> Log: Append Event: event = "turn" (Verbatim Content + Telemetry Envelope)
     end
 
-    Note over Harness, Log: Sub-Intent 3: Closure
+    Note over Harness, Log: Stage 3: Closure
     Harness ->> Log: Append Final Event: event = "session_close" (Verdict & Rollup Pointer)
 ```
 
@@ -127,8 +126,8 @@ sequenceDiagram
 
 ### 2.1. Session Metadata Header Event (`event: metadata`)
 
-Line 1 of every `conversation.jsonl` is a dedicated metadata event establishing session lineage, model configuration,
-and parent work-item coordinates:
+Line 1 of every `conversation.jsonl` is a dedicated metadata event. It records the session lineage, the model
+configuration, and the coordinates of the parent work item:
 
 ```json
 {
@@ -161,8 +160,8 @@ and parent work-item coordinates:
 
 ### 2.2. Turn Interaction Event (`event: turn`)
 
-Every exchange between the harness, the LLM, and execution tools appends a `turn` event containing both the verbatim
-conversational data and structured telemetry:
+Every exchange between the harness, the LLM, and execution tools appends a `turn` event. The event contains the exact
+conversation data and structured telemetry:
 
 ```json
 {
@@ -227,7 +226,8 @@ conversational data and structured telemetry:
 
 ### 2.3. Session Closure Event (`event: session_close`)
 
-The final entry records formal unit termination, linking to the passing validation verdict and generated metrics:
+The final entry records the formal end of the unit. It links to the passing validation verdict and the generated
+metrics:
 
 ```json
 {
@@ -247,7 +247,7 @@ The final entry records formal unit termination, linking to the passing validati
 
 ## 3. Complete Multi-Turn JSONL Walkthrough Example
 
-The following annotated JSONL excerpt demonstrates a clean, 4-turn execution of an atomic database migration unit:
+This annotated JSONL excerpt shows a clean, 4-turn execution of an atomic database migration unit:
 
 ```json
 {
@@ -442,7 +442,8 @@ The following annotated JSONL excerpt demonstrates a clean, 4-turn execution of 
 
 ## 4. Downstream Feedback Loop Engine & Optimization Use Cases
 
-`conversation.jsonl` session logs provide the high-fidelity input signal for continuous engineering harness improvement:
+`conversation.jsonl` session logs give the high-fidelity input signal for continuous improvement of the engineering
+harness:
 
 ```mermaid
 flowchart TD
@@ -463,41 +464,41 @@ flowchart TD
 
 ### 4.1. Supervised Fine-Tuning (SFT) & Direct Preference Optimization (DPO)
 
-- **Positive Trajectory Extraction:** Filter session logs where `verification.tests_passed > 0`,
-  `verification.tests_failed == 0`, and `diffChurnRatio <= 1.1`. Transform these turns into OpenAI or Anthropic
+- Positive Trajectory Extraction: Filter session logs where `verification.tests_passed > 0`,
+  `verification.tests_failed == 0`, and `diffChurnRatio <= 1.1`. Convert these turns into OpenAI or Anthropic
   fine-tuning formats for domain-specific agent models.
-- **Preference Pair Creation (DPO):** When an agent fails a turn (e.g., generates invalid syntax) and subsequently
-  repairs it in turn $N+1$, the pair forms an ideal $(y_w, y_l)$ preference sample:
+- Preference Pair Creation (DPO): If an agent fails a turn (for example, it generates invalid syntax) and then repairs
+  it in turn $N+1$, the pair is an ideal $(y_w, y_l)$ preference sample:
     - $y_w$ (Winning response): Surgical patch from turn $N+1$.
     - $y_l$ (Losing response): Broken/rejected patch from turn $N$.
 
 ### 4.2. Tool Schema & Ergonomics Refinement
 
-- By running aggregations across all `tool_calls` where `status == "error"`, harness architects detect tools with
-  brittle parameters (e.g., unescaped quotes in regexes, confusing line-number indexing).
-- Enables harness developers to add client-side sanitizers, deterministic parameter coercers, or simpler macro tools
-  before passing calls to the host operating system.
+- Harness architects aggregate all `tool_calls` where `status == "error"`. This shows the tools with brittle parameters
+  (for example, unescaped quotes in regexes, confusing line-number indexing).
+- Harness developers can then add client-side sanitizers, deterministic parameter coercers, or simpler macro tools
+  before calls go to the host operating system.
 
 ### 4.3. Deterministic Context Pruning & Prompt Cache Tuning
 
-- Session logs record `cache_read_tokens` turn-by-turn. If `cache_read_tokens` drops to zero mid-session, the harness
-  detects prefix cache invalidation (e.g., dynamic timestamps or randomized UUIDs injected into the system prompt).
-- Offline replay harnesses simulate different pruning strategies (e.g., omitting unchanged files or using AST skeletons)
-  against historical logs to measure potential token savings without breaking test verifications.
+- Session logs record `cache_read_tokens` for each turn. If `cache_read_tokens` drops to zero in the middle of a
+  session, the harness detects prefix cache invalidation (for example, dynamic timestamps or randomized UUIDs in the
+  system prompt).
+- Offline replay harnesses simulate different pruning strategies (for example, omitting unchanged files or using AST
+  skeletons) against past logs. They measure the possible token savings without breaking test verifications.
 
 ### 4.4. Automated Failure Taxonomy & Repair Shim Injection
 
-- Clusters common compiler stderr signatures (e.g., TypeScript `TS2304: Cannot find name`, Rust
-  `E0382: borrow of moved value`)
-  and correlates them with the number of repair turns required to fix them.
-- When high-repair-depth errors are identified, the harness automatically injects targeted few-shot repair prompts or
-  pre-linting shims directly into future unit execution templates.
+- The harness groups common compiler stderr signatures (for example, TypeScript `TS2304: Cannot find name`, Rust
+  `E0382: borrow of moved value`). It correlates them with the number of repair turns needed to fix them.
+- If the harness identifies errors that need many repair turns, it automatically injects targeted few-shot repair
+  prompts or pre-linting shims directly into future unit execution templates.
 
 ---
 
 ## 5. Token Optimization, Analysis Patterns & CLI / jq Queries
 
-Filter and query `.jsonl` files directly to extract operational signals without custom parsing infrastructure:
+Filter and query `.jsonl` files directly to extract operational signals. You need no custom parsing infrastructure:
 
 ### 5.1. Extracting Full Verbatim Conversation for Fine-Tuning
 
@@ -545,7 +546,7 @@ jq -c '
 
 ## 6. Lineage, Rollup & Ledger Integration
 
-The unit conversation log anchors the lowest level of execution evidence, feeding into summaries and state ledgers:
+The unit conversation log is the lowest level of execution evidence. It feeds into summaries and state ledgers:
 
 ```mermaid
 graph TD
@@ -557,26 +558,25 @@ graph TD
     METRICS -->|" Rollup to Unit Node "| LEDGER["03_intent_ledger.json"]
 ```
 
-- **Ledger Pointer:** Registered in `03_intent_ledger.json` under
-  `sub-intents[].units[].paths.conversation` (`sub_intents/{sub-intent}/units/{unit}/conversation.jsonl`).
-- **Telemetry Derivation:** [
-  `metrics.json`](unit-conversation-metrics.md)
-  is deterministically compiled from `conversation.jsonl` upon unit completion.
-- **Audit Lineage:** Cited in `summary.html` and `verification.html` as the authoritative execution transcript.
+- Ledger Pointer: `03_intent_ledger.json` registers the log under `sub-intents[].units[].paths.conversation`
+  (`sub_intents/{sub-intent}/units/{unit}/conversation.jsonl`).
+- Telemetry Derivation: When the unit completes, [`metrics.json`](unit-conversation-metrics.md) is compiled
+  deterministically from `conversation.jsonl`.
+- Audit Lineage: `summary.html` and `verification.html` cite the log as the authoritative execution transcript.
 
 ---
 
 ## 7. Rules & Constraints
 
-1. **Strict Append-Only Invariance:** Once a line is written to `conversation.jsonl`, it must never be overwritten,
+1. Strict Append-Only Invariance: After a line is written to `conversation.jsonl`, it must never be overwritten,
    edited, or re-ordered.
-2. **Deterministic Formatting:** Every line must parse as an independent, valid JSON object (`\n` separated).
-3. **Secret & PII Sanitization:** The harness must deterministically redact known environment secrets, API tokens, and
-   credentials before flushing turn events to disk.
-4. **Verbatim Fidelity:** Model responses, chain-of-thought `<thinking>` blocks, and tool arguments must be preserved
-   with full structural fidelity without lossy truncation.
-5. **Mandatory Header & Closure:** A compliant conversation log must begin with an `event: "metadata"` line and conclude
-   with an `event: "session_close"` line.
+2. Deterministic Formatting: Every line must parse as an independent, valid JSON object (`\n` separated).
+3. Secret & PII Sanitization: Before the harness writes turn events to disk, it must deterministically redact known
+   environment secrets, API tokens, and credentials.
+4. Verbatim Fidelity: Model responses, chain-of-thought `<thinking>` blocks, and tool arguments must keep their full
+   structure, with no lossy truncation.
+5. Mandatory Header & Closure: A compliant conversation log must start with an `event: "metadata"` line and end with an
+   `event: "session_close"` line.
 
 ---
 
@@ -584,6 +584,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                     | Source                 |
 |:-----------|:--------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------|
+| 2026-11-25 | 1.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 1.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.1.0   | Added `intent.diff` path to metadata event schema and updated execution lineage graph.                                                                                                                            | Feature Specification  |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Unit Conversation Log (`units/{unit_id}/conversation.jsonl`) defining the hybrid event stream schema, multi-turn walkthrough, and downstream feedback loop optimization engine. | Feature Specification  |

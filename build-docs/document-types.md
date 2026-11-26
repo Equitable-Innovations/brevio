@@ -102,7 +102,7 @@ All files live in `.brevio/wiki/`. The [wiki specification](docs/wiki/README.md)
 | 28 | Architecture Decision Record (ADR) | `wiki-adr` | `decisions/ADR-{NNN}_{slug}.html` | XHTML |
 | 29 | Wiki Page | `wiki-page` | `pages/{dir}/{slug}.html` | XHTML |
 
-Types 23 to 27 are the five core pages. Every wiki has them. A team adds ADRs and wiki pages as needed.
+Types 23 to 27 are the five core pages. Every wiki has them. When a team needs ADRs and wiki pages, it adds them.
 
 ---
 
@@ -161,3 +161,4 @@ The `brevio wts generate` command builds the Backlog View from the Backlog Index
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial catalog of all document types. | Build Docs Harmonization |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the design. | User request |

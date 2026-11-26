@@ -65,7 +65,7 @@ Section id: `reference-anchors`.
 - [Solution strategy, section 5](WORK-ITEM-001_solution-strategy.md): the output table for success and for `already_initialized`.
 - [Programming guidelines 7, 15, 29](../build-docs/guidelines/README.md): separate concerns, depend on abstractions, no global state.
 
-The standard library only. This unit adds no dependency.
+This unit uses the standard library only. It adds no dependency.
 
 ---
 
@@ -125,3 +125,4 @@ Section id: `acceptance-criteria`.
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial unit specification. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

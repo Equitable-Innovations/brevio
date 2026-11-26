@@ -1,33 +1,34 @@
 # Sub-Intent Summary Document Definition
 
-The Sub-Intent Summary Document (`sub_intents/{sub_intent_id}/sub_intent_summary.html`) is the authoritative Tier 2 milestone rollup in the
-`brevio` work item lifecycle. It synthesizes the execution outcomes, duration, git commit links, file touchpoints, and
-token consumption metrics for a completed sub-intent before authorizing handoff to subsequent sub-intents or final work item
-closure.
+The Sub-Intent Summary Document (`sub_intents/{sub_intent_id}/sub_intent_summary.html`) is the authoritative Tier 2
+milestone rollup in the `brevio` work item lifecycle. It summarizes the execution outcomes, duration, git commit links,
+file touchpoints, and token use of a completed sub-intent. `brevio` writes it before it authorizes the handoff to the
+next sub-intents or the final closure of the work item.
 
-Sub-Intent summary documents bridge granular unit execution and macro intent orchestration, aggregating atomic accomplishments
-into a coherent milestone achievement report.
+Sub-intent summary documents connect the detailed unit execution to the high-level orchestration of the intent. They
+collect the results of the atomic units into one clear report of what the milestone achieved.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) displaying milestone achievement scorecards, unit execution tables, aggregated
-   diff metrics, and resource charts without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for automated state ledger synchronization, downstream sub-intent unblocking, and intent-level rollups.
+1. Human Interface: The document renders as a local, interactive, static XHTML web page. It uses Material Design 3 Web
+   Components (`@material/web`, M3) and needs no client-side bundler or build step. The page shows milestone
+   scorecards, unit execution tables, total diff metrics, and resource charts.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. Tools use it to synchronize the state ledger automatically, unblock downstream sub-intents, and
+   build intent-level rollups.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Summaries
 
-In `brevio`, sub-intent summaries evaluate milestone completion against the four foundational dimensions:
+In `brevio`, sub-intent summaries evaluate milestone completion against the four basic dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Summary Manifestation                                                                                                                 |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Aggregates all modified files across units, audits compliance against sub-intent and global "do not touch" manifests, and captures git commit ranges.   |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Compiles an exhaustive unit execution scorecard, verifying that each atomic sub-unit completed cleanly without dangling or uncommitted changes.    |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Aggregates integration suite outcomes, test assertion tallies, coverage deltas, and cites the formal passing verdict from `sub_intent_verification.html`. |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Documents how sub-intent-level boundary hazards, concurrency checks, and migration rollback tests were resolved across all sub-units.                   |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Lists all files that the units changed, audits compliance with the sub-intent and global "do not touch" manifests, and records git commit ranges. |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Builds a full unit execution scorecard. Makes sure that each atomic sub-unit completed cleanly, with no dangling or uncommitted changes.           |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Collects integration suite outcomes, test assertion counts, and coverage changes. Cites the formal passing verdict from `sub_intent_verification.html`. |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Records how the sub-units resolved the sub-intent-level boundary hazards, concurrency checks, and migration rollback tests.                         |
 
 ---
 
@@ -51,7 +52,7 @@ In `brevio`, sub-intent summaries evaluate milestone completion against the four
 
 ## 1. File Location & Organization Standard
 
-Each sub-intent summary document resides alongside its specification and validation documents in the sub-intent directory:
+Each sub-intent summary document is in the sub-intent directory, next to its specification and validation documents:
 
 ```text
 .brevio/
@@ -66,18 +67,18 @@ Each sub-intent summary document resides alongside its specification and validat
                     └── ...
 ```
 
-- **File Name:** `sub_intent_summary.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `sub_intent_summary.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `sub_intent_summary.html` begins with universal baseline `<meta>` tags, sub-intent outcome tags, unit tallies, and the
-Material Web ES module importmap loader:
+Every `sub_intent_summary.html` starts with the universal baseline `<meta>` tags, the sub-intent outcome tags, the unit
+counts, and the Material Web ES module importmap loader:
 
 ```xhtml
 
@@ -129,40 +130,42 @@ Material Web ES module importmap loader:
 
 | Metadata Tag            | Scope           | Purpose                                                               | Example                            |
 |:------------------------|:----------------|:----------------------------------------------------------------------|:-----------------------------------|
-| `sub-intent-id`              | Sub-Intent / Summary | Unique sub-intent directory identifier                                     | `sub_intent_01_database_migration`      |
-| `sub-intent-sequence`        | Sub-Intent / Summary | Numeric ordinal representing the milestone position                   | `1`                                |
-| `parent-doc-id`         | Sub-Intent / Summary | Points to the parent Sub-Intent Specification `doc-id`                     | `WI-20260830T170936Z:S01:SPEC`     |
-| `execution-duration-ms` | Sub-Intent / Summary | Total elapsed time for sub-intent execution in milliseconds                | `94500`                            |
-| `units-completed`       | Sub-Intent / Summary | Count of successfully executed atomic units in the sub-intent              | `3`                                |
-| `units-failed`          | Sub-Intent / Summary | Count of failed atomic units in the sub-intent                             | `0`                                |
-| `sub-intent-verdict`         | Sub-Intent / Summary | Overall outcome evaluation of the completed sub-intent                     | `success` \| `partial` \| `failed` |
-| `total-tokens`          | Sub-Intent / Summary | Total tokens consumed across all units and verification in this sub-intent | `24500`                            |
-| `total-cost-usd`        | Sub-Intent / Summary | Total monetary cost in USD for LLM usage during this sub-intent            | `0.0735`                           |
+| `sub-intent-id`              | Sub-Intent / Summary | Unique identifier of the sub-intent directory                         | `sub_intent_01_database_migration`      |
+| `sub-intent-sequence`        | Sub-Intent / Summary | Number that gives the position of the milestone                      | `1`                                |
+| `parent-doc-id`         | Sub-Intent / Summary | Points to the `doc-id` of the parent Sub-Intent Specification        | `WI-20260830T170936Z:S01:SPEC`     |
+| `execution-duration-ms` | Sub-Intent / Summary | Total elapsed time for sub-intent execution, in milliseconds          | `94500`                            |
+| `units-completed`       | Sub-Intent / Summary | Count of atomic units in the sub-intent that ran successfully         | `3`                                |
+| `units-failed`          | Sub-Intent / Summary | Count of failed atomic units in the sub-intent                        | `0`                                |
+| `sub-intent-verdict`         | Sub-Intent / Summary | Evaluation of the overall outcome of the completed sub-intent        | `success` \| `partial` \| `failed` |
+| `total-tokens`          | Sub-Intent / Summary | Total tokens used across all units and verification in this sub-intent | `24500`                            |
+| `total-cost-usd`        | Sub-Intent / Summary | Total cost of LLM use during this sub-intent, in USD                  | `0.0735`                           |
 
 ---
 
 ## 3. Required Sections & M3 Component Structure
 
-The Sub-Intent Summary document contains 8 standardized sections combining semantic XHTML elements, Material Design 3 Web
-Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Sub-Intent Summary document contains 8 standardized sections. Each section uses semantic XHTML elements and Material
+Design 3 Web Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data attributes
+(`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the sub-intent summary document with the work item ID, sub-intent sequence, sub-intent title, milestone verdict chip
-(`success`, `partial`, `failed`), completed unit tallies, duration, and navigation link back to `sub_intent_spec.html`.
+This section starts the document. It shows the work item ID, the sub-intent sequence, the sub-intent title, and the
+milestone verdict chip (`success`, `partial`, `failed`). It also shows the count of completed units, the duration, and a
+navigation link back to `sub_intent_spec.html`.
 
 ### 3.2. Sub-Intent Milestone Achievement & Executive Outcome
 
-Executive summary of the completed engineering milestone:
+This section is the executive summary of the completed engineering milestone:
 
-- **Milestone Verdict Banner:** High-visibility indicator confirming `SUCCESS`.
-- **Architectural Milestone Realized:** Narrative description of the concrete subsystem, data layer, or service boundary
-  delivered by this sub-intent.
-- **Readiness Declaration:** Formal authorization stating whether Sub-Intent $N+1$ is cleared to activate.
+- Milestone Verdict Banner: An indicator that is easy to see. It shows `SUCCESS`.
+- Architectural Milestone Realized: A description of the specific subsystem, data layer, or service boundary that this
+  sub-intent delivered.
+- Readiness Declaration: A formal authorization that states whether Sub-Intent $N+1$ is cleared to activate.
 
 ### 3.3. Unit Manifest Execution Scorecard
 
-Comprehensive execution matrix rolling up all atomic units:
+This section is a full execution matrix for all atomic units:
 
 | Unit ID                     | Unit Title                 | Category   | Status      | Duration | Tokens | Cost (USD) | Git Commit |
 |:----------------------------|:---------------------------|:-----------|:------------|:---------|:-------|:-----------|:-----------|
@@ -170,11 +173,11 @@ Comprehensive execution matrix rolling up all atomic units:
 | `unit_002_seed_roles`       | Seed Initial RBAC Roles    | `database` | `verified` | 18.5s    | 7,100  | $0.0213    | `d4f33e0`  |
 | `unit_003_verify_migration` | Verify Migration Suite     | `test`     | `verified` | 49.8s    | 5,000  | $0.0150    | `1b0fd4a`  |
 
-- Enforces that zero units remain uncompleted or untracked.
+- The section enforces that zero units stay uncompleted or untracked.
 
 ### 3.4. Cumulative Sub-Intent File Touchpoints & Diff Metrics
 
-Aggregated file modifications across all units in the sub-intent:
+This section lists the file changes across all units in the sub-intent:
 
 | File Path                                            | Change Type | Net Lines | Participating Units |
 |:-----------------------------------------------------|:------------|:----------|:--------------------|
@@ -184,38 +187,40 @@ Aggregated file modifications across all units in the sub-intent:
 
 ### 3.5. Sub-Intent Integration & Validation Gate Rollup
 
-Cites the authoritative verification evidence:
+This section cites the authoritative verification evidence:
 
-- **Sub-Intent Verification Reference:** Link to [`sub_intent_verification.html`](sub_intent_verification.html) with verdict `PASS`.
-- **Test Suite Totals:** Total integration tests executed, assertions passed, and zero failing tests.
-- **Coverage Delta:** Net project test coverage change introduced across the sub-intent.
+- Sub-Intent Verification Reference: A link to [`sub_intent_verification.html`](sub_intent_verification.html) with the
+  verdict `PASS`.
+- Test Suite Totals: The total integration tests that ran, the assertions that passed, and zero failing tests.
+- Coverage Delta: The net change in project test coverage across the sub-intent.
 
 ### 3.6. Context Integrity & Boundary Audit
 
-Confirms compliance with repository boundaries:
+This section makes sure that the work complies with repository boundaries:
 
-- **"Do Not Touch" Audit:** Formal sign-off that zero protected or off-limit files were modified across all sub-intent units.
-- **Dependency Drift Audit:** Confirmation that no unapproved third-party dependencies or licenses were introduced.
+- "Do Not Touch" Audit: A formal sign-off that the sub-intent units changed zero protected or off-limit files.
+- Dependency Drift Audit: A statement that the work introduced no unapproved third-party dependencies or licenses.
 
 ### 3.7. Sub-Intent Edge Case & Hazard Resolution Review
 
-Reviews how upfront edge cases were resolved:
+This section reviews how the work resolved the edge cases that the plan listed:
 
-- Review of database migration idempotency, rollback handling, and constraint validation tested during the sub-intent.
+- A review of the database migration idempotency, rollback handling, and constraint validation that the sub-intent
+  tested.
 
 ### 3.8. Sub-Intent Telemetry & Resource Consumption
 
-Detailed cost and performance accounting:
+This section gives the cost and performance in detail:
 
-- **Total Wall-Clock Time:** 94,500ms (~1.5 minutes).
-- **Aggregated Token Usage:** 24,500 total tokens (16,800 prompt, 7,700 completion).
-- **Total Financial Expenditure:** $0.0735 USD.
+- Total Wall-Clock Time: 94,500ms (~1.5 minutes).
+- Aggregated Token Usage: 24,500 total tokens (16,800 prompt, 7,700 completion).
+- Total Financial Expenditure: $0.0735 USD.
 
 ---
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Downstream decomposition agents, work item summary authoring routines, and CLI inspectors query targeted summary nodes:
+Downstream decomposition agents, work item summary routines, and CLI inspectors query targeted summary nodes:
 
 ### Querying Sub-Intent Verdict & Unit Completion Tallies
 
@@ -247,5 +252,6 @@ Downstream decomposition agents, work item summary authoring routines, and CLI i
 
 | Date       | Version | Description                                                                                                                                                                                 | Source                           |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 0.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.1.0   | Initial canonical sub-intent summary specification (`sub_intent_summary.html`) establishing milestone scorecards, file touchpoint aggregation, boundary audits, telemetry rollups, and XPath queries. | [Work Item Documents](README.md) |

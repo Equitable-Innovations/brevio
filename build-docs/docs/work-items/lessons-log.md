@@ -9,12 +9,12 @@ invariant or check covers, the agent proposes one of three outcomes: a new invar
 for the project instructions. A human accepts or rejects the proposal. An accepted proposal adds an entry to this log and
 adds one case to the eval suite.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, static XHTML web page utilizing Material Design 3 Web Components
-   (`@material/web` / **M3**) without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI. An agent reads only the entries that match its task.
+1. Human Interface: The document renders as a local, static XHTML web page. It uses Material Design 3 Web Components
+   (`@material/web`, M3) and needs no client-side bundler or build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. An agent reads only the entries that match its task.
 
 ---
 
@@ -36,7 +36,7 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The lessons log resides at the root of `.brevio/work_items/`, beside the work item directories:
+The lessons log is at the root of `.brevio/work_items/`, next to the work item directories:
 
 ```text
 .brevio/
@@ -46,18 +46,18 @@ The lessons log resides at the root of `.brevio/work_items/`, beside the work it
     └── {work-item-id}/
 ```
 
-- **File Name:** `lessons.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Owner:** The project. A named human accepts each entry.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `lessons.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Owner: The project. A named human accepts each entry.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `lessons.html` begins with the universal baseline `<meta>` tags, lesson tags, and the Material Web ES module
+Every `lessons.html` starts with the universal baseline `<meta>` tags, the lesson tags, and the Material Web ES module
 importmap loader:
 
 ```xhtml
@@ -104,29 +104,30 @@ importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Lessons Log contains 3 standardized sections. Each section combines semantic XHTML elements with Material Design 3
-Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Lessons Log contains 3 standardized sections. Each section uses semantic XHTML elements and Material Design 3 Web
+Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the lesson count, the outcome counts, the named approver, and the date of the latest entry.
+This section starts the document. It shows the lesson count, the outcome counts, the named approver, and the date of the
+latest entry.
 
 ### 3.2. Lesson Entries
 
 Section id: `lessons`. Each entry is an `md-outlined-card` with a `data-lesson-id` attribute (for example `L-001`), a
 `data-outcome` attribute, and a `data-source-intent` attribute. Each entry has these parts:
 
-- **What happened:** The failure, in plain words, with the unit or finding that exposed it.
-- **Root cause:** The cause that was found.
-- **Fix:** The change that resolved the failure, with a commit reference.
-- **Gotcha:** The trap that a future agent or engineer must avoid.
-- **Outcome:** `invariant`, `check`, or `note`, with the identifier of the artifact it created (for example `INV-007`).
-- **Eval case:** The eval case that the entry added (see Section 3.4).
-- **Accepted by:** The named human who accepted the entry, and the date.
+- What happened: The failure, in plain words, with the unit or finding that exposed it.
+- Root cause: The cause that the investigation found.
+- Fix: The change that resolved the failure, with a commit reference.
+- Gotcha: The trap that a future agent or engineer must avoid.
+- Outcome: `invariant`, `check`, or `note`, with the identifier of the artifact it created (for example `INV-007`).
+- Eval case: The eval case that the entry added (see Section 3.4).
+- Accepted by: The named human who accepted the entry, and the date.
 
 ### 3.3. Lesson Outcomes
 
-Section id: `outcomes`. Explains the three outcomes:
+Section id: `outcomes`. This section explains the three outcomes:
 
 | Outcome     | Result                                                                                             |
 |:------------|:---------------------------------------------------------------------------------------------------|
@@ -139,7 +140,7 @@ eval suite runs on that change.
 
 ### 3.4. Eval Cases
 
-Section id: `eval-cases`. Lists the eval cases that entries added. An eval case has a prompt and the checks that define an
+Section id: `eval-cases`. This section lists the eval cases that entries added. An eval case has a prompt and the checks that define an
 acceptable result (tests pass, lint clean, behavior unchanged, policy followed). The suite runs on a schedule and on any
 change to the invariant set, the hook templates, or the verification commands. A change that lowers the pass rate needs
 review before it merges. Each production incident adds one eval case.
@@ -185,7 +186,7 @@ flowchart TD
 3. An entry that creates an invariant must give the invariant a shell command and an enforcement level.
 4. The log holds facts about failures and fixes. It must not hold design debate.
 5. The `lesson-count` tag must match the number of entries.
-6. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+6. The `## Revisions` table at the bottom of this document is the only record of the revision history.
 
 ---
 
@@ -193,4 +194,5 @@ flowchart TD
 
 | Date       | Version | Description                                                                                                          | Source    |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 0.1.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 0.1.0   | Initial specification of the project-level lessons log: entries, outcomes, eval cases, and the lessons loop.        | TOPIC-005 |

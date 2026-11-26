@@ -1,29 +1,29 @@
 # Intent Conversation Metrics Document Definition
 
-The **Intent Conversation Metrics Document** (`06_intent_conversation_metrics.json`) is the authoritative Tier 1 telemetry
-record in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It aggregates token consumption, model
-latencies, tool invocations, context accumulation, and pre-execution validation outcomes across the entire planning
-sub-intent before implementation begins.
+The Intent Conversation Metrics Document (`06_intent_conversation_metrics.json`) is the authoritative Tier 1 telemetry
+record for planning. It is part of the work item lifecycle of `brevio` (Token Optimized Software Harness). It collects token use, model
+latencies, tool invocations, context accumulation, and pre-execution validation outcomes. It covers the full planning
+sub-intent before implementation starts.
 
-In `brevio`, token optimization cannot be measured in isolation; premature token pruning during planning that causes
-under-specified requirements, hallucinated schemas, or ambiguous units creates compounding multi-turn repair loops
-during execution, dramatically increasing aggregate compute.
+In `brevio`, you cannot measure token optimization in isolation. If planning prunes tokens too early, requirements can
+be under-specified, schemas can be hallucinated, or units can be ambiguous. These faults cause multi-turn repair loops
+during execution, and each loop adds to the next. The loops greatly increase the total compute.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human & Platform Interface:** Provides structured, auditable telemetry for engineering managers, platform teams,
-   and developers to benchmark planning models, track API expenditures, identify multi-agent debate bottlenecks, and
-   assess planning efficiency.
-2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `brevio` CLI and
-   evaluation runners to dynamically adjust context-injection budgets, refine system prompts, and optimize prompt
-   caching strategies across future work items.
+1. Human & Platform Interface: The document gives structured telemetry that you can audit. Engineering managers,
+   platform teams, and developers use it to benchmark planning models and track API costs. They also use it to find
+   bottlenecks in multi-agent debates and to assess planning efficiency.
+2. Agent / Harness Interface: The document is a deterministic JSON artifact for machines. The `brevio` CLI and
+   evaluation runners query it. They use it to adjust context-injection budgets, improve system prompts, and optimize
+   prompt caching strategies for future work items.
 
 ---
 
 ## Core Planning Paradigm: The 4-Layer Planning Telemetry Framework
 
-To extract actionable signals from planning session transcripts, `brevio` organizes planning conversation telemetry across
-four distinct analytical layers:
+`brevio` organizes the telemetry of the planning conversation in four separate analysis layers. These layers give
+signals from planning session transcripts that teams can act on:
 
 ```mermaid
 flowchart TD
@@ -84,16 +84,16 @@ flowchart TD
 
 ## 1. File Location & Organization Standard
 
-The plan conversation metrics file resides at the root of the work item directory alongside the core Tier 1 planning
+The plan conversation metrics file is at the root of the work item directory, next to the core Tier 1 planning
 documents:
 
 ```text
 .brevio/
 └── work_items/
     └── {YYYYMMDDTHHMMSSZ}_{work_item_slug}/
-        ├── 00_intent_spec.html                # Requirements & Checklists
-        ├── 01_solution_strategy.html                 # Technical Architecture & Micro-ADRs
-        ├── 02_intent_decomposition.html         # Multi-Sub-Intent Roadmap & Risk Strategy
+        ├── 00_intent_spec.html                # Originator's Intent (Frozen at Acceptance)
+        ├── 01_solution_strategy.html                 # Requirements, Invariants, Evidence & Design
+        ├── 02_intent_decomposition.html         # Implementation Plan & Sub-Intent DAG
         ├── 03_intent_ledger.json       # State Machine & Unit Dependency DAG
         ├── 03_intent_verification.html             # Pre-Execution Plan Gating Verdict
         ├── 04_intent_summary.html                # Execution Rollup Summary
@@ -103,12 +103,11 @@ documents:
             └── ...
 ```
 
-- **File Name:** `06_intent_conversation_metrics.json`
-- **Format:** Strict JSON (UTF-8, 2-space indentation).
-- **Paired Log:** Session turns captured in `plan_conversation.jsonl` (or conversational memory store).
-- **Summary Document:** Rendered human narrative documented in
-  [
-  `05_intent_conversation_summary.html`](intent-conversation-summary.md).
+- File Name: `06_intent_conversation_metrics.json`
+- Format: Strict JSON (UTF-8, 2-space indentation).
+- Paired Log: `plan_conversation.jsonl` (or the memory store for the conversation) records the session turns.
+- Summary Document: [`05_intent_conversation_summary.html`](intent-conversation-summary.md) contains the rendered
+  narrative for people.
 
 ---
 
@@ -121,64 +120,63 @@ sub-intent.
 
 | Metric Name                                     | Formula / Measurement                                                                                   | Target Range                         | Purpose & Harness Improvement Area                                                                                                                                                                                                       |
 |:------------------------------------------------|:--------------------------------------------------------------------------------------------------------|:-------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context Accumulation Rate**                   | $\Delta\text{Tokens} / \text{Turn} = \frac{\text{Prompt Tokens}_{N} - \text{Prompt Tokens}_{1}}{N - 1}$ | Linear slope ($< 1,500$ tokens/turn) | Measures input token growth rate across planning exchanges. A steep or quadratic curve signals that the harness is naively dumping entire raw transcripts or unfiltered tool outputs rather than pruning or maintaining a rolling state. |
-| **Prompt-to-Completion Ratio**                  | $\frac{\text{Prompt Tokens}}{\text{Completion Tokens}}$                                                 | $70:30$ to $85:15$                   | Planning requires analytical generation (ADRs, schemas, units). If ratio exceeds $95:5$, prompt templates are bloated with irrelevant background, or models are responding with terse, under-specified plans.                            |
-| **Token Cost per Planned Unit**                 | $\frac{\text{Total Planning Tokens}}{\text{Total Planned Units Count}}$                                 | $< 8,000$ tokens/unit                | Establishes the planning overhead per planned unit of work. Highlights overly verbose architectural debates relative to unit count.                                                                                                      |
-| **Cache Read Hit Rate**                         | $\frac{\text{Cache Read Tokens}}{\text{Total Prompt Tokens}} \times 100\%$                              | $> 65\%$                             | Percentage of prompt tokens served by prefix caching (e.g., Anthropic Prompt Caching, OpenAI Cached Prompts). Verifies that static system instructions, repository maps, and guidelines remain at a stable prefix order.                 |
-| **Planning Overhead Ratio** *(Suggested)*       | $\frac{\text{Total Planning Tokens}}{\text{Estimated Total Execution Tokens}}$                          | $10\% - 25\%$                        | Measures whether planning investment is proportional to execution scope. An overhead $> 40\%$ indicates over-engineering; $< 5\%$ indicates high risk of execution-time failures.                                                        |
-| **Prefix Cache Stability Factor** *(Suggested)* | $1 - \frac{\text{Cache Invalidation Events}}{\text{Total Turns}}$                                       | $\ge 0.90$                           | Verifies that dynamic ephemeral context is strictly appended to the tail of the message array rather than breaking prefix cache blocks.                                                                                                  |
+| Context Accumulation Rate                       | $\Delta\text{Tokens} / \text{Turn} = \frac{\text{Prompt Tokens}_{N} - \text{Prompt Tokens}_{1}}{N - 1}$ | Linear slope ($< 1,500$ tokens/turn) | Measures how fast input tokens grow across planning exchanges. A steep or quadratic curve shows that the harness dumps full raw transcripts or unfiltered tool outputs. It does not prune them or keep a rolling state. |
+| Prompt-to-Completion Ratio                      | $\frac{\text{Prompt Tokens}}{\text{Completion Tokens}}$                                                 | $70:30$ to $85:15$                   | Planning needs analytical output (ADRs, schemas, units). If the ratio exceeds $95:5$, the prompt templates contain too much irrelevant background, or the models give short, under-specified plans. |
+| Token Cost per Planned Unit                     | $\frac{\text{Total Planning Tokens}}{\text{Total Planned Units Count}}$                                 | $< 8,000$ tokens/unit                | Gives the planning overhead for each planned unit of work. Shows architecture debates that are too long for the unit count.                                                                                                             |
+| Cache Read Hit Rate                             | $\frac{\text{Cache Read Tokens}}{\text{Total Prompt Tokens}} \times 100\%$                              | $> 65\%$                             | Percentage of prompt tokens that prefix caching serves (for example, Anthropic Prompt Caching, OpenAI Cached Prompts). Makes sure that static system instructions, repository maps, and guidelines stay in a stable prefix order. |
+| Planning Overhead Ratio *(Suggested)*           | $\frac{\text{Total Planning Tokens}}{\text{Estimated Total Execution Tokens}}$                          | $10\% - 25\%$                        | Measures whether the planning effort is in proportion to the execution scope. An overhead $> 40\%$ shows over-engineering. An overhead $< 5\%$ shows a high risk of failures during execution. |
+| Prefix Cache Stability Factor *(Suggested)*     | $1 - \frac{\text{Cache Invalidation Events}}{\text{Total Turns}}$                                       | $\ge 0.90$                           | Makes sure that dynamic, short-lived context is always added at the end of the message array and does not break prefix cache blocks.                                                                                                 |
 
 ---
 
 ### 2.2. Layer 2: Agentic Trajectory & Tool Optimization
 
-Planning overhead primarily stems from unfocused repository scanning, redundant file inspection, and circular debates
-between specialized planning agents (e.g., PM, Architect, Security Auditor).
+Planning overhead comes mainly from unfocused repository scans, redundant file inspection, and circular debates between
+specialized planning agents (for example, PM, Architect, Security Auditor).
 
 | Metric Name                               | Formula / Measurement                                                                 | Target Range           | Purpose & Harness Improvement Area                                                                                                                                                                                                         |
 |:------------------------------------------|:--------------------------------------------------------------------------------------|:-----------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tool Call Redundancy Rate**             | $\frac{\text{Duplicate Tool Invocations}}{\text{Total Tool Invocations}}$             | $\le 5\%$              | Frequency of an agent calling the exact same tool with identical parameters (e.g., reading `pom.xml` or `package.json` 3 times without modifications). Resolved by harness scratchpads and stateful tool call caches.                      |
-| **Discovery Payload Efficiency**          | $\frac{\text{Tokens Referenced in Specs}}{\text{Tokens Returned by Discovery Tools}}$ | $\ge 25\%$             | Ratio of tokens returned by exploration tools (`grep`, `find_by_name`, `view_file`) to tokens actually cited in `01_solution_strategy.html` or `02_intent_decomposition.html`. Low ratios indicate the need for AST views and line-bounded reads. |
-| **Turns-to-Plan-Approval**                | Total LLM turns to achieve approved plan                                              | $\le 12$ turns         | Round-trips required from requirement ingestion to passing `03_intent_verification.html`. Detects agent hesitation, circular debate, or unclear requirements.                                                                                  |
-| **Dead-End & Clarification Depth**        | Consecutive turns resolving schema or constraint errors                               | $\le 2$ turns          | Turns spent recovering from invalid unit JSON, malformed schema definitions, or contradictory requirements. Target improvement: strict JSON schema enforcement in tool calls.                                                              |
-| **Discovery Fan-Out Ratio** *(Suggested)* | $\frac{\text{Candidate Files Inspected}}{\text{Files Targeted in Unit Specs}}$        | $2.0 - 4.0$            | Tracks search focus. If an agent inspects 80 files to plan modifications on 2 files (ratio $40.0$), repository indexing or RAG ranking is pulling irrelevant files.                                                                        |
-| **Agent Handoff Friction** *(Suggested)*  | $\frac{\text{Handoff Summary Tokens}}{\text{Total Multi-Agent Turns}}$                | $< 500$ tokens/handoff | In multi-agent harnesses, measures the token cost of transferring context between Planner, Architect, and Validator agents.                                                                                                                |
+| Tool Call Redundancy Rate                 | $\frac{\text{Duplicate Tool Invocations}}{\text{Total Tool Invocations}}$             | $\le 5\%$              | How often an agent calls the same tool with identical parameters (for example, it reads `pom.xml` or `package.json` 3 times with no changes). Harness scratchpads and stateful tool call caches correct this. |
+| Discovery Payload Efficiency              | $\frac{\text{Tokens Referenced in Specs}}{\text{Tokens Returned by Discovery Tools}}$ | $\ge 25\%$             | Ratio of the tokens that exploration tools (`grep`, `find_by_name`, `view_file`) return to the tokens that `01_solution_strategy.html` or `02_intent_decomposition.html` actually cite. A low ratio shows the need for AST views and line-bounded reads. |
+| Turns-to-Plan-Approval                    | Total LLM turns to reach an approved plan                                             | $\le 12$ turns         | Round trips needed from requirement ingestion until `03_intent_verification.html` passes. Detects agent hesitation, circular debate, or unclear requirements.                                                                             |
+| Dead-End & Clarification Depth            | Consecutive turns spent to resolve schema or constraint errors                        | $\le 2$ turns          | Turns spent to recover from invalid unit JSON, malformed schema definitions, or contradictory requirements. Target improvement: strict JSON schema enforcement in tool calls.                                                            |
+| Discovery Fan-Out Ratio *(Suggested)*     | $\frac{\text{Candidate Files Inspected}}{\text{Files Targeted in Unit Specs}}$        | $2.0 - 4.0$            | Tracks the focus of the search. If an agent inspects 80 files to plan changes to 2 files (ratio $40.0$), repository indexing or RAG ranking pulls in irrelevant files.                                                                    |
+| Agent Handoff Friction *(Suggested)*      | $\frac{\text{Handoff Summary Tokens}}{\text{Total Multi-Agent Turns}}$                | $< 500$ tokens/handoff | In multi-agent harnesses, measures the token cost to transfer context between Planner, Architect, and Validator agents.                                                                                                                   |
 
 ---
 
 ### 2.3. Layer 3: Specification & Pre-Execution Quality
 
-A planning conversation is only successful if it produces specifications that are robust, testable, and
-dependency-sound.
+To be successful, a planning conversation produces specifications that are reliable, testable, and dependency-sound.
 
 | Metric Name                                     | Formula / Measurement                                                                         | Target Range               | Purpose & Harness Improvement Area                                                                                                                          |
 |:------------------------------------------------|:----------------------------------------------------------------------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Plan First-Pass Approval Rate (FPSR)**        | Passing `03_intent_verification.html` on first validation run                                     | $100\%$ ($1.0$)            | Evaluates whether the initial plan satisfied all feasibility, security, and architectural checks without requiring rework turns.                            |
-| **Specification Churn Ratio**                   | $\frac{\text{Revised Plan Section Lines}}{\text{Net Accepted Plan Lines}}$                    | $\le 1.15$                 | High churn indicates the planner vacillated between architectures or hallucinated APIs that required extensive revision before passing validation.          |
-| **Requirement Traceability Coverage**           | $\frac{\text{Mapped Requirement IDs}}{\text{Total Itemized Requirement IDs}} \times 100\%$    | $100\%$                    | Verifies that every requirement defined in `00_intent_spec.html` (`EV-###`) is assigned to at least one unit in `02_intent_decomposition.html`.            |
-| **Dependency DAG Soundness**                    | Graph validation boolean & cycle count                                                        | Cycles: `0`, Orphaned: `0` | Evaluates that unit dependencies declared in `03_intent_ledger.json` form a valid Directed Acyclic Graph with balanced breadth and depth.           |
-| **Deterministic Command Density** *(Suggested)* | $\frac{\text{Units with Exact Shell Verifications}}{\text{Total Planned Units}} \times 100\%$ | $100\%$                    | Verifies that 100% of planned units declare explicit verification shell commands with expected exit codes (`0`) rather than subjective manual review steps. |
-| **Edge Case Density** *(Suggested)*             | $\frac{\text{Total Itemized Edge Cases (EC-###)}}{\text{Total Planned Units}}$                | $\ge 2.0$ edge cases/unit  | Confirms the planning agents anticipated negative paths and boundary hazards prior to implementation.                                                       |
+| Plan First-Pass Approval Rate (FPSR)            | `03_intent_verification.html` passes on the first validation run                              | $100\%$ ($1.0$)            | Evaluates whether the first plan satisfied all feasibility, security, and architecture checks with no rework turns.                                         |
+| Specification Churn Ratio                       | $\frac{\text{Revised Plan Section Lines}}{\text{Net Accepted Plan Lines}}$                    | $\le 1.15$                 | High churn shows that the planner switched between architectures or hallucinated APIs. These needed much revision before the plan passed validation.        |
+| Requirement Traceability Coverage               | $\frac{\text{Mapped Requirement IDs}}{\text{Total Itemized Requirement IDs}} \times 100\%$    | $100\%$                    | Makes sure that every requirement in `01_solution_strategy.html` (`EV-###`) is assigned to at least one unit in `02_intent_decomposition.html`.              |
+| Dependency DAG Soundness                        | Graph validation boolean & cycle count                                                        | Cycles: `0`, Orphaned: `0` | Evaluates whether the unit dependencies in `03_intent_ledger.json` form a valid Directed Acyclic Graph with balanced breadth and depth.                     |
+| Deterministic Command Density *(Suggested)*     | $\frac{\text{Units with Exact Shell Verifications}}{\text{Total Planned Units}} \times 100\%$ | $100\%$                    | Makes sure that 100% of planned units declare explicit shell commands for verification, with expected exit codes (`0`), not subjective manual review steps. |
+| Edge Case Density *(Suggested)*                 | $\frac{\text{Total Itemized Edge Cases (EC-###)}}{\text{Total Planned Units}}$                | $\ge 2.0$ edge cases/unit  | Makes sure that the planning agents anticipated negative paths and boundary hazards before implementation.                                                  |
 
 ---
 
 ### 2.4. Layer 4: Context & Retrieval Precision
 
-Planning agents frequently query repository documentation, OpenAPI specs, and existing source trees. Evaluating the
-relevance of ingested context prevents prompt poisoning and context window degradation.
+Planning agents often query repository documentation, OpenAPI specs, and existing source trees. An evaluation of how
+relevant the ingested context is prevents prompt poisoning and loss of quality in the context window.
 
 | Metric Name                                         | Formula / Measurement                                                                                           | Target Range                | Purpose & Harness Improvement Area                                                                                                                                                           |
 |:----------------------------------------------------|:----------------------------------------------------------------------------------------------------------------|:----------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context Utilization Rate**                        | $\frac{\text{Retrieved Code/Doc Snippets Cited in Specs}}{\text{Total Injected Context Snippets}} \times 100\%$ | $\ge 60\%$                  | Percentage of retrieved workspace files, wiki pages, or class definitions that directly inform the solution strategy. Low rates signal poor RAG embeddings or broad wildcard file injections. |
-| **Context Rot Threshold**                           | Token depth at which agent recall degrades                                                                      | $> 90\%$ of window limit    | Tracks the token watermark where the agent begins hallucinating non-existent classes, forgetting negative constraints, or dropping requirement IDs. Triggers automatic summarization turns.  |
-| **Repo Map Compression Ratio** *(Suggested)*        | $\frac{\text{Uncompressed Directory Tokens}}{\text{Compact Symbol Map Tokens}}$                                 | $\ge 5.0\times$ compression | Ratio of raw file tree representation to the semantic symbol map ingested into the planning prompt.                                                                                          |
-| **Irrelevant Context Pollution Rate** *(Suggested)* | $\frac{\text{Injected Files Unrelated to Domain}}{\text{Total Injected Files}} \times 100\%$                    | $\le 5\%$                   | Measures false positives in codebase retrieval that pollute the planner's reasoning.                                                                                                         |
+| Context Utilization Rate                            | $\frac{\text{Retrieved Code/Doc Snippets Cited in Specs}}{\text{Total Injected Context Snippets}} \times 100\%$ | $\ge 60\%$                  | Percentage of retrieved workspace files, wiki pages, or class definitions that directly inform the solution strategy. A low rate shows poor RAG embeddings or broad wildcard file injections. |
+| Context Rot Threshold                               | Token depth at which the recall of the agent becomes worse                                                      | $> 90\%$ of window limit    | Tracks the token level at which the agent starts to hallucinate classes that do not exist, forget negative constraints, or drop requirement IDs. Triggers automatic summarization turns.     |
+| Repo Map Compression Ratio *(Suggested)*            | $\frac{\text{Uncompressed Directory Tokens}}{\text{Compact Symbol Map Tokens}}$                                 | $\ge 5.0\times$ compression | Ratio of the raw file tree to the semantic symbol map that the planning prompt receives.                                                                                                     |
+| Irrelevant Context Pollution Rate *(Suggested)*     | $\frac{\text{Injected Files Unrelated to Domain}}{\text{Total Injected Files}} \times 100\%$                    | $\le 5\%$                   | Measures false positives in codebase retrieval that pollute the reasoning of the planner.                                                                                                   |
 
 ---
 
 ## 3. JSON Schema Specification (`06_intent_conversation_metrics.json`)
 
-The following JSON Schema governs the structure and validation of `06_intent_conversation_metrics.json`:
+This JSON Schema defines the structure and validation of `06_intent_conversation_metrics.json`:
 
 ```json
 {
@@ -585,7 +583,8 @@ The following JSON Schema governs the structure and validation of `06_intent_con
 
 ## 4. Turn-Level Session Log Schema (`plan_conversation.jsonl`)
 
-To compute these metrics deterministically, the planning session logger writes atomic JSON lines for every exchange:
+The planning session logger writes atomic JSON lines for every exchange. These lines let tools compute the metrics
+deterministically:
 
 ```json
 {
@@ -679,11 +678,11 @@ jq -e '
 
 ## 6. Lineage, Traceability & Ledger Integration
 
-The plan metrics file integrates directly into the work item's bi-directional lineage graph:
+The plan metrics file is part of the two-way lineage graph of the work item:
 
 ```mermaid
 graph TD
-    REQ["Requirements<br/>(00_intent_spec.html)"] --> PLAN["Intent Decomposition<br/>(02_intent_decomposition.html)"]
+    REQ["Requirements<br/>(01_solution_strategy.html)"] --> PLAN["Intent Decomposition<br/>(02_intent_decomposition.html)"]
     PLAN --> VAL["Intent Verification<br/>(03_intent_verification.html)"]
     VAL -->|" validation verdict "| METRICS["Plan Metrics<br/>(06_intent_conversation_metrics.json)"]
     METRICS -->|" metricsRollup.planning "| LEDGER["State Ledger<br/>(03_intent_ledger.json)"]
@@ -691,31 +690,27 @@ graph TD
     LEDGER --> WISUM["Intent Summary<br/>(04_intent_summary.html)"]
 ```
 
-- **Upward Pointers:** `docId` references the work item root (`WI-{timestamp}:METRICS`), with `workItemId` anchoring to
-  the root directory.
-- **Narrative Binding:** Detailed conversational exchanges and trade-offs are summarized in
-  [
-  `05_intent_conversation_summary.html`](intent-conversation-summary.md),
-  which links directly to `06_intent_conversation_metrics.json`.
-- **Ledger Rollup:** Key aggregates (`totalTokens`, `totalCostUsd`, `cacheReadHitRatePct`) are copied into the
-  `metricsRollup` object of
-  [
-  `03_intent_ledger.json`](intent-ledger.md).
+- Upward Pointers: `docId` refers to the work item root (`WI-{timestamp}:METRICS`). `workItemId` anchors to the root
+  directory.
+- Narrative Binding: [`05_intent_conversation_summary.html`](intent-conversation-summary.md) summarizes the detailed
+  exchanges and trade-offs of the conversation. It links directly to `06_intent_conversation_metrics.json`.
+- Ledger Rollup: The key totals (`totalTokens`, `totalCostUsd`, `cacheReadHitRatePct`) are copied into the
+  `metricsRollup` object of [`03_intent_ledger.json`](intent-ledger.md).
 
 ---
 
 ## 7. Rules & Constraints
 
-1. **Immutable Historical Telemetry:** Once `03_intent_verification.html` records `pass` and sub-intent execution begins,
-   `06_intent_conversation_metrics.json` is frozen and must not be mutated.
-2. **Deterministic Token Counts:** All token metrics must be sourced directly from LLM API response usage metadata (or
-   calibrated model tokenizers), not rough word-count heuristics.
-3. **Prefix Stability Enforcement:** System prompts and static guidelines must be ordered first in prompts to maximize
-   `cacheReadHitRatePct`. Ephemeral session messages must never precede cached system blocks.
-4. **Tool Redundancy Ceiling:** Any planning session exhibiting `toolCallRedundancyRatePct > 10%` must trigger a lint
-   warning in `brevio plan validate` to flag defective tool usage loops.
-5. **Universal Traceability:** 100% of functional requirements (`EV-###`) must be accounted for in the
-   `requirementTraceabilityPct` metric before planning closure.
+1. Immutable Historical Telemetry: After `03_intent_verification.html` records `pass` and sub-intent execution starts,
+   `06_intent_conversation_metrics.json` is frozen. It must not be changed.
+2. Deterministic Token Counts: All token metrics must come directly from the usage metadata in LLM API responses (or
+   from calibrated model tokenizers). They must not come from rough word-count heuristics.
+3. Prefix Stability Enforcement: System prompts and static guidelines must come first in prompts, to maximize
+   `cacheReadHitRatePct`. Ephemeral session messages must never come before cached system blocks.
+4. Tool Redundancy Ceiling: If a planning session shows `toolCallRedundancyRatePct > 10%`, the session must trigger a
+   lint warning in `brevio plan validate`. The warning flags defective tool usage loops.
+5. Universal Traceability: Before planning closes, the `requirementTraceabilityPct` metric must account for 100% of
+   functional requirements (`EV-###`).
 
 ---
 
@@ -723,6 +718,8 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                | Source                 |
 |:-----------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------|
+| 2026-11-25 | 1.2.1 | Rewrote the prose in plain English. No change to the design. | User request |
+| 2026-11-25 | 1.2.0 | Evidence requirements now come from the solution strategy. | TOPIC-007 |
 | 2026-10-31 | 1.1.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Intent Conversation Metrics (`06_intent_conversation_metrics.json`) establishing the 4-layer telemetry framework, JSON schema, session log contract, and jq analysis patterns. | Feature Specification  |
 | 2026-08-30 | 0.1.0   | Initial baseline stub in metadata definition.                                                                                                                                                              | Architecture Alignment |

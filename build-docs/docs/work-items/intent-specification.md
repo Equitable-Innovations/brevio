@@ -1,15 +1,19 @@
 # Intent Specification Document Definition
 
-The Intent Specification Document (`00_intent_spec.html`) is the authoritative entry-point specification in the `brevio`
-work item lifecycle. It declares the desired outcome in the originator's own words, the system invariants that must hold,
-the boundary envelope, the evidence requirements that settle the intent, the autonomy tier, and the open questions.
+The Intent Specification Document (`00_intent_spec.html`) is the entry-point document in the `brevio` work item
+lifecycle. It records the intent in the originator's own words: the problem, the proposed outcome, the affected users and
+systems, the constraints, and the open questions. It is a proto-spec. It holds no invariants, evidence requirements, or
+design decisions. Those belong to the [Solution Strategy](solution-strategy.md) (`01_solution_strategy.html`).
 
-This document serves a dual purpose:
+The product owner accepts or closes the intent. After acceptance, the document is frozen, and the solution strategy pass
+starts.
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) without requiring any client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for token-efficient agent ingestion.
+This document has two purposes:
+
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) and needs no client-side bundler and no build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Agents query it through XPath
+   and the `brevio` CLI, and they read it with few tokens.
 
 ---
 
@@ -19,21 +23,22 @@ This document serves a dual purpose:
 2. [XHTML Header & Metadata Standard](#2-xhtml-header--metadata-standard)
 3. [Required Sections & M3 (Material Web) HTML Snippets](#3-required-sections--m3-material-web-html-snippets)
     - 3.1. [Document Header & Metadata Bar](#31-document-header--metadata-bar)
-    - 3.2. [Declared Intent](#32-declared-intent)
-    - 3.3. [System Invariants](#33-system-invariants)
-    - 3.4. [Boundary Envelope](#34-boundary-envelope)
-    - 3.5. [Evidence Requirements](#35-evidence-requirements)
-    - 3.6. [Open Questions & Answers](#36-open-questions--answers)
+    - 3.2. [Problem](#32-problem)
+    - 3.3. [Proposed Outcome](#33-proposed-outcome)
+    - 3.4. [Affected Users & Systems](#34-affected-users--systems)
+    - 3.5. [Constraints](#35-constraints)
+    - 3.6. [Open Questions](#36-open-questions)
     - 3.7. [Related Work Items & Origin](#37-related-work-items--origin)
-4. [Token Optimization & XPath Query Patterns](#4-token-optimization--xpath-query-patterns)
-5. [Rules & Constraints](#5-rules--constraints)
-6. [Revisions](#6-revisions)
+4. [Authoring & Acceptance](#4-authoring--acceptance)
+5. [Token Optimization & XPath Query Patterns](#5-token-optimization--xpath-query-patterns)
+6. [Rules & Constraints](#6-rules--constraints)
+7. [Revisions](#7-revisions)
 
 ---
 
 ## 1. File Location & Organization Standard
 
-The intent specification resides at the root of the work item directory:
+The intent specification is at the root of the work item directory:
 
 ```text
 .brevio/
@@ -42,18 +47,18 @@ The intent specification resides at the root of the work item directory:
         └── 00_intent_spec.html
 ```
 
-- **File Name:** `00_intent_spec.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `00_intent_spec.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
 Every `00_intent_spec.html` file begins with the universal baseline `<meta>` tags, intent-specific tags, and the Material
-Web ES module importmap loader:
+Web ES module importmap loader. The example shows an accepted intent:
 
 ```xhtml
 
@@ -73,16 +78,16 @@ Web ES module importmap loader:
     <meta name="updated-at" content="2026-08-30T17:14:22Z"/>
 
     <!-- Intent Domain Metadata -->
-    <meta name="convergence-status" content="declared"/> <!-- declared | formulating | converging | verified | settled -->
-    <meta name="autonomy-tier" content="propose"/> <!-- observe | propose | change-with-review | scoped-automation -->
-    <meta name="invariants-hash" content="sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
+    <meta name="convergence-status" content="formulating"/> <!-- declared | closed | formulating | converging | verified | settled -->
+    <meta name="author" content="human:j.ortiz"/> <!-- human:{name} | agent:{name}@{version} -->
     <meta name="priority" content="high"/> <!-- low | medium | high | critical -->
     <meta name="business-impact" content="security"/> <!-- security | infrastructure | core-feature | bug-fix -->
-    <meta name="author" content="human:j.ortiz"/> <!-- human:{name} | agent:{name}@{version} -->
+    <meta name="risk-class" content="high"/> <!-- routine | high -->
+    <meta name="accepted-by" content="human:product-owner"/> <!-- empty until accepted -->
+    <meta name="accepted-at" content="2026-08-30T17:14:22Z"/> <!-- empty until accepted -->
+    <meta name="question-count" content="2"/>
     <meta name="origin-ref" content=""/> <!-- finding or alert that created this intent -->
     <meta name="external-ref" content=""/> <!-- ID of a record in a legacy tracking system -->
-    <meta name="invariant-count" content="3"/>
-    <meta name="evidence-count" content="3"/>
 
     <!-- M3 / Material Web Assets -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
@@ -108,84 +113,98 @@ Web ES module importmap loader:
 ## 3. Required Sections & M3 (Material Web) HTML Snippets
 
 The Intent Specification contains 7 standardized sections. Each section uses semantic XHTML tags combined with Material
-Web components (`md-*`) and typography tokens (`md-typescale-*`).
+Web components (`md-*`) and typography tokens (`md-typescale-*`). The originator writes sections 3.2 to 3.6 in their own
+words. No formal language is required.
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the work item identifier, intent title, convergence status chip, autonomy tier chip, priority
-level, and business impact.
+Anchors the document with the work item identifier, intent title, author, draft status, convergence status chip, risk
+class, priority, and the acceptance record.
 
-### 3.2. Declared Intent
+### 3.2. Problem
 
-Section id: `declared-intent`. The originator states the problem, the proposed outcome, the affected users and systems,
-and the motivation. The originator writes this section in their own words before any invariant or evidence is added. The
-section lists the author and the status of the draft. User stories and story points are not part of this document.
+Section id: `problem`. States what the originator or the users cannot do today, and why it matters.
 
-### 3.3. System Invariants
+### 3.3. Proposed Outcome
 
-Section id: `invariants`. Each invariant is an `md-list-item` with a `data-invariant-id` attribute (for example
-`INV-001`), a description, a shell command, and an enforcement level. The command exits with code `0` when the invariant
-holds. The enforcement level is one of `advisory`, `build-gate`, `ci-gate`, or `human-gate`.
+Section id: `proposed-outcome`. States what better looks like. The outcome names a result, not an implementation.
 
-Invariant classes include `must-preserve`, `do-not-touch`, `performance-budget`, and `security-boundary`. Each
-invariant carries a `data-class` attribute with one of these values.
+### 3.4. Affected Users & Systems
 
-### 3.4. Boundary Envelope
+Section id: `affected-users-systems`. Lists the users, teams, and systems that the intent affects.
 
-Section id: `boundary-envelope`. Lists the capabilities that are in scope and the capabilities that are strictly out of
-scope. Lists the constraints that bind the solution, for example the authentication method that the intent must reuse.
+### 3.5. Constraints
 
-### 3.5. Evidence Requirements
+Section id: `constraints`. Lists the limits that the originator sets, for example "No new PII in the portal session" or
+"Existing authentication only". Each constraint is an `md-list-item` with a `data-constraint-id` attribute (for example
+`CON-001`). Items that are out of scope carry `data-scope="out"`. The solution strategy turns these constraints into
+invariants and a boundary envelope.
 
-Section id: `evidence-requirements`. Each evidence requirement has a `data-evidence-id` attribute (for example
-`EV-001`), a description of the observable outcome, and a verification command with a pass or fail result. Downstream
-documents bind to these identifiers through the `implements-req` tag. The intent moves to `settled` only when every
-evidence requirement has a `pass` verdict.
+### 3.6. Open Questions
 
-### 3.6. Open Questions & Answers
-
-Section id: `open-questions`. Tracks questions, their resolution status (`open`, `resolved`, `blocked`), owners, and
-resolutions. The solution strategy answers each open question or carries it forward.
+Section id: `open-questions`. Each question is an `md-list-item` with a `data-question-id` attribute (for example
+`Q-001`) and an owner. The solution strategy answers each question or carries it forward in its Open Question Resolution
+section. This document does not record the answers.
 
 ### 3.7. Related Work Items & Origin
 
-Section id: `related-items`. Surfaces upstream prerequisites, downstream dependents, the `origin-ref` value for an
-intent that began from a finding or an alert, and the `external-ref` value for a legacy tracking record.
+Section id: `related-items`. Lists upstream prerequisites and downstream dependents. For an intent that began from a
+finding or an alert, it shows the `origin-ref` value. For a legacy tracking record, it shows the `external-ref` value.
 
 ---
 
-## 4. Token Optimization & XPath Query Patterns
+## 4. Authoring & Acceptance
 
-Agents operating in `brevio` query specific subsections using standard XPath 1.0/2.0 without loading entire documents,
-preserving LLM context and minimizing costs.
+1. The originator describes the problem to an agent in their own words.
+2. The agent asks the questions that an analyst asks: scope, users, constraints, and what success looks like.
+3. The agent writes `00_intent_spec.html`. The originator corrects anything that the agent misunderstood.
+4. The originator sets `risk-class`. The value is `routine` or `high`.
+5. The product owner reviews the intent. If `risk-class` is `high`, a tech lead reviews it too.
+6. If the product owner accepts the intent, `brevio` records `accepted-by` and `accepted-at`, and the intent moves to
+   `formulating`.
+7. If the product owner turns the intent down, the intent moves to `closed`.
 
-| Extraction Objective      | XPath Query Pattern                                                  |
-|:--------------------------|:---------------------------------------------------------------------|
-| All invariants            | `//section[@id='invariants']//md-list-item`                          |
-| Invariants that block edits | `//section[@id='invariants']//md-list-item[@data-level='build-gate']` |
-| Evidence requirements     | `//section[@id='evidence-requirements']//md-list-item`               |
-| Out-of-scope capabilities | `//section[@id='boundary-envelope']//*[@data-scope='out']`           |
-| Unresolved questions      | `//section[@id='open-questions']//*[@data-status='open']`            |
-| Autonomy tier             | `/html/head/meta[@name='autonomy-tier']/@content`                    |
-
----
-
-## 5. Rules & Constraints
-
-1. The originator writes the Declared Intent section first. The agent adds invariants and evidence during `formulating`.
-2. Every invariant must have a shell command and an enforcement level.
-3. Every evidence requirement must be a command with a pass or fail result.
-4. The document must not contain user stories, story points, or velocity metrics.
-5. The `invariants-hash` tag must match a hash of the Section `invariants` content. A change to an invariant updates the
-   hash.
-6. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+An intent that began from a finding or an alert follows the same steps. An agent writes the intent, and the product owner
+reviews and corrects it before acceptance.
 
 ---
 
-## 6. Revisions
+## 5. Token Optimization & XPath Query Patterns
+
+Agents in `brevio` query specific subsections with standard XPath 1.0/2.0. They do not load entire documents. This
+keeps the LLM context small and the costs low.
+
+| Extraction Objective      | XPath Query Pattern                                            |
+|:--------------------------|:---------------------------------------------------------------|
+| Problem statement         | `//section[@id='problem']//p`                                  |
+| Proposed outcome          | `//section[@id='proposed-outcome']//p`                         |
+| Constraints               | `//section[@id='constraints']//md-list-item`                   |
+| Out-of-scope items        | `//section[@id='constraints']//*[@data-scope='out']`           |
+| Open questions            | `//section[@id='open-questions']//md-list-item`                |
+| Acceptance record         | `/html/head/meta[@name='accepted-by' or @name='accepted-at']/@content` |
+| Risk class                | `/html/head/meta[@name='risk-class']/@content`                 |
+
+---
+
+## 6. Rules & Constraints
+
+1. The originator's words come first. The agent records the intent and does not add design content.
+2. The document must not contain invariants, evidence requirements, a boundary envelope, an autonomy tier, user stories,
+   story points, or velocity metrics.
+3. After acceptance, the document is frozen. A change after acceptance needs a new acceptance record, which updates
+   `accepted-by` and `accepted-at`.
+4. Every open question must have a `data-question-id` and an owner.
+5. A `closed` intent is terminal. To restart the idea, the originator declares a new intent.
+6. This document tracks its revision history only in the `## Revisions` table at the bottom of this document.
+
+---
+
+## 7. Revisions
 
 | Date       | Version | Description                                                                                                                                                                                       | Source                           |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.1   | Rewrote the prose in plain English. No change to the design. | User request |
+| 2026-11-25 | 0.5.0   | Reduced the intent specification to the originator's proto-spec: separate problem, proposed outcome, affected users and systems, constraints, and open question sections. Added the acceptance record, `risk-class`, and the `closed` outcome. Moved invariants, evidence requirements, the boundary envelope, and the autonomy tier to the solution strategy. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Replaced the requirements document with the intent specification: declared intent, system invariants with enforcement levels, boundary envelope, evidence requirements, autonomy tier, and origin tags. | TOPIC-005                        |
 | 2026-09-05 | 0.3.0   | Removed the XHTML snippets as the UI defined ones generated in the initial draft were junk.                                                                                                       | [Work Item Documents](README.md) |
 | 2026-09-05 | 0.2.0   | Standardized RFC 2119 levels, User Story framing, complexity/points estimation, dedicated Acceptance Criteria checklists with `data-req-ref`, and status-chipped Q&amp;A cards.                   | [Work Item Documents](README.md) |

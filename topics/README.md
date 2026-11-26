@@ -1,13 +1,12 @@
 # Topics: Product Ideation & Architectural Decision Framework
 
-Welcome to the `topics/` workspace for **`brevio` (Token Optimized Software Harness)**.
+This is the `topics/` workspace for **`brevio` (Token Optimized Software Harness)**.
 
-During the initial product ideation stage and throughout the project's evolution, this directory serves as the
-collaborative incubator for brainstorming, architectural evaluation, trade-off analysis, and consensus-building across
-the team.
+In the initial product ideation stage, and for the full life of the project, the team uses this directory to work
+together. The team brainstorms, evaluates architecture, analyzes trade-offs, and builds agreement here.
 
-Once discussion resolves and consensus is reached on a topic, its conclusions graduate into authoritative specifications
-housed in the [`build-docs/`](../build-docs/README.md) directory.
+When the team agrees on a topic, the conclusions of the topic graduate into authoritative specifications. These
+specifications are in the [`build-docs/`](../build-docs/README.md) directory.
 
 ---
 
@@ -25,27 +24,27 @@ housed in the [`build-docs/`](../build-docs/README.md) directory.
 
 ## Role & Relationship: Topics vs. Build-Docs
 
-Understanding the boundary between `topics/` and [`build-docs/`](../build-docs/README.md) is critical for maintaining
-documentation hygiene:
+Keep a clear boundary between `topics/` and [`build-docs/`](../build-docs/README.md). This keeps the documentation
+clean:
 
 | Dimension            | `topics/` (Ideation & Deliberation)                                                                                 | `build-docs/` (Canonical Specification)                                                  |
 |:---------------------|:--------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
-| **Purpose**          | Explore ideas, debate alternatives, evaluate token economics, capture consensus.                                    | Authoritative blueprint and specification for constructing `brevio`.                       |
+| **Purpose**          | Explore ideas, debate alternatives, evaluate token economics, record the agreement.                                 | The authoritative blueprint and specification for the build of `brevio`.                 |
 | **State**            | Divergent, exploratory, collaborative.                                                                              | Convergent, normative, prescriptive.                                                     |
-| **History & Debate** | Preserves discussions, rejected alternatives, trade-offs, and "why" decisions were made.                            | **Void of past decisions or alternatives**. Represents only current-state design.        |
-| **Lifecycle**        | Moves through states (`PROPOSED` &rarr; `GRADUATED` / `REJECTED`). Once graduated, acts as an immutable ADR record. | Living documents maintained throughout software development; updated only via revisions. |
-| **Primary Audience** | Product designers, architects, engineers in ideation.                                                               | Implementers, agentic LLMs executing tasks, automated code generators.                   |
+| **History & Debate** | Keeps the discussions, the rejected alternatives, the trade-offs, and the reasons for each decision.                | Contains no past decisions or alternatives. Shows only the current-state design.         |
+| **Lifecycle**        | Moves through states (`PROPOSED` &rarr; `GRADUATED` / `REJECTED`). After graduation, it is an immutable ADR record. | Living documents that the team maintains during software development. The team changes them only through revisions. |
+| **Primary Audience** | Product designers, architects, and engineers during ideation.                                                       | Implementers, agentic LLMs that execute tasks, automated code generators.                |
 
 > [!IMPORTANT]
-> As defined in [`build-docs/README.md`](../build-docs/README.md), all documents in `build-docs/` must represent the
-**current state of the design** and be **void of references to past decisions**. The `topics/` directory is where the
-debate and history live permanently.
+> [`build-docs/README.md`](../build-docs/README.md) sets this rule. All documents in `build-docs/` must show the
+current state of the design. They must contain no references to past decisions. The debate and history stay
+permanently in the `topics/` directory.
 
 ---
 
 ## Topic Lifecycle & State Machine
 
-Every topic moves through a structured progression from inception to graduation:
+Each topic moves through a structured sequence, from its start to graduation:
 
 ```mermaid
 flowchart LR
@@ -58,39 +57,39 @@ C --> F([Graduated to \n Build-Docs&nbsp;🎓])
 
 ### State Definitions
 
-1. **`PROPOSED`**: The topic has been introduced with a problem statement, context, and initial motivation. Open for
-   initial team review.
-2. **`IN_DISCUSSION`**: Active discussion underway. Options, technical spikes, token-efficiency models, and
-   architectural implications are being weighed.
-3. **`DECIDED`**: The team has reached consensus or an architectural decision. The chosen solution and rationale are
-   documented; open questions are resolved.
-4. **`GRADUATED`**: The decision has been transcribed into canonical specifications inside [
-   `build-docs/`](../build-docs/README.md). The topic document is updated with cross-references and locked.
-5. **`DEFERRED`**: Valid topic, but postponed to a subsequent milestone or post-MVP phase.
-6. **`REJECTED`**: Explored and rejected. The rationale is preserved for future reference to avoid re-litigating settled
-   decisions.
+1. **`PROPOSED`**: The topic has a problem statement, context, and initial motivation. The team can do an initial
+   review.
+2. **`IN_DISCUSSION`**: The discussion is active. The team compares options, technical spikes, token-efficiency models,
+   and architectural effects.
+3. **`DECIDED`**: The team agreed, or made an architectural decision. The topic records the chosen solution and the
+   reasons. All open questions are resolved.
+4. **`GRADUATED`**: The decision is copied into canonical specifications in [
+   `build-docs/`](../build-docs/README.md). The topic document gets cross-references and is then locked.
+5. **`DEFERRED`**: The topic is valid, but the team moved it to a later milestone or to a post-MVP phase.
+6. **`REJECTED`**: The team explored the topic and rejected it. The topic keeps the reasons for future reference, so
+   that the team does not debate a settled decision again.
 
 ---
 
 ## File Naming & Organization Conventions
 
-- **File Path**: `topics/TOPIC-###-<kebab-case-slug>.md`
-- **Topic Numbering**: Three-digit sequential numbering padded with zeros (`001`, `002`, `003`, ...).
-- **Template**: Copy from [`template.md`](template.md).
+- File path: `topics/TOPIC-###_<kebab-case-slug>.md`
+- Topic numbering: Three-digit sequential numbers, padded with zeros (`001`, `002`, `003`, ...).
+- Template: Copy from [`template.md`](template.md).
 
 ### Examples:
 
-- `topics/TOPIC-001-cli-command-tree-and-dispatch.md`
-- `topics/TOPIC-002-xhtml-schema-tag-structure.md`
-- `topics/TOPIC-003-mcp-vs-rest-service-layering.md`
-- `topics/TOPIC-004-static-ui-viewer-technology.md`
+- `topics/TOPIC-001_cli-command-tree-and-dispatch.md`
+- `topics/TOPIC-002_xhtml-schema-tag-structure.md`
+- `topics/TOPIC-003_mcp-vs-rest-service-layering.md`
+- `topics/TOPIC-004_static-ui-viewer-technology.md`
 
 ---
 
 ## Structured Topic Template
 
-Every topic document must follow this standardized format to ensure thorough analysis and streamlined conversion into
-`build-docs/`:
+Each topic document must use this standard format. The format makes sure that the analysis is complete and that the
+conversion into `build-docs/` is fast:
 
 ```markdown
 # TOPIC-###: <Topic Title>
@@ -184,7 +183,7 @@ Every topic document must follow this standardized format to ensure thorough ana
 
 ## Conversion Pipeline: From Topic to Build-Docs
 
-When a topic reaches consensus (`DECIDED`), follow this step-by-step pipeline to convert and graduate it into [
+When a topic gets to agreement (`DECIDED`), use this step-by-step pipeline to convert it and graduate it into [
 `build-docs/`](../build-docs/README.md):
 
 ```
@@ -213,25 +212,25 @@ When a topic reaches consensus (`DECIDED`), follow this step-by-step pipeline to
 
 ### Conversion Rules & Quality Standards
 
-1. **Purge Deliberative Language**: Do **not** copy statements like *"We decided on SQLite over Postgres because..."*
-   into `build-docs/`. Instead write: *"The persistence layer uses SQLite with the following schema..."*. The historical
-   reasoning remains preserved in the topic.
-2. **Prescriptive Completeness**: Ensure the build-doc contains concrete technical specs (interfaces, commands, schemas,
-   metadata tags, directory structures, data flows).
-3. **Traceability**: In the build-doc's `## Revisions` section at the bottom, reference the originating topic ID:
+1. Remove deliberative language. Do not copy statements like *"We decided on SQLite over Postgres because..."*
+   into `build-docs/`. Write this instead: *"The persistence layer uses SQLite with the following schema..."*. The
+   historical reasons stay in the topic.
+2. Make the specification prescriptive and complete. Make sure that the build-doc contains concrete technical specs
+   (interfaces, commands, schemas, metadata tags, directory structures, data flows).
+3. Keep traceability. In the `## Revisions` section at the bottom of the build-doc, reference the ID of the source topic:
    ```markdown
    ## Revisions
    | Date         | Version  | Description            | Source Topic      |
    |:-------------|:-------- |:---------------------- |:----------------- |
-   |  2026-09-05  | 0.1.0    | Initial specification  | [TOPIC-001](../topics/TOPIC-001-cli-architecture.md)  |
+   |  2026-09-05  | 0.1.0    | Initial specification  | [TOPIC-001](../topics/TOPIC-001_cli-architecture.md)  |
    ```
-4. **Close the Loop**: Update the topic file's status to `GRADUATED` and link to the generated build-docs.
+4. Close the loop. Change the status in the topic file to `GRADUATED`, and link to the generated build-docs.
 
 ---
 
 ## Build-Docs Domain Mapping Guide
 
-Refer to this directory map when determining where topic outcomes belong within [
+Use this directory map to find where the outcome of a topic belongs in [
 `build-docs/`](../build-docs/README.md):
 
 | Domain               | Target Path in `build-docs/`                                             | Scope & Content Type                                                                 |
@@ -248,4 +247,5 @@ Refer to this directory map when determining where topic outcomes belong within 
 
 ## Topic Registry
 
-All product ideation topics and architectural decisions are centrally tracked in the [Topic Registry](topic-registry.md). Consult that document to view active, decided, and graduated topics or to register a new one.
+The [Topic Registry](topic-registry.md) tracks all product ideation topics and architectural decisions in one place.
+Read it to see the active, decided, and graduated topics, or to register a new topic.

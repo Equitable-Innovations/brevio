@@ -115,7 +115,7 @@ flowchart LR
 | `IN_REVIEW` | The pull request is open for review or audit. | The pull request is approved and merged. |
 | `DONE` | Every invariant holds, every evidence item passes, and the code is merged. | Terminal state. |
 | `BLOCKED` | An external dependency or impediment stops the work. | The blocker is resolved. The work item returns to its previous state. |
-| `CANCELLED` | The work item is unnecessary, a duplicate, or superseded. The reason is recorded in the file. | Terminal state. |
+| `CANCELLED` | The work item is unnecessary, a duplicate, or superseded. The file records the reason. | Terminal state. |
 
 ### Gates
 
@@ -127,9 +127,9 @@ flowchart LR
 
 ### Date Stamps
 
-- `active` is set once, when the work item first leaves `BACKLOG`. It never changes afterward.
-- `completed` is set when the status becomes `DONE` or `CANCELLED`.
-- `updated` is set on every change.
+- When the work item first leaves `BACKLOG`, WTS sets `active`. It sets it only once, and it never changes afterward.
+- When the status becomes `DONE` or `CANCELLED`, WTS sets `completed`.
+- WTS sets `updated` on every change.
 
 ---
 
@@ -153,7 +153,7 @@ Each work item file has a metadata table and eleven numbered sections.
 | Related Topic(s) | Links to originating topics. |
 | Target Build-Doc(s) | Links to the specifications that the work item implements. |
 | Runtime Directory | Path of the seeded intent package, or `—` before seeding. |
-| Created Date, Active Date, Last Updated | Dates as `YYYY-MM-DD`, or `—` when not set. |
+| Created Date, Active Date, Last Updated | Dates as `YYYY-MM-DD`. If a date is not set, the value is `—`. |
 
 ### Sections
 
@@ -171,7 +171,7 @@ Each work item file has a metadata table and eleven numbered sections.
 | 10. Open Questions | Table of questions with status, owner, and resolution. |
 | 11. Activity Log & Notes | Dated entries. |
 
-Invariant classes are `must-preserve`, `do-not-touch`, `performance-budget`, and `security-boundary`. Enforcement levels are `advisory`, `build-gate`, `ci-gate`, and `human-gate`. Each invariant command exits with code `0` when the invariant holds.
+Invariant classes are `must-preserve`, `do-not-touch`, `performance-budget`, and `security-boundary`. Enforcement levels are `advisory`, `build-gate`, `ci-gate`, and `human-gate`. If an invariant holds, its command exits with code `0`.
 
 ---
 
@@ -192,7 +192,7 @@ Invariant classes are `must-preserve`, `do-not-touch`, `performance-budget`, and
 | `milestone` | Target release. |
 | `epic` | Parent epic identifier. If not set, the value is `—`. |
 | `implements` | List of FSD requirement identifiers. If none apply, the list is empty. |
-| `created`, `active`, `updated`, `completed` | Dates as `YYYY-MM-DD`, or `—` when not set. |
+| `created`, `active`, `updated`, `completed` | Dates as `YYYY-MM-DD`. If a date is not set, the value is `—`. |
 
 The work item file keeps the intent details. The record keeps only the index fields.
 
@@ -227,7 +227,7 @@ WTS commands live under `brevio wts`.
 | `brevio wts generate` | Rebuilds `backlog.md` without changing the data. |
 | `brevio wts list` | Prints records as JSON lines. The flags `--status` and `--id` filter the output. |
 | `brevio wts check` | Reports drift between `backlog.jsonl` and the work item files. It changes nothing. |
-| `brevio wts start` | Seeds the runtime intent package, and sets the `Runtime Directory` field. |
+| `brevio wts start` | Seeds the runtime intent package and sets the `Runtime Directory` field. |
 
 The MCP server exposes the same operations. It calls the same code as the CLI.
 
@@ -272,10 +272,13 @@ Agents read `backlog.jsonl` with XML-free line queries. They read a work item fi
 
 When `brevio wts start` seeds the intent package, WTS maps the work item as follows:
 
-1. Sections 1, 3, 4, and 5 become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
-2. Section 6 informs `01_solution_strategy.html`.
-3. Section 7 becomes the sub-intents in `02_intent_decomposition.html`.
-4. Section 10 carries into the open questions of the intent specification.
+1. Sections 1 and 2 become `00_intent_spec.html`.
+2. Section 10 carries into the open questions of the intent specification.
+3. Sections 3, 4, and 5 seed the invariants, boundary envelope, and evidence requirements of `01_solution_strategy.html`.
+   The `Autonomy Tier` row becomes the `autonomy-tier` tag of the strategy.
+4. Section 6 informs the design in `01_solution_strategy.html`.
+5. Section 7 becomes the sub-intents in `02_intent_decomposition.html`. If Section 7 lists one milestone, the
+   decomposition uses the `light` layout.
 
 ---
 
@@ -297,6 +300,8 @@ When `brevio wts start` seeds the intent package, WTS maps the work item as foll
 
 | Date       | Version | Description                                                                                                                                  | Source |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------|:-------|
+| 2026-11-25 | 0.3.3   | Rewrote the prose in plain English. No change to the design. | User request |
+| 2026-11-25 | 0.3.2   | Updated the intent package mapping: invariants, boundary envelope, evidence, and the autonomy tier seed the solution strategy. One milestone selects the light layout. | TOPIC-007 |
 | 2026-11-04 | 0.3.1   | Removed `SDK/API` from the domain list. | TOPIC-004 |
 | 2026-11-04 | 0.3.0   | Removed the REST API from the interface statement, the domain list, and the operations statement. | Removal of the REST API |
 | 2026-11-01 | 0.2.0   | Linked to the project manager parent. Added the `Epic` and `Implements` fields, the dependency edge consistency check, and the epic and requirement traceability rows. | TOPIC-006 |

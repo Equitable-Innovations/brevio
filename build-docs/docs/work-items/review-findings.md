@@ -5,15 +5,15 @@ applies the passes and severity levels in [`review_policy.html`](review-policy.m
 produced. Each finding has a pass, a severity, a location, and a status. The document also publishes severity counts in
 its `<head>`, so that a gate can read them without parsing the body.
 
-Findings do not approve or block a change alone. A named human code owner approves the change, using the findings as
+Findings do not approve or block a change alone. A named human code owner approves the change and uses the findings as
 input.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, static XHTML web page utilizing Material Design 3 Web Components
-   (`@material/web` / **M3**) without client-side bundlers or build steps. Reviewers sort findings by pass and severity.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI. Fix agents read only the open Important findings.
+1. Human Interface: The document renders as a local, static XHTML web page. It uses Material Design 3 Web Components
+   (`@material/web`, M3) and needs no client-side bundler or build step. Reviewers sort findings by pass and severity.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. Fix agents read only the open Important findings.
 
 ---
 
@@ -36,7 +36,7 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The review findings document resides at the root of the work item directory:
+The review findings document is at the root of the work item directory:
 
 ```text
 .brevio/
@@ -48,19 +48,19 @@ The review findings document resides at the root of the work item directory:
         └── 07_review_findings.html
 ```
 
-- **File Name:** `07_review_findings.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Authors:** One or more reviewer identities. Each finding names the reviewer that raised it.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `07_review_findings.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Authors: One or more reviewer identities. Each finding names the reviewer that raised it.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `07_review_findings.html` begins with the universal baseline `<meta>` tags, review tags, and the Material Web ES
-module importmap loader:
+Every `07_review_findings.html` starts with the universal baseline `<meta>` tags, the review tags, and the Material Web
+ES module importmap loader:
 
 ```xhtml
 
@@ -124,43 +124,44 @@ module importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Review Findings document contains 5 standardized sections. Each section combines semantic XHTML elements with
-Material Design 3 Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes
+The Review Findings document contains 5 standardized sections. Each section uses semantic XHTML elements and Material
+Design 3 Web Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data attributes
 (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the work item ID, the reviewer identity, the reviewer mode chip, the open Important count, and
-the link to `review_policy.html`.
+This section starts the document. It shows the work item ID, the reviewer identity, the reviewer mode chip, the open
+Important count, and the link to `review_policy.html`.
 
 ### 3.2. Severity Summary
 
-Section id: `severity-summary`. A table of counts by pass and severity. The counts match the `severity-important-count`
-and `severity-nit-count` tags. A review reports at most the number of Nit findings that `nit-cap` allows and summarizes
-the rest as a count.
+Section id: `severity-summary`. This section is a table of counts by pass and severity. The counts match the
+`severity-important-count` and `severity-nit-count` tags. A review reports at most the number of Nit findings that
+`nit-cap` allows. It gives the rest as a count.
 
 ### 3.3. Findings by Pass
 
-Section id: `findings`. One group per pass. Each finding is an `md-outlined-card` with these attributes:
+Section id: `findings`. This section has one group for each pass. Each finding is an `md-outlined-card` with these attributes:
 
 - `data-finding-id`: For example `F-001`.
 - `data-pass`: `bugs`, `security`, `compliance`, or a pass that the policy adds.
 - `data-severity`: `important` or `nit`.
 - `data-status`: `open`, `fixed`, `dismissed`, or `accepted`.
 
-Each card holds a description, the file path and line range, the evidence (for example the failing command and its
-literal output), and the invariant or evidence requirement that the finding affects, if any. A compliance finding names
-the document that the change departs from, for example a file outside the unit target scope.
+Each card holds a description, the file path and line range, and the evidence (for example the failing command and its
+literal output). If the finding affects an invariant or an evidence requirement, the card also names it. A compliance
+finding names the document that the change departs from, for example a file outside the unit target scope.
 
 ### 3.4. Fix Loop Record
 
-Section id: `fix-loop`. Records how each finding was handled. A reviewer or the author can request a fix. The agent
-addresses the request and pushes the change. The record lists the request, the change, the commit reference, and the
-status after the change. The agent works until the checks are green and the change waits only for the code owner.
+Section id: `fix-loop`. This section records how the team handled each finding. A reviewer or the author can request a
+fix. The agent does the requested work and pushes the change. The record lists the request, the change, the commit
+reference, and the status after the change. The agent works until the checks are green and the change waits only for
+the code owner.
 
 ### 3.5. Approval Record
 
-Section id: `approval`. States the approval decision, the named human approver, the timestamp, and the writer identity of
+Section id: `approval`. This section states the approval decision, the named human approver, the timestamp, and the writer identity of
 the change. The approver identity differs from the writer identity. For a reviewer in `shadow` mode, the section records
 the human decision on each finding.
 
@@ -202,7 +203,7 @@ graph TD
 3. Findings do not approve or block a change alone. A named human approves.
 4. The approver identity must differ from the writer identity.
 5. A finding from a reviewer in `shadow` mode needs a human decision before it counts.
-6. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+6. The `## Revisions` table at the bottom of this document is the only record of the revision history.
 
 ---
 
@@ -210,4 +211,5 @@ graph TD
 
 | Date       | Version | Description                                                                                                                | Source    |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 0.1.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 0.1.0   | Initial specification of per-intent review findings: passes, severity counts in metadata, fix loop record, and approval record. | TOPIC-005 |

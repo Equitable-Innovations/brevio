@@ -62,7 +62,7 @@ Every XHTML document in every domain carries these seven tags.
 | `schema-version` | SemVer | The version of the metadata schema. | `1.0.0` |
 | `domain` | String | The document domain. The values are `work-items`, `wiki`, `open-api`, and `project-mgr`. | `work-items` |
 | `status` | Enum | The lifecycle state of the document. See [Enumerated Values](#enumerated-values). | `completed` |
-| `created-at` | ISO-8601 | The time that the document was created. | `2026-08-30T17:10:00Z` |
+| `created-at` | ISO-8601 | The creation time of the document. | `2026-08-30T17:10:00Z` |
 | `updated-at` | ISO-8601 | The time of the last change. | `2026-08-30T17:14:22Z` |
 
 ---
@@ -398,3 +398,4 @@ The specifications disagree in these places. Each item needs a decision in a top
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial combined list of metadata elements across all document types. | Build Docs Harmonization |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the design. | User request |
