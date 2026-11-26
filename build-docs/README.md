@@ -1,6 +1,6 @@
 # Build Docs
 
-This directory of documentation are requirements, plans, and specifications for building `brevio`.
+This directory holds the requirements, plans, and specifications for building `brevio`.
 
 ## Index
 
@@ -17,5 +17,5 @@ This directory of documentation are requirements, plans, and specifications for 
 ## Rules
 
 - All documents represent the current state of the design.
-- History must only be tracked in the revisions section at the bottom of each document.
-- All language must be void of references to past decisions. 
+- Track history only in the revisions section at the bottom of each document.
+- Do not refer to past decisions in any document.

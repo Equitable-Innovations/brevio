@@ -1,6 +1,6 @@
 # WORK-ITEM-001 Intent Verification: Feasibility Stage
 
-This document is the feasibility stage of `03_intent_verification.html`. It maps every evidence requirement and every invariant to a command. It records the baseline result of each invariant command before any code exists. The completion stage is not part of this document yet. It is filled in after the units converge.
+This document is the feasibility stage of `03_intent_verification.html`. It maps every evidence requirement and every invariant to a command. It records the baseline result of each invariant command before any code exists. The completion stage is not part of this document yet. A later step fills it in after the units converge.
 
 | Metadata | Value |
 | :--- | :--- |
@@ -155,3 +155,4 @@ If any sub-intent verification reports `fail` or `warn`, the intent verdict cann
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial feasibility stage for WORK-ITEM-001. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

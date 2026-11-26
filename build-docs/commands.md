@@ -119,7 +119,7 @@ Source: [CLI specification](cli/README.md#output-and-exit-codes).
 | Command | Effect | Specification |
 | :--- | :--- | :--- |
 | `brevio wiki init` | Creates `.brevio/wiki/`, the five core pages with their required sections, and the index. | [Wiki](docs/wiki/README.md#command-surface) |
-| `brevio wiki list [--type <doc-type>] [--tag <tag>] [--review-due] [--drafts]` | Prints page records from the index. No page bodies. | [Wiki](docs/wiki/README.md#command-surface) |
+| `brevio wiki list [--type <doc-type>] [--tag <tag>] [--review-due] [--drafts]` | Prints page records from the index. It prints no page bodies. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki outline --page <doc-id>` | Prints the sections of one page: identifier, title, token estimate, and hash. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki get --page <doc-id> [--section <id>[,<id>...]]` | Prints the selected sections of one page. The default is all sections. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki find --text <words> [--type <doc-type>] [--tag <tag>] [--limit <n>]` | Searches the section text of all published pages. | [Wiki](docs/wiki/README.md#command-surface) |
@@ -132,11 +132,11 @@ Source: [CLI specification](cli/README.md#output-and-exit-codes).
 | `brevio wiki section add --page <doc-id> --section <id> --title <title> --file <fragment> [--after <id>] [--parent <id>]` | Adds a new section. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki section remove --page <doc-id> --section <id> --expect-hash <hash>` | Removes a section. A required section of a core page cannot be removed. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki adr add --title <title> --slug <slug> [--intent-id <id>] [--supersedes <doc-id>]` | Creates an ADR with the status `proposed` and the next free number. | [Wiki](docs/wiki/README.md#command-surface) |
-| `brevio wiki adr accept --adr <doc-id> --by <identity>` | Sets `accepted`, `decided-at`, and `deciders`. Needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
-| `brevio wiki adr deprecate --adr <doc-id> --by <identity>` | Sets `deprecated`. Needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
+| `brevio wiki adr accept --adr <doc-id> --by <identity>` | Sets `accepted`, `decided-at`, and `deciders`. The command needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
+| `brevio wiki adr deprecate --adr <doc-id> --by <identity>` | Sets `deprecated`. The command needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki risk add --title <title> --likelihood <level> --impact <level> --owner <owner> --file <fragment>` | Adds a risk with the next free number, the status `open`, and a calculated rating. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki risk set --risk <RISK-NNN> [--likelihood] [--impact] [--status] [--owner]` | Changes the attributes of a risk and calculates the rating again. | [Wiki](docs/wiki/README.md#command-surface) |
-| `brevio wiki review --page <doc-id> --by <identity>` | Sets `reviewed-at` and `reviewed-by`. Needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
+| `brevio wiki review --page <doc-id> --by <identity>` | Sets `reviewed-at` and `reviewed-by`. The command needs a named human. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki index` | Makes sure that every page is valid, then rebuilds `index.json` and `index.html`. | [Wiki](docs/wiki/README.md#command-surface) |
 | `brevio wiki check [--max-age-days <n>]` | Reports invalid pages, missing sections, broken links, index drift, and `review_due` pages. If it finds a problem, it exits with code `5`. | [Wiki](docs/wiki/README.md#command-surface) |
 
@@ -212,3 +212,4 @@ This table shows which command group creates, changes, or reads each document fa
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial consolidated list of CLI commands and MCP tools. | CLI, MCP, WTS, Project Manager, OpenAPI, and Wiki specifications |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the design. | User request |

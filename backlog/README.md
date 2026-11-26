@@ -1,10 +1,12 @@
 # Backlog & Work Item Management Framework
 
-Welcome to the `backlog/` workspace for **`brevio` (Token Optimized Software Harness)**.
+This is the `backlog/` workspace for **`brevio` (Token Optimized Software Harness)**.
 
-This directory serves as the centralized backlog and development work item hub. It bridges the gap between high-level architectural ideation in [`topics/`](../topics/README.md), canonical specifications in [`build-docs/`](../build-docs/README.md), and granular code implementation.
+This directory is the central place for the backlog and the development work items. It connects three areas: the
+high-level architectural ideas in [`topics/`](../topics/README.md), the canonical specifications in
+[`build-docs/`](../build-docs/README.md), and the detailed code implementation.
 
-Every discrete feature, enhancement, or bug fix is represented by an individual work item document following the convention [`WORK-ITEM-###_{file-name-slug}.md`](#file-naming--organization-conventions). All work items are indexed in [`backlog.jsonl`](backlog.jsonl) and shown centrally in the generated [`backlog.md`](backlog.md).
+Each discrete feature, improvement, or bug fix has its own work item document. The file name follows the convention [`WORK-ITEM-###_{file-name-slug}.md`](#file-naming--organization-conventions). [`backlog.jsonl`](backlog.jsonl) indexes all work items, and the generated [`backlog.md`](backlog.md) shows them in one place.
 
 ---
 
@@ -23,14 +25,14 @@ Every discrete feature, enhancement, or bug fix is represented by an individual 
 
 ## Role & Relationship in Brevio
 
-Understanding how `backlog/` fits into the overall `brevio` documentation ecosystem ensures clear separation of concerns:
+This table shows the place of `backlog/` in the `brevio` documentation. Each area has a separate concern:
 
 | Dimension | `topics/` (Ideation & Deliberation) | `build-docs/` (Canonical Specs) | `backlog/` (Development Backlog) | `.brevio/work_items/` (Execution Harness) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Purpose** | Brainstorming, evaluating trade-offs, architectural consensus. | Authoritative blueprints, contracts, schemas, and current-state design. | Intent-declaring work items, prioritized backlog. | Runtime machine-parseable XHTML documents, telemetry, and execution logs. |
+| **Purpose** | Brainstorms, evaluation of trade-offs, architectural agreement. | Authoritative blueprints, contracts, schemas, and the current-state design. | Work items that declare intents, and a prioritized backlog. | Runtime XHTML documents that a machine can parse, telemetry, and execution logs. |
 | **Document Format** | Markdown (`TOPIC-###_slug.md`) | Markdown specs across component domains | Markdown (`WORK-ITEM-###_slug.md` & `backlog.md`) | Strict XHTML 1.0/5 documents and JSON ledgers |
 | **State** | Divergent, exploratory. | Convergent, normative, prescriptive. | Tactical, progressive, sprint-oriented. | Operational, atomic, task-oriented. |
-| **Primary Audience** | Architects, designers, engineers in ideation. | Implementers, agentic LLMs, code generators. | Product owners, engineers, agent harnesses executing backlog tasks. | Running agent harness, static visualizer, automated verification loops. |
+| **Primary Audience** | Architects, designers, and engineers during ideation. | Implementers, agentic LLMs, code generators. | Product owners, engineers, and agent harnesses that execute backlog tasks. | The running agent harness, the static visualizer, automated verification loops. |
 
 ```mermaid
 flowchart LR
@@ -43,7 +45,7 @@ flowchart LR
 
 ## Work Item Lifecycle & State Machine
 
-Every work item transitions through a deterministic lifecycle from initial inception in the backlog to completion:
+Each work item moves through a deterministic lifecycle, from its first entry in the backlog to completion:
 
 ```mermaid
 flowchart LR
@@ -67,48 +69,48 @@ flowchart LR
 
 | Status | Description | Exit Criteria |
 | :--- | :--- | :--- |
-| **`BACKLOG`** | Newly captured idea or task. High-level summary exists, but invariants and evidence are not yet finalized. | Groomed, scoped, and prioritized for a milestone. |
-| **`PLANNED`** | Assigned to an upcoming milestone or sprint. Scope and dependencies are actively being refined. | Acceptance criteria written, technical approach agreed upon. |
-| **`READY`** | Fully refined and groomed. Acceptance criteria defined, estimate assigned, dependencies unblocked. Ready for developer/agent pick-up. | Work begins by assignee. |
-| **`IN_PROGRESS`** | Actively undergoing development and test authoring. | All tasks checked, unit tests pass locally, PR opened. |
-| **`IN_REVIEW`** | Implementation complete. PR is submitted for code review, automated CI verification, or agent audit. | PR approved and merged. |
+| **`BACKLOG`** | A new idea or task. A high-level summary exists, but the invariants and evidence are not final yet. | Groomed, scoped, and prioritized for a milestone. |
+| **`PLANNED`** | Assigned to a future milestone or sprint. The team is refining the scope and dependencies. | Acceptance criteria written, technical approach agreed. |
+| **`READY`** | Fully refined and groomed. Acceptance criteria defined, estimate assigned, dependencies unblocked. A developer or agent can start it. | The assignee starts the work. |
+| **`IN_PROGRESS`** | Development and test writing are in progress. | All tasks checked, unit tests pass locally, PR opened. |
+| **`IN_REVIEW`** | Implementation complete. The PR is submitted for code review, automated CI verification, or agent audit. | PR approved and merged. |
 | **`DONE`** | Verification criteria met, code merged to `main`, documentation updated. | Archived in `backlog.md`. |
-| **`BLOCKED`** | Work cannot proceed due to an external dependency, technical impediment, or upstream issue. | Blocker resolved; returned to previous state. |
-| **`CANCELLED`** | Determined to be unnecessary, duplicate, or superseded. Rationale recorded in the work item file. | Terminal state. |
+| **`BLOCKED`** | The work cannot continue because of an external dependency, a technical problem, or an upstream issue. | Blocker resolved, and the work item goes back to its previous state. |
+| **`CANCELLED`** | Not necessary, a duplicate, or replaced by other work. The work item file records the reason. | Terminal state. |
 
 ---
 
 ## File Naming & Organization Conventions
 
-To ensure uniform parsing across human developers and automated tools, work item files adhere to a strict naming pattern:
+Work item files follow a strict naming pattern, so that human developers and automated tools parse them in the same way:
 
-$$\mathbf{\text{backlog/###\_\{file-name-slug\}.md}}$$
+$$\mathbf{\text{backlog/WORK-ITEM-###\_\{file-name-slug\}.md}}$$
 
 ### Breakdown:
 
-1. **Prefix**: `` in uppercase.
-2. **Identifier (`###`)**: Three-digit zero-padded sequential integer (`001`, `002`, `003`, ..., `042`, etc.).
-3. **Delimiter**: An underscore (`_`) separating the work item ID and the slug.
-4. **Slug (`{file-name-slug}`)**: Concise, lowercase, kebab-case descriptor summarizing the feature or task.
+1. **Prefix**: `WORK-ITEM-` in uppercase.
+2. **Identifier (`###`)**: A three-digit, zero-padded, sequential integer (`001`, `002`, `003`, ..., `042`, and so on).
+3. **Delimiter**: An underscore (`_`) between the work item ID and the slug.
+4. **Slug (`{file-name-slug}`)**: A short, lowercase, kebab-case description of the feature or task.
 5. **Extension**: `.md` (Markdown).
 
 ### Valid Examples:
 
-- `backlog/001_initialize-cli-skeleton-and-root-command.md`
-- `backlog/002_xhtml-metadata-parser-and-xpath-evaluator.md`
-- `backlog/003_mcp-server-protocol-handshake-and-tools.md`
-- `backlog/004_static-ui-dashboard-scaffold.md`
+- `backlog/WORK-ITEM-001_initialize-cli-skeleton-and-root-command.md`
+- `backlog/WORK-ITEM-002_xhtml-metadata-parser-and-xpath-evaluator.md`
+- `backlog/WORK-ITEM-003_mcp-server-protocol-handshake-and-tools.md`
+- `backlog/WORK-ITEM-004_static-ui-dashboard-scaffold.md`
 
 > [!WARNING]
-> Do not use a hyphen `-` as the separator between the ID and the slug (e.g., avoid `WORK-ITEM-001-slug.md`). Use an underscore `_` (e.g., `WORK-ITEM-001_slug.md`) to maintain clear syntactic distinction between the work item identifier and the descriptive slug.
+> Do not use a hyphen `-` as the separator between the ID and the slug (for example, do not use `WORK-ITEM-001-slug.md`). Use an underscore `_` (for example, `WORK-ITEM-001_slug.md`). The underscore keeps a clear separation between the work item identifier and the descriptive slug.
 
 ---
 
 ## Using `backlog.md`
 
-[`backlog.md`](backlog.md) is the central index and dashboard for all work items in the project. It mirrors the role of `topics/topic-registry.md` for topics.
+[`backlog.md`](backlog.md) is the central index and dashboard for all work items in the project. It has the same role for work items that `topics/topic-registry.md` has for topics.
 
-`backlog.md` is a generated file. Do not edit it by hand. The data lives in [`backlog.jsonl`](backlog.jsonl), one JSON object per line. The script [`scripts/backlog.mjs`](scripts/backlog.mjs) changes the data and rebuilds `backlog.md` from [`backlog.template.md`](backlog.template.md) each time.
+`backlog.md` is a generated file. Do not edit it by hand. The data is in [`backlog.jsonl`](backlog.jsonl), with one JSON object on each line. The script [`scripts/backlog.mjs`](scripts/backlog.mjs) changes the data. Each time, it also rebuilds `backlog.md` from [`backlog.template.md`](backlog.template.md).
 
 ### Backlog Script
 
@@ -127,11 +129,11 @@ node backlog/scripts/backlog.mjs check
 | Command | Effect |
 | :--- | :--- |
 | `next-id` | Prints the next free `WORK-ITEM-###` identifier. |
-| `add` | Appends a record, stamps the dates, and rebuilds `backlog.md`. |
-| `edit` | Changes fields of a record. A status change stamps `active` on first leaving `BACKLOG` and `completed` on `DONE` or `CANCELLED`. |
-| `remove` | Deletes the record and the `WORK-ITEM-###_*.md` file. Add `--keep-file` to keep the file. |
-| `generate` | Rebuilds `backlog.md` without changing the data. |
-| `list` | Prints records as JSON lines. Filter with `--status` or `--id`. |
+| `add` | Appends a record, writes the dates, and rebuilds `backlog.md`. |
+| `edit` | Changes fields of a record. On a status change, it sets `active` the first time the item leaves `BACKLOG`. It sets `completed` on `DONE` or `CANCELLED`. |
+| `remove` | Deletes the record and the `WORK-ITEM-###_*.md` file. To keep the file, add `--keep-file`. |
+| `generate` | Rebuilds `backlog.md` and does not change the data. |
+| `list` | Prints records as JSON lines. To filter, use `--status` or `--id`. |
 | `check` | Reports drift between `backlog.jsonl` and the work item files. It changes nothing. |
 
 ### Record Schema (`backlog.jsonl`):
@@ -139,21 +141,21 @@ node backlog/scripts/backlog.mjs check
 | Field | Description |
 | :--- | :--- |
 | `id` | `WORK-ITEM-###` |
-| `title`, `slug` | Human-readable title and the kebab-case file name slug |
+| `title`, `slug` | The human-readable title and the kebab-case file name slug |
 | `status` | `BACKLOG`, `PLANNED`, `READY`, `IN_PROGRESS`, `IN_REVIEW`, `DONE`, `BLOCKED`, `CANCELLED` |
 | `priority` | `P0`, `P1`, `P2`, `P3` |
 | `domain`, `tier` | Subsystem and autonomy tier |
 | `assignee`, `milestone` | Owner and target release |
-| `created`, `active`, `updated`, `completed` | Dates as `YYYY-MM-DD`, or `—` when not set |
+| `created`, `active`, `updated`, `completed` | Dates as `YYYY-MM-DD`, or `—` for a date that is not set |
 
 The work item files keep the intent details (invariants, evidence, scope). The record keeps only the index fields.
 
 ### Key Responsibilities:
 
-- **Single Source of Truth**: `backlog.jsonl` holds the index. Anyone looking for what to work on next, what is in flight, or what has been delivered reads `backlog.md`.
-- **Status Synchronization**: When a work item changes status, the script updates `backlog.jsonl` and rebuilds `backlog.md` in the same run.
-- **Metrics Ledger**: The script counts work items per state each time it generates `backlog.md`.
-- **Layout Changes**: Edit `backlog.template.md` (markers `{{METRICS_ROW}}`, `{{ACTIVE_ROWS}}`, `{{ARCHIVE_ROWS}}`), then run `generate`.
+- Single source of truth: `backlog.jsonl` holds the index. To find what to work on next, what is in progress, or what is delivered, read `backlog.md`.
+- Status synchronization: When a work item changes status, the script updates `backlog.jsonl` and rebuilds `backlog.md` in the same run.
+- Metrics ledger: Each time the script generates `backlog.md`, it counts the work items in each state.
+- Layout changes: Edit `backlog.template.md` (markers `{{METRICS_ROW}}`, `{{ACTIVE_ROWS}}`, `{{ARCHIVE_ROWS}}`). Then run `generate`.
 
 ### Table Schema:
 
@@ -164,36 +166,36 @@ The work item files keep the intent details (invariants, evidence, scope). The r
 | **Status** | Current lifecycle state | `READY`, `IN_PROGRESS`, `DONE` |
 | **Priority** | Urgency and impact rating (`P0`, `P1`, `P2`, `P3`) | `P1` |
 | **Autonomy Tier** | Agent autonomy level (`observe`, `propose`, `change-with-review`, `scoped-automation`) | `propose` |
-| **Domain** | Target subsystem (`CLI`, `MCP`, `Static UI`, `Work Items`, `Wiki`, `Core`) | `CLI` |
+| **Domain** | Target subsystem (`CLI`, `MCP`, `Static UI`, `Work Items`, `Wiki`, `OpenAPI`, `Core`) | `CLI` |
 | **Assignee** | GitHub handle or agent identifier | `@developer` |
 | **Target Release** | Milestone or release version | `v0.1.0` |
-| **Active** | Date the work item first left `BACKLOG` (`YYYY-MM-DD` or `—` if still in `BACKLOG`) | `2026-09-06` |
-| **Last Updated** | Date of last state or content modification (`YYYY-MM-DD`) | `2026-09-06` |
+| **Active** | The date on which the work item first left `BACKLOG` (`YYYY-MM-DD`, or `—` for a work item that is still in `BACKLOG`) | `2026-09-06` |
+| **Last Updated** | Date of the last change to state or content (`YYYY-MM-DD`) | `2026-09-06` |
 
 ### Sorting Rule (Active & Planned Work Items):
 
-Rows in the **Active & Planned Work Items** table are sorted by **Active Date** ascending — the work item that has been active longest sits at the top. Rows with `—` (still in `BACKLOG`) sort below all dated rows, ordered by **Created Date** ascending. Tie-break: `WORK-ITEM-###` ascending.
+The script sorts the rows in the Active & Planned Work Items table by Active Date, ascending. The work item that is active for the longest time is at the top. Rows with `—` (still in `BACKLOG`) go below all rows with a date, sorted by Created Date, ascending. If two rows are equal, `WORK-ITEM-###` ascending decides the order.
 
 ---
 
 ## Authoring `WORK-ITEM-###_{file-name-slug}.md`
 
 > [!TIP]
-> **Tooling Support**: The supported way to create and register work items is the `/create-work-item` skill (or the `backlog-manager` agent). It allocates the ID, captures the intent in short rounds, writes the file from the template, and registers the record through `scripts/backlog.mjs`.
+> Tool support: To create and register work items, use the `/create-work-item` skill (or the `backlog-manager` agent). It allocates the ID, captures the intent in short rounds, writes the file from the template, and registers the record through `scripts/backlog.mjs`.
 
-A work item declares an intent. It states what the system must achieve, which invariants must hold, and which evidence proves the result. It does not prescribe steps, and it holds no user story and no story points.
+A work item declares an intent. It states what the system must achieve, which invariants must stay true, and which evidence proves the result. It does not prescribe steps. It holds no user story and no story points.
 
-When creating a work item manually:
+To create a work item manually:
 
-1. **Copy the Template**: Copy [`backlog/template.md`](template.md) to `backlog/WORK-ITEM-###_{file-name-slug}.md`.
-2. **Fill the Metadata Table**: Set the ID, status, priority, domain, autonomy tier, author, and `Active Date` (`—` if `BACKLOG`, stamped if `PLANNED` or later).
-3. **Declare the Intent**: Write the desired outcome, the affected users and systems, and the motivation.
-4. **Add Context**: Link the problem to [`topics/`](../topics/README.md) and [`build-docs/`](../build-docs/README.md).
-5. **Define Invariants**: Write each invariant with a class, a shell command, and an enforcement level.
-6. **Set the Boundary Envelope**: List in-scope items, out-of-scope items, and constraints.
-7. **Define Evidence**: Write each observable outcome with a verification command.
-8. **List Candidate Sub-Intents**: Name the milestones and their dependencies.
-9. **Register in the Backlog**: Run `node backlog/scripts/backlog.mjs add ...`. The script updates `backlog.jsonl` and rebuilds `backlog.md`.
+1. Copy [`backlog/template.md`](template.md) to `backlog/WORK-ITEM-###_{file-name-slug}.md`.
+2. Fill the metadata table. Set the ID, status, priority, domain, autonomy tier, author, and `Active Date` (`—` for `BACKLOG`, the activation date for `PLANNED` or later).
+3. Declare the intent. Write the desired outcome, the affected users and systems, and the motivation.
+4. Add context. Link the problem to [`topics/`](../topics/README.md) and [`build-docs/`](../build-docs/README.md).
+5. Define the invariants. Write each invariant with a class, a shell command, and an enforcement level.
+6. Set the boundary envelope. List the in-scope items, the out-of-scope items, and the constraints.
+7. Define the evidence. Write each observable outcome with a verification command.
+8. List the candidate sub-intents. Name the milestones and their dependencies.
+9. Register the work item in the backlog. Run `node backlog/scripts/backlog.mjs add ...`. The script updates `backlog.jsonl` and rebuilds `backlog.md`.
 
 ---
 
@@ -238,7 +240,7 @@ Each work item file contains these sections:
 
 ## Step-by-Step Workflow
 
-Follow this procedure when creating, executing, and resolving a work item (use `/create-work-item`, `/update-work-item-status`, and `/update-backlog` to automate these steps):
+Use this procedure to create, execute, and close a work item. The skills `/create-work-item`, `/update-work-item-status`, and `/update-backlog` automate these steps:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -288,13 +290,13 @@ Follow this procedure when creating, executing, and resolving a work item (use `
 
 ## Relationship to Work Items Runtime
 
-A work item is the parent of all intent-driven SDLC documents. It plays the role that a story plays in a standard SDLC, where the standard documents are children of the story. When an agentic LLM or human engineer begins active execution of a work item, the file seeds a runtime intent package under `.brevio/work_items/{timestamp}_{slug}/`. The `Runtime Directory` metadata row records the path.
+A work item is the parent of all intent-driven SDLC documents. It has the role that a story has in a standard SDLC, where the standard documents are children of the story. At some point, an agentic LLM or a human engineer starts active execution of a work item. At that time, the work item file gives the initial content of a runtime intent package under `.brevio/work_items/{timestamp}_{slug}/`. The `Runtime Directory` metadata row records the path.
 
-1. **Declared Intent, Boundary Envelope, Invariants, and Evidence Requirements** become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
-2. **Technical Approach** informs `01_solution_strategy.html`.
-3. **Candidate Sub-Intents** become the sub-intents in `02_intent_decomposition.html`. The ledger `03_intent_ledger.json` governs their state.
-4. **Open Questions** carry into the open questions section of the intent specification.
+1. Declared Intent, Boundary Envelope, Invariants, and Evidence Requirements become `00_intent_spec.html`. The `Autonomy Tier` row becomes the `autonomy-tier` tag.
+2. Technical Approach gives input to `01_solution_strategy.html`.
+3. Candidate Sub-Intents become the sub-intents in `02_intent_decomposition.html`. The ledger `03_intent_ledger.json` controls their state.
+4. Open Questions go into the open questions section of the intent specification.
 
 The backlog status (`BACKLOG` to `DONE`) is separate from the `convergence-status` of the runtime package. The work item moves to `DONE` after the intent is `settled` and the pull request is merged.
 
-This keeps end-to-end traceability from ideation in `topics/`, through canonical architecture in `build-docs/`, planned work in `backlog/`, and live execution in `.brevio/work_items/`.
+This gives traceability from end to end: from ideas in `topics/`, through the canonical architecture in `build-docs/` and the planned work in `backlog/`, to live execution in `.brevio/work_items/`.

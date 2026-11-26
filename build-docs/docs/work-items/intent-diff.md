@@ -1,38 +1,36 @@
 # Intent Diff Document Definition
 
-The Intent Diff Document (`units/{unit_id}/intent.diff`) is the authoritative Tier 3 code patch artifact in the `brevio` work
-item lifecycle. It records the deterministic, unified git diff of all source code modifications, file creations, and
-deletions performed by an agent during atomic unit execution.
+The Intent Diff Document (`units/{unit_id}/intent.diff`) is the authoritative Tier 3 code patch artifact in the `brevio`
+work item lifecycle. It records the deterministic, unified git diff of all source code changes, file creations, and file
+deletions that an agent makes during atomic unit execution.
 
-While [`intent_unit_spec.html`](intent-unit-specification.md)
-declares upfront modification instructions and [
-`summary.html`](unit-summary.md) renders
-human-friendly M3 visual cards and summary metrics, `intent.diff` is the pure, portable code patch file (`text/x-diff`,
-UTF-8). It provides an immutable, machine-applicable code diff that directly bridges agent code generation with version
-control systems, verification suites, and automated patch review pipelines.
+[`intent_unit_spec.html`](intent-unit-specification.md) declares the change instructions before the work starts.
+[`summary.html`](unit-summary.md) renders M3 visual cards and summary metrics for people. `intent.diff` is the pure,
+portable code patch file (`text/x-diff`, UTF-8). It gives an immutable code diff that machines can apply. It connects
+agent code generation directly to version control systems, verification suites, and automated patch review pipelines.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Harness & Tooling Interface (Deterministic Patch Portability):** Strict POSIX/Git Unified Diff format (`diff -u`,
-   `git diff`) allowing automated harness components to validate patches (`git apply --check`), apply changes, revert
-   changes, perform AST-level impact analysis, or supply context to code-review agents without parsing XHTML.
-2. **Auditability & Boundary Verification:** Serves as an immutable artifact for verifying that only `target-files`
-   declared in `intent_unit_spec.html` were altered and no files declared in the "do not touch" manifest were modified.
-   Directly feeds into the `diffChurnRatio` calculations in [
-   `metrics.json`](unit-conversation-metrics.md).
+1. Harness & Tooling Interface (Deterministic Patch Portability): The file uses the strict POSIX/Git Unified Diff format
+   (`diff -u`, `git diff`). Automated harness components can validate patches (`git apply --check`), apply changes, and
+   revert changes. They can also do AST-level impact analysis or give context to code-review agents, without parsing
+   XHTML.
+2. Auditability & Boundary Verification: The file is an immutable artifact. Tools use it to make sure that only the
+   `target-files` declared in `intent_unit_spec.html` changed, and that no file in the "do not touch" manifest changed.
+   It feeds directly into the `diffChurnRatio` calculations in [`metrics.json`](unit-conversation-metrics.md).
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Diffs
 
-In `brevio`, unit diffs document and enforce execution compliance against the four foundational dimensions:
+In `brevio`, unit diffs record and enforce execution compliance against the four basic dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Diff Manifestation                                                                                                                                      |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally catalogs the exact diff hunks applied to the repository, proving zero unauthorized modifications to protected or "do not touch" files.                     |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Isolates code changes strictly to the atomic unit's bounded responsibility, ensuring surgical diff hunks without cross-unit feature bleed or unrelated refactoring. |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Provides a standardized patch file that can be dry-run verified via `git apply --check` before test execution recorded in `verification.html`.                        |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Proves that all edge case requirements (`EC-###`) from the specification are concretely realized in the newly introduced code branches, guards, and assertions.     |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Formally lists the exact diff hunks applied to the repository. Proves that no protected or "do not touch" file has an unauthorized change.                          |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Keeps code changes strictly inside the bounded responsibility of the atomic unit. The diff hunks are surgical, with no feature bleed across units and no unrelated refactoring. |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Gives a standardized patch file. Before the test execution that `verification.html` records, tools can make sure that the patch applies with a dry run of `git apply --check`. |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Proves that the new code branches, guards, and assertions implement all edge case requirements (`EC-###`) from the specification.                                  |
 
 ---
 
@@ -62,8 +60,8 @@ In `brevio`, unit diffs document and enforce execution compliance against the fo
 
 ## 1. File Location & Organization Standard
 
-Each unit diff artifact resides directly inside its isolated unit directory, paired alongside its specification,
-validation, summary, conversation log, and metrics:
+Each unit diff artifact is directly inside its isolated unit directory. It is next to the specification, validation,
+summary, conversation log, and metrics of the unit:
 
 ```text
 .brevio/
@@ -81,13 +79,12 @@ validation, summary, conversation log, and metrics:
                         └── metrics.json            # Derived Token, Trajectory & Cost Telemetry
 ```
 
-- **File Name:** `intent.diff`
-- **Format:** Unified Diff format (`text/x-diff`, UTF-8, POSIX line endings `\n`).
-- **Lifecycle Scope:** Generated upon completion of unit execution turns once code changes are made, preserved immutably
-  when [`verification.html`](unit-verification.md)
-  passes, and committed alongside [
-  `summary.html`](unit-summary.md).
-- **Paired Artifacts:**
+- File Name: `intent.diff`
+- Format: Unified Diff format (`text/x-diff`, UTF-8, POSIX line endings `\n`).
+- Lifecycle Scope: When the unit execution turns complete and code changes exist, the harness generates the file. It stays
+  immutable after [`verification.html`](unit-verification.md) passes. It is committed together with
+  [`summary.html`](unit-summary.md).
+- Paired Artifacts:
     - Instructions: [`intent_unit_spec.html`](intent-unit-specification.md)
     - Verification Evidence: [`verification.html`](unit-verification.md)
     - Commit Summary: [`summary.html`](unit-summary.md)
@@ -100,27 +97,27 @@ validation, summary, conversation log, and metrics:
 
 ### 2.1. Standard Git Unified Diff Format
 
-`intent.diff` strictly conforms to the standard Git Unified Diff format generated by `git diff` or `git diff -U3`. It
-contains one or more file patches concatenated in alphabetical or execution order.
+`intent.diff` conforms strictly to the standard Git Unified Diff format that `git diff` or `git diff -U3` generates. It
+contains one or more file patches, joined in alphabetical or execution order.
 
 ### 2.2. Patch Header & Chunk Anatomy
 
-Each modified file within `intent.diff` consists of:
+Each changed file in `intent.diff` has these parts:
 
-1. **Git Diff Command Header:** `diff --git a/{path} b/{path}`
-2. **Extended Index Header:** `index {old_hash}..{new_hash} {mode}` (or file mode indicator)
-3. **File Path Markers:**
-    - `--- a/{path}` (source version, or `--- /dev/null` for newly created files)
+1. Git Diff Command Header: `diff --git a/{path} b/{path}`
+2. Extended Index Header: `index {old_hash}..{new_hash} {mode}` (or a file mode indicator)
+3. File Path Markers:
+    - `--- a/{path}` (source version, or `--- /dev/null` for new files)
     - `+++ b/{path}` (target version, or `+++ /dev/null` for deleted files)
-4. **Hunk Headers:** `@@ -{old_start},{old_len} +{new_start},{new_len} @@ {optional_context_heading}`
-5. **Hunk Lines:**
-    - ` ` (single space prefix): Context line unchanged
+4. Hunk Headers: `@@ -{old_start},{old_len} +{new_start},{new_len} @@ {optional_context_heading}`
+5. Hunk Lines:
+    - ` ` (single space prefix): Unchanged context line
     - `-` (minus prefix): Deleted line
     - `+` (plus prefix): Added line
 
 ### 2.3. File Lifecycle Representations
 
-- **New File Created:**
+- New File Created:
   ```diff
   diff --git a/src/main/resources/db/migration/V1__init_auth.sql b/src/main/resources/db/migration/V1__init_auth.sql
   new file mode 100644
@@ -131,7 +128,7 @@ Each modified file within `intent.diff` consists of:
   +CREATE TABLE user_accounts (
   ...
   ```
-- **Existing File Modified:**
+- Existing File Modified:
   ```diff
   diff --git a/src/test/resources/fixtures/auth_seed.sql b/src/test/resources/fixtures/auth_seed.sql
   index 1234567..89abcdef 100644
@@ -140,7 +137,7 @@ Each modified file within `intent.diff` consists of:
   @@ -15,4 +15,6 @@ INSERT INTO roles (id, name) VALUES (1, 'ROLE_USER');
   +INSERT INTO roles (id, name) VALUES (2, 'ROLE_ADMIN');
   ```
-- **File Deleted:**
+- File Deleted:
   ```diff
   diff --git a/legacy/old_auth.sql b/legacy/old_auth.sql
   deleted file mode 100644
@@ -153,16 +150,16 @@ Each modified file within `intent.diff` consists of:
 
 ### 2.4. Hunk Context & Precision
 
-- **Context Window:** Default 3 lines of context (`-U3`) above and below changes.
-- **Whitespace Cleanliness:** No trailing whitespace or inconsistent line ending mutations.
-- **Surgical Bounds:** Edits must not touch unaffected methods, reformat unrelated blocks, or strip comments from
-  adjacent code.
+- Context Window: By default, 3 lines of context (`-U3`) above and below changes.
+- Whitespace Cleanliness: No trailing whitespace and no inconsistent changes to line endings.
+- Surgical Bounds: Edits must not touch unaffected methods, reformat unrelated blocks, or remove comments from adjacent
+  code.
 
 ---
 
 ## 3. Concrete Patch Example (`intent.diff`)
 
-Below is a complete, realistic example of `intent.diff` produced during `unit_001_create_tables`:
+This is a complete, realistic example of the `intent.diff` that `unit_001_create_tables` produces:
 
 ```diff
 diff --git a/src/main/resources/db/migration/V1__init_auth.sql b/src/main/resources/db/migration/V1__init_auth.sql
@@ -212,7 +209,7 @@ index a1b2c3d..e4f5a6b 100644
 
 ## 4. Harness Lifecycle & Diff Generation Workflow
 
-The `brevio` harness integrates `intent.diff` generation throughout the unit execution lifecycle:
+The `brevio` harness generates `intent.diff` as part of the unit execution lifecycle:
 
 ```mermaid
 sequenceDiagram
@@ -242,48 +239,48 @@ sequenceDiagram
 
 ### 4.1. Working Tree Baseline & Snapshotting
 
-Before an agent begins execution of an atomic unit:
+Before an agent starts to execute an atomic unit:
 
-1. The harness captures the clean git tree state or baseline commit SHA.
-2. Any untracked files prior to unit activation are indexed to avoid conflating environmental artifacts with unit
-   outputs.
+1. The harness records the clean git tree state or the baseline commit SHA.
+2. The harness indexes all untracked files that existed before unit activation. This keeps environment artifacts
+   separate from unit outputs.
 
 ### 4.2. Automated Diff Extraction
 
-Upon completion of code modification turns, the harness extracts the working tree changes:
+When the code change turns complete, the harness extracts the working tree changes:
 
 ```bash
 git diff --no-color -U3 > .brevio/work_items/{work_item_id}/sub_intents/{sub_intent_id}/units/{unit_id}/intent.diff
 ```
 
-For new untracked files, the harness stages them intent-to-add (`git add -N`) before generating the diff so newly
-created files appear with `new file mode 100644`.
+For new untracked files, the harness first stages them as intent-to-add (`git add -N`). Then it generates the diff, so
+that new files appear with `new file mode 100644`.
 
 ### 4.3. Boundary & "Do Not Touch" Compliance Auditing
 
-Once `intent.diff` is written, the harness parses the file headers (`diff --git a/{path} b/{path}`) and cross-references
-them against `intent_unit_spec.html`:
+After the harness writes `intent.diff`, it parses the file headers (`diff --git a/{path} b/{path}`). It compares them
+with `intent_unit_spec.html`:
 
-1. **Target Scope Check:** Every path in `intent.diff` must match the required `<meta name="target-files">` of
+1. Target Scope Check: Every path in `intent.diff` must match the required `<meta name="target-files">` of
    `intent_unit_spec.html`. A path outside the target scope moves the unit to `drift_detected`.
-2. **"Do Not Touch" Enforcement:** If any hunk touches a protected file or frozen interface signature, the unit is
-   immediately flagged with a boundary violation (`boundaryViolationsCount > 0`).
-3. **Convergence Gate:** If boundary or scope violations exist, verification fails, the unit enters `drift_detected`, and
-   the change is not committed. The unit returns to `converging` after targeted remediation.
+2. "Do Not Touch" Enforcement: If any hunk touches a protected file or a frozen interface signature, the harness
+   immediately flags the unit with a boundary violation (`boundaryViolationsCount > 0`).
+3. Convergence Gate: If boundary or scope violations exist, verification fails and the unit enters `drift_detected`. The
+   change is not committed. After targeted remediation, the unit returns to `converging`.
 
 ### 4.4. Patch Application, Staging, and Reversion
 
-Because `intent.diff` is a standard unified patch, it enables deterministic workspace manipulation:
+`intent.diff` is a standard unified patch. This makes deterministic changes to the workspace possible:
 
-- **Dry-Run Validation:**
+- Dry-Run Validation:
   ```bash
   git apply --check intent.diff
   ```
-- **Patch Application in Clean Worktrees:**
+- Patch Application in Clean Worktrees:
   ```bash
   git apply --whitespace=nowarn intent.diff
   ```
-- **Reversion / Rollback on Failed Verification:**
+- Reversion / Rollback on Failed Verification:
   ```bash
   git apply --reverse intent.diff
   ```
@@ -294,29 +291,27 @@ Because `intent.diff` is a standard unified patch, it enables deterministic work
 
 ### 5.1. Calculating Diff Churn Ratio
 
-`intent.diff` provides the raw data required to calculate the `diffChurnRatio` metric recorded in [
-`metrics.json`](unit-conversation-metrics.md):
+`intent.diff` gives the raw data for the `diffChurnRatio` metric in [`metrics.json`](unit-conversation-metrics.md):
 
 $$\text{Diff Churn Ratio} = \frac{\text{Generated Lines Changed}}{\text{Net Accepted Lines}} = \frac{\text{Lines Added} + \text{Lines Deleted}}{\text{Lines Added} - \text{Lines Deleted}}$$
 
-- **Target Range:** $1.0$ to $1.25$.
-- **High Churn Detection ($> 1.5$):** Indicates an agent engaged in full-file rewriting, reformatted unrelated code,
-  deleted existing docstrings, or repeatedly overwrote its own edits.
+- Target Range: $1.0$ to $1.25$.
+- High Churn Detection ($> 1.5$): Shows that an agent rewrote full files, reformatted unrelated code, deleted existing
+  docstrings, or overwrote its own edits many times.
 
 ### 5.2. Downstream Agent Ingestion Patterns
 
-Instead of loading thousands of lines of full source files into LLM context during post-unit review, verification, or
-sub-intent summary generation, downstream agents consume `intent.diff`:
+Downstream agents read `intent.diff` during post-unit review, verification, or sub-intent summary generation. They do not
+load thousands of lines of full source files into the LLM context:
 
-- **Context Reduction:** Feeding `intent.diff` into an LLM uses 80%–95% fewer tokens than ingesting entire modified source
-  files.
-- **Focused Code Review:** Reviewer models inspect only the added (`+`) and removed (`-`) lines with bounded context.
+- Context Reduction: `intent.diff` uses 80%–95% fewer tokens in an LLM than the full modified source files.
+- Focused Code Review: Reviewer models inspect only the added (`+`) and removed (`-`) lines, with bounded context.
 
 ---
 
 ## 6. Tooling, Analysis Patterns & Terminal Workflows
 
-Common terminal commands and analysis patterns for working with `intent.diff`:
+These are common terminal commands and analysis patterns for `intent.diff`:
 
 ### 6.1. Inspecting Diff Line Statistics
 
@@ -350,7 +345,7 @@ filterdiff -p1 -I 'src/main/resources/db/**' intent.diff
 
 ## 7. Lineage, Rollup & Ledger Integration
 
-`intent.diff` is woven into the bi-directional traceability graph of the work item:
+`intent.diff` is part of the two-way traceability graph of the work item:
 
 ```mermaid
 graph TD
@@ -362,25 +357,25 @@ graph TD
     METRICS -->|" Rollup to Ledger "| LEDGER["State Ledger<br/>(03_intent_ledger.json)"]
 ```
 
-- **Ledger Pointer:** Registered in `03_intent_ledger.json` under `sub-intents[].units[].paths.diff`
+- Ledger Pointer: `03_intent_ledger.json` registers the file under `sub-intents[].units[].paths.diff`
   (`sub_intents/{sub-intent}/units/{unit}/intent.diff`).
-- **Summary Citation:** Linked directly in `summary.html` via `<meta name="diff-ref" content="intent.diff"/>` and rendered
-  in the diff metrics section.
-- **Conversation Session Context:** Referenced in `conversation.jsonl` under `paths.diff`.
+- Summary Citation: `summary.html` links to the file directly with `<meta name="diff-ref" content="intent.diff"/>` and
+  renders it in the diff metrics section.
+- Conversation Session Context: `conversation.jsonl` refers to the file under `paths.diff`.
 
 ---
 
 ## 8. Rules & Constraints
 
-1. **Strict Unified Diff Compliance:** `intent.diff` must be a valid, standard unified diff parseable by standard POSIX
-   `patch` and `git apply`.
-2. **UTF-8 with Unix Line Endings:** The patch must use UTF-8 encoding and `\n` (LF) line terminators.
-3. **Strict Boundary Adherence:** The patch must touch only files declared in `target-files` in `intent_unit_spec.html`. Zero
-   changes to "do not touch" paths are permitted.
-4. **Immutability Post-Validation:** Once `verification.html` records `validation-verdict="pass"` and the unit is marked
-   `completed`, `intent.diff` is sealed and must not be overwritten or modified.
-5. **Zero Secret Leakage:** Harness sanitizers must verify that sensitive credentials, API keys, and environment tokens
-   are scrubbed before `intent.diff` is written to disk.
+1. Strict Unified Diff Compliance: `intent.diff` must be a valid, standard unified diff that standard POSIX `patch` and
+   `git apply` can parse.
+2. UTF-8 with Unix Line Endings: The patch must use UTF-8 encoding and `\n` (LF) line terminators.
+3. Strict Boundary Adherence: The patch must touch only the files that `target-files` in `intent_unit_spec.html`
+   declares. No change to a "do not touch" path is permitted.
+4. Immutability Post-Validation: After `verification.html` records `validation-verdict="pass"` and the unit is marked
+   `completed`, `intent.diff` is sealed. It must not be overwritten or changed.
+5. Zero Secret Leakage: Before `intent.diff` is written to disk, harness sanitizers must make sure that sensitive
+   credentials, API keys, and environment tokens are removed.
 
 ---
 
@@ -388,5 +383,6 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                     | Source                |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------|
+| 2026-11-25 | 1.1.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 1.1.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Intent Diff (`units/{unit_id}/intent.diff`) establishing unified diff standards, lifecycle generation, boundary compliance, and diff churn metrics. | Feature Specification |

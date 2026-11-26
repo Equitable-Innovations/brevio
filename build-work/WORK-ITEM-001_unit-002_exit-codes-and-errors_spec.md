@@ -98,7 +98,7 @@ Section id: `edge-cases`.
 
 Section id: `unit-constraints`.
 
-- Failing test first: Required. The first commit holds the tests and they fail because the symbols do not exist.
+- Failing test first: Required. The first commit holds the tests. They fail because the symbols do not exist.
 - Fresh-context verifier: Required.
 
 ---
@@ -119,3 +119,4 @@ Section id: `acceptance-criteria`.
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
 | 2026-11-04 | 0.1.0 | Initial unit specification. | WORK-ITEM-001 |
+| 2026-11-25 | 0.1.1 | Rewrote the prose in plain English. No change to the content. | User request |

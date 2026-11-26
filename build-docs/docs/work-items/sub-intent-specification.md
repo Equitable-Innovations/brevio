@@ -1,26 +1,27 @@
 # Sub-Intent Specification Document Definition
 
-The Sub-Intent Specification (`sub_intents/{sub_intent_id}/sub_intent_spec.html`) is the authoritative Tier 2 milestone specification
-governing an isolated sub-intent of execution in the `brevio` work item lifecycle. It translates the high-level roadmap from
-the Intent Decomposition (`02_intent_decomposition.html`) into an ordered, bounded sequence of atomic unit manifests.
+The Sub-Intent Specification (`sub_intents/{sub_intent_id}/sub_intent_spec.html`) is the authoritative Tier 2 milestone
+specification for one isolated sub-intent of execution in the `brevio` work item lifecycle. It translates the high-level
+roadmap from the Intent Decomposition (`02_intent_decomposition.html`) into an ordered, bounded sequence of atomic unit
+manifests.
 
-Every sub-intent specification enforces engineering discipline by establishing explicit context boundaries, referencing
-concrete codebase patterns, locking down forbidden files, decomposing work into single-responsibility units, and
-defining automated sub-intent-level integration gates.
+Every sub-intent specification enforces engineering discipline. It sets explicit context boundaries and references
+concrete codebase patterns. It also locks down forbidden files, decomposes work into single-responsibility units, and
+defines automated sub-intent-level integration gates.
 
-This document serves a dual purpose:
+This document has two purposes:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) to visualize sub-intent scope, unit progress, dependency flows, and milestone status
-   without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for token-efficient unit scheduling, dependency resolution, and worker dispatching.
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) to show sub-intent scope, unit progress, dependency flows, and
+   milestone status. It needs no client-side bundler and no build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Agents query it through XPath
+   and the `brevio` CLI for unit scheduling, dependency resolution, and worker dispatch, and they read it with few tokens.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Specs
 
-In `brevio`, sub-intent specifications eliminate ambiguity by applying the four execution dimensions directly to milestone
+In `brevio`, sub-intent specifications remove ambiguity. They apply the four execution dimensions directly to milestone
 authoring:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Specification Manifestation                                                                                                                    |
@@ -51,7 +52,7 @@ authoring:
 
 ## 1. File Location & Organization Standard
 
-Each sub-intent specification resides in its isolated milestone directory under `sub_intents/`:
+Each sub-intent specification is in its isolated milestone directory under `sub_intents/`:
 
 ```text
 .brevio/
@@ -66,13 +67,13 @@ Each sub-intent specification resides in its isolated milestone directory under 
                     └── ...
 ```
 
-- **File Name:** `sub_intent_spec.html`
-- **Light Path:** An intent with `layout="light"` has no sub-intent specification. Section `sub-intent-breakdown` of
+- File Name: `sub_intent_spec.html`
+- Light Path: An intent with `layout="light"` has no sub-intent specification. Section `sub-intent-breakdown` of
   `02_intent_decomposition.html` holds the unit manifest in the format of Section 3.5.
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
@@ -141,44 +142,45 @@ Material Web ES module importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Sub-Intent Specification document contains 7 standardized sections combining semantic XHTML elements, Material Design 3
-Web Components (`md-*`), typography classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Sub-Intent Specification document contains 7 standardized sections. The sections use semantic XHTML elements and
+Material Design 3 Web Components (`md-*`). They also use typography classes (`md-typescale-*`) and explicit data
+attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the sub-intent document with the work item identifier, sub-intent ordinal, sub-intent title, lifecycle status chips,
-prerequisite sub-intent references, and parent intent decomposition navigation link.
+Anchors the sub-intent document with the work item identifier, sub-intent ordinal, sub-intent title, and lifecycle status
+chips. It also shows the prerequisite sub-intent references and the navigation link to the parent intent decomposition.
 
 ### 3.2. Sub-Intent Objective & Milestone Scope
 
 Defines the exact architectural deliverable of this milestone:
 
-- **Primary Engineering Objective:** Unambiguous statement of what will be produced, integrated, or refactored.
-- **Architectural Boundary:** Subsystems, modules, and directories participating in this sub-intent.
-- **Prerequisite Gate Status:** Assertion of upstream sub-intent completion and database/environment prerequisites.
+- Primary Engineering Objective: A clear statement of what the sub-intent produces, integrates, or refactors.
+- Architectural Boundary: Subsystems, modules, and directories that take part in this sub-intent.
+- Prerequisite Gate Status: Assertion of upstream sub-intent completion and database/environment prerequisites.
 
 ### 3.3. Sub-Intent Context & Strict "Do Not Touch" Constraints
 
 Replaces implicit tribal assumptions with explicit boundaries:
 
-- **Target Modification Whitelist:** Explicit directories and package roots where unit workers are permitted to write.
-- **Sub-Intent "Do Not Touch" Manifest:** Specific files and modules strictly quarantined during this sub-intent to protect system
-  integrity (e.g., existing API routes, core security configurations, shared utilities).
-- **Inviolable Constraints:** Architectural invariants that no unit in this sub-intent may violate (e.g., zero breaking
-  schema changes, zero raw SQL queries outside repository layers).
+- Target Modification Whitelist: Explicit directories and package roots where unit workers are permitted to write.
+- Sub-Intent "Do Not Touch" Manifest: Specific files and modules that are strictly quarantined during this sub-intent to
+  protect system integrity (for example existing API routes, core security configurations, shared utilities).
+- Inviolable Constraints: Architectural invariants that no unit in this sub-intent can violate (for example zero
+  breaking schema changes, zero raw SQL queries outside repository layers).
 
 ### 3.4. Referenced Architectural Patterns & Code Templates
 
-Provides explicit reference points to existing codebase patterns rather than expecting the agent to guess stylistic or
+Gives explicit reference points to existing codebase patterns. The agent does not have to guess stylistic or
 architectural norms:
 
-- **Pattern References:** Hyperlinks and line ranges to canonical implementations in the repository (e.g.,
+- Pattern References: Hyperlinks and line ranges to canonical implementations in the repository (for example
   `src/main/java/com/app/repository/BaseRepository.java:L20-L65`).
-- **Target Conventions:** Naming conventions, error handling contracts, and transaction management rules to follow.
+- Target Conventions: Naming conventions, error handling contracts, and transaction management rules to follow.
 
 ### 3.5. Sequential Atomic Unit Manifest
 
-The operational core of the sub-intent specification. Details each atomic unit in the execution sequence:
+The operational core of the sub-intent specification. It details each atomic unit in the execution sequence:
 
 | Unit ID                     | Sequence | Category   | Single Responsibility Summary                       | Target Files           | Prerequisites (`dependsOn`) | Assigned Agent              |
 |:----------------------------|:---------|:-----------|:----------------------------------------------------|:-----------------------|:----------------------------|:----------------------------|
@@ -188,28 +190,30 @@ The operational core of the sub-intent specification. Details each atomic unit i
 
 Each unit entry enforces:
 
-- **Atomic Single Responsibility:** Scoped strictly to one discrete modification or artifact.
-- **Deterministic Inputs & Preconditions:** Initial state of schema, files, and dependencies before unit start.
-- **Deterministic Outputs & Postconditions:** Expected files created, modified, or deleted upon completion.
+- Atomic Single Responsibility: Scoped strictly to one discrete modification or artifact.
+- Deterministic Inputs & Preconditions: Initial state of schema, files, and dependencies before unit start.
+- Deterministic Outputs & Postconditions: Expected files created, modified, or deleted upon completion.
 
 ### 3.6. Upfront Edge Cases & Cross-Unit Hazard Matrix
 
-Exhaustively catalogs boundary hazards and race conditions specific to the sub-intent:
+Catalogs all boundary hazards and race conditions specific to the sub-intent:
 
-- **Cross-Unit Data Contention:** Potential conflicts when multiple units access shared schema elements or state.
-- **Migration & Rollback Hazards:** Handling partial migration failures, deadlocks, and rollback idempotency.
-- **Invalid / Corrupted Payloads:** Handling unparseable inputs or corrupted configurations at sub-intent boundaries.
+- Cross-Unit Data Contention: Potential conflicts when multiple units access shared schema elements or state.
+- Migration & Rollback Hazards: The handling of partial migration failures, deadlocks, and rollback idempotency.
+- Invalid / Corrupted Payloads: The handling of unparseable inputs or corrupted configurations at sub-intent
+  boundaries.
 
 ### 3.7. Sub-Intent Verification Gating & Integration Commands
 
-Specifies the automated integration commands that must execute successfully before the sub-intent can be marked `verified`:
+Specifies the automated integration commands that must execute successfully before the sub-intent can be marked
+`verified`:
 
-- **Integration Test Commands:** Deterministic CLI commands (e.g., `mvn verify -Pmigration-tests`,
+- Integration Test Commands: Deterministic CLI commands (for example `mvn verify -Pmigration-tests`,
   `npm run test:e2e:phase1`).
-- **Deterministic Output Parsing Rules:** Required exit codes (`0`), expected test count thresholds, and forbidden
+- Deterministic Output Parsing Rules: Required exit codes (`0`), expected test count thresholds, and forbidden
   stderr patterns.
-- **Sign-off Gate:** Verification that `sub_intent_verification.html` records `validation-verdict="pass"` before Sub-Intent $N+1$
-  is scheduled in the intent ledger.
+- Sign-off Gate: Verification that `sub_intent_verification.html` records `validation-verdict="pass"` before
+  Sub-Intent $N+1$ is scheduled in the intent ledger.
 
 ---
 
@@ -253,6 +257,7 @@ Downstream unit planners, subagents, and orchestrators query targeted fragments 
 
 | Date       | Version | Description                                                                                                                                                                                           | Source                           |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.3.1 | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.3.0 | Added the light path, where the intent decomposition holds the unit manifest. Corrected the sub-intent directory name in the layout. | TOPIC-007 |
 | 2026-10-31 | 0.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.1.0   | Initial canonical sub-intent specification (`sub_intent_spec.html`) detailing the 4-dimension execution paradigm, sequential atomic unit manifest, context constraints, referenced patterns, and XPath queries. | [Work Item Documents](README.md) |

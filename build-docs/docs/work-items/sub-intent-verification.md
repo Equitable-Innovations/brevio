@@ -1,33 +1,34 @@
 # Sub-Intent Verification Document Definition
 
-The Sub-Intent Verification Document (`sub_intents/{sub_intent_id}/sub_intent_verification.html`) is the authoritative Tier 2 verification gate
-in the `brevio` work item lifecycle. It records the automated integration test execution, sub-unit verdict rollups,
-architectural boundary integrity audits, and formal gating decisions (`pass` | `fail` | `warn`) required before
-downstream sub-intents are unlocked in the intent ledger.
+The Sub-Intent Verification Document (`sub_intents/{sub_intent_id}/sub_intent_verification.html`) is the authoritative
+Tier 2 verification gate in the `brevio` work item lifecycle. It records the automated integration test runs, the rollup
+of sub-unit verdicts, and the audits of architecture boundary integrity. It also records the formal gating decisions
+(`pass` | `fail` | `warn`). The intent ledger needs these decisions before it unlocks downstream sub-intents.
 
-Sub-Intent validation shifts verification from retrospective, manual human inspection to deterministic, automated gating
-enforced by the `brevio` harness.
+Sub-intent validation moves verification away from manual human inspection after the fact. The `brevio` harness enforces
+deterministic, automated gating in its place.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page utilizing Material Design 3 Web
-   Components (`@material/web` / **M3**) displaying test pass/fail gauges, suite execution logs, invariant checks, and
-   audit badges without client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for automated sub-intent transition gating, blocker detection, and remediation approachning.
+1. Human Interface: The document renders as a local, interactive, static XHTML web page. It uses Material Design 3 Web
+   Components (`@material/web`, M3) and needs no client-side bundler or build step. The page shows test pass/fail
+   gauges, suite execution logs, invariant checks, and audit badges.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. Tools use it for automated sub-intent transition gating, blocker detection, and remediation
+   planning.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Sub-Intent Verification
 
-In `brevio`, sub-intent validation enforces mechanical rigor by anchoring verification to the four core dimensions:
+In `brevio`, sub-intent validation enforces strict mechanical checks. It bases verification on the four core dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Sub-Intent Verification Manifestation                                                                                                          |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context**     | Relies on tacit codebase conventions and tribal domain knowledge.                     | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Performs an automated file boundary audit verifying that zero protected or "do not touch" files were modified during the sub-intent.                |
-| **Granularity** | Focuses on high-level patterns and architecture; details left to implementation time. | Requires atomic, single-responsibility sub-units with deterministic inputs/outputs.               | Aggregates individual atomic unit verdicts into an exhaustive roll-up matrix, ensuring 100% of sub-units reached passing status.               |
-| **Verification** | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands with deterministic output parsing (lint, test, build) after each step. | Executes explicit terminal integration suites, parses process exit codes and assertion counts, and logs raw command outputs deterministically. |
-| **Edge Cases**  | Usually caught through intuitive testing or code review cycles.                       | Must be exhaustively itemized upfront to prevent naive happy-path assumptions.                    | Validates that all sub-intent-level boundary edge cases, negative test scenarios, and error-injection suites itemized in `sub_intent_spec.html` pass.    |
+| Context         | Uses unwritten codebase conventions and domain knowledge that the team shares.        | Needs explicit file paths, referenced patterns, and strict "do not touch" constraints.            | Runs an automated file boundary audit. Makes sure that the sub-intent changed zero protected or "do not touch" files.                          |
+| Granularity     | Focuses on high-level patterns and architecture. Details wait until implementation.   | Needs atomic sub-units with one responsibility each and deterministic inputs and outputs.         | Collects the verdicts of each atomic unit into a full roll-up matrix. Makes sure that 100% of sub-units reached passing status.               |
+| Verification    | Manual PR review, local exploratory debugging, automated CI.                          | Explicit terminal commands after each step (lint, test, build), with deterministic parsing of the output. | Runs explicit terminal integration suites, parses process exit codes and assertion counts, and logs raw command outputs deterministically. |
+| Edge Cases      | Usually found through intuitive testing or code review cycles.                        | Must be listed in full before the work starts, to prevent naive happy-path assumptions.           | Makes sure that all sub-intent-level boundary edge cases, negative test scenarios, and error-injection suites listed in `sub_intent_spec.html` pass. |
 
 ---
 
@@ -51,7 +52,7 @@ In `brevio`, sub-intent validation enforces mechanical rigor by anchoring verifi
 
 ## 1. File Location & Organization Standard
 
-Each sub-intent validation document resides adjacent to its parent specification in the sub-intent directory:
+Each sub-intent validation document is in the sub-intent directory, next to its parent specification:
 
 ```text
 .brevio/
@@ -66,18 +67,18 @@ Each sub-intent validation document resides adjacent to its parent specification
                     └── ...
 ```
 
-- **File Name:** `sub_intent_verification.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `sub_intent_verification.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `sub_intent_verification.html` begins with universal baseline `<meta>` tags, validation verdict tags, test counts, and
-the Material Web ES module importmap loader:
+Every `sub_intent_verification.html` starts with the universal baseline `<meta>` tags, the validation verdict tags, the
+test counts, and the Material Web ES module importmap loader:
 
 ```xhtml
 
@@ -127,39 +128,42 @@ the Material Web ES module importmap loader:
 
 | Metadata Tag            | Scope              | Purpose                                               | Example                        |
 |:------------------------|:-------------------|:------------------------------------------------------|:-------------------------------|
-| `sub-intent-id`              | Sub-Intent / Validation | Unique sub-intent directory identifier                     | `sub_intent_01_database_migration`  |
-| `sub-intent-sequence`        | Sub-Intent / Validation | Numeric ordinal representing the milestone position   | `1`                            |
-| `parent-doc-id`         | Sub-Intent / Validation | Points to the parent Sub-Intent Specification `doc-id`     | `WI-20260830T170936Z:S01:SPEC` |
-| `validation-verdict`    | Sub-Intent / Validation | Final gating evaluation outcome                       | `pass` \| `fail` \| `warn`     |
+| `sub-intent-id`              | Sub-Intent / Validation | Unique identifier of the sub-intent directory         | `sub_intent_01_database_migration`  |
+| `sub-intent-sequence`        | Sub-Intent / Validation | Number that gives the position of the milestone      | `1`                            |
+| `parent-doc-id`         | Sub-Intent / Validation | Points to the `doc-id` of the parent Sub-Intent Specification | `WI-20260830T170936Z:S01:SPEC` |
+| `validation-verdict`    | Sub-Intent / Validation | Outcome of the final gating evaluation                | `pass` \| `fail` \| `warn`     |
 | `tests-passed`          | Sub-Intent / Validation | Count of passing sub-intent-level integration/system tests | `14`                           |
 | `tests-failed`          | Sub-Intent / Validation | Count of failing sub-intent-level integration/system tests | `0`                            |
-| `blocking-issues-count` | Sub-Intent / Validation | Tally of unresolved defects blocking sub-intent transition | `0`                            |
+| `blocking-issues-count` | Sub-Intent / Validation | Count of unresolved defects that block the sub-intent transition | `0`                            |
 
 ---
 
 ## 3. Required Sections & M3 Component Structure
 
-The Sub-Intent Verification document contains 7 standardized sections combining semantic XHTML elements, Material Design 3 Web
-Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Sub-Intent Verification document contains 7 standardized sections. Each section uses semantic XHTML elements and
+Material Design 3 Web Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data
+attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the work item identifier, sub-intent sequence, sub-intent title, validation verdict badge (`pass`,
-`fail`, `warn`), test counts, and parent sub-intent specification link.
+This section starts the document. It shows the work item identifier, the sub-intent sequence, the sub-intent title, and
+the validation verdict badge (`pass`, `fail`, `warn`). It also shows the test counts and a link to the parent sub-intent
+specification.
 
 ### 3.2. Sub-Intent Verification Verdict & Gating Decision
 
-The executive evaluation governing the work item lifecycle:
+This section is the executive evaluation that controls the work item lifecycle:
 
-- **Formal Verdict:** High-visibility chip or banner indicating `PASS` (proceed to next sub-intent), `FAIL` (block downstream
-  sub-intents, enter remediation), or `WARN` (human review required).
-- **Gating Decision:** Deterministic assertion of whether Sub-Intent $N+1$ is authorized to activate in
+- Formal Verdict: A chip or banner that is easy to see. It shows `PASS` (go to the next sub-intent), `FAIL` (block
+  downstream sub-intents and enter remediation), or `WARN` (human review required).
+- Gating Decision: A deterministic statement of whether Sub-Intent $N+1$ is authorized to activate in
   `03_intent_ledger.json`.
-- **Validation Summary:** High-level narrative summarizing integration findings, performance deltas, and test stability.
+- Validation Summary: A high-level narrative that summarizes the integration findings, performance changes, and test
+  stability.
 
 ### 3.3. Unit Manifest Execution & Verdict Rollup
 
-Aggregates the individual status and validation verdicts of all atomic units defined in `sub_intent_spec.html`:
+This section collects the status and validation verdicts of all atomic units that `sub_intent_spec.html` defines:
 
 | Unit ID                     | Unit Title                 | Category   | Status      | Validation Verdict | Exit Code | Assertions Passed | Assertions Failed |
 |:----------------------------|:---------------------------|:-----------|:------------|:-------------------|:----------|:------------------|:------------------|
@@ -167,49 +171,49 @@ Aggregates the individual status and validation verdicts of all atomic units def
 | `unit_002_seed_roles`       | Seed Initial RBAC Roles    | `database` | `verified` | `pass`             | `0`       | 4                 | 0                 |
 | `unit_003_verify_migration` | Verify Migration Suite     | `test`     | `verified` | `pass`             | `0`       | 2                 | 0                 |
 
-- Enforces that zero units remain in `pending`, `in-progress`, or `failed` status.
+- The section enforces that zero units stay in `pending`, `in-progress`, or `failed` status.
 
 ### 3.4. Integration Command Execution & Deterministic Output Parsing
 
-Documents the end-to-end integration test commands executed across all sub-intent deliverables:
+This section records the end-to-end integration test commands that ran across all sub-intent deliverables:
 
-- **Command Line Strings:** Verbatim terminal commands executed (e.g., `mvn verify -Pmigration-tests`).
-- **Execution Context:** Working directory, environment flags, and execution duration.
-- **Process Exit Code:** Exact numeric return code (`0` required for pass).
-- **Parsed Output Metrics:** Test counts, execution times, memory overhead, and regex-matched status lines.
-- **Console Snippets:** Collapsible raw stdout and stderr logs for diagnostic inspection.
+- Command Line Strings: The exact terminal commands that ran (for example, `mvn verify -Pmigration-tests`).
+- Execution Context: The working directory, environment flags, and execution duration.
+- Process Exit Code: The exact numeric return code (`0` required for pass).
+- Parsed Output Metrics: Test counts, execution times, memory overhead, and status lines that a regex matched.
+- Console Snippets: Raw stdout and stderr logs that the reader can expand, for diagnostic inspection.
 
 ### 3.5. Boundary Invariant & "Do Not Touch" Compliance Audit
 
-Automated compliance check verifying repository integrity:
+This section is an automated compliance check of repository integrity:
 
-- **Protected File Audit:** Asserts that zero files in the sub-intent or global "do not touch" manifests were modified.
-- **Schema & Interface Invariant Assertions:** Confirms backward compatibility and schema integrity.
-- **Git Tree Audit:** Verifies that git status is clean and all modified files belong to authorized directories.
+- Protected File Audit: Asserts that zero files in the sub-intent or global "do not touch" manifests changed.
+- Schema & Interface Invariant Assertions: Makes sure that backward compatibility and schema integrity hold.
+- Git Tree Audit: Makes sure that git status is clean and that all changed files are in authorized directories.
 
 ### 3.6. Sub-Intent Edge Case & Negative Suite Verification
 
-Records the testing of all upfront edge cases and boundary hazards itemized in `sub_intent_spec.html`:
+This section records the tests of all edge cases and boundary hazards that `sub_intent_spec.html` listed:
 
-- **Negative Input Injection:** Verifies proper rejection and error handling for malformed data or unauthorized
-  requests.
-- **Concurrency & Race Condition Checks:** Validates multi-threaded or parallel execution integrity.
-- **Rollback Drills:** Asserts that migration down-scripts or rollback procedures operate idempotently.
+- Negative Input Injection: Makes sure that the code correctly rejects malformed data or unauthorized requests and
+  handles the errors.
+- Concurrency & Race Condition Checks: Make sure that multi-threaded or parallel execution keeps its integrity.
+- Rollback Drills: Assert that migration down-scripts or rollback procedures are idempotent.
 
 ### 3.7. Remediation & Defect Resolution Log
 
-When a sub-intent verification verdict is `fail` or `warn`, this section records the specific actionable remediation approach:
+If a sub-intent verification verdict is `fail` or `warn`, this section records the specific remediation approach:
 
-- **Identified Defect:** Exact failure description and offending unit or file.
-- **Root Cause Analysis:** Technical explanation of why the failure occurred.
-- **Required Remediation Steps:** Prescriptive atomic unit assignments dispatched to fix the issue before re-running
-  sub-intent validation.
+- Identified Defect: The exact failure description and the unit or file that caused it.
+- Root Cause Analysis: A technical explanation of why the failure occurred.
+- Required Remediation Steps: The atomic unit assignments that are sent out to correct the fault before sub-intent
+  validation runs again.
 
 ---
 
 ## 4. Token Optimization & XPath Query Patterns
 
-Orchestrators, harness lifecycle runners, and reporting agents query specific validation nodes using targeted XPath:
+Orchestrators, harness lifecycle runners, and reporting agents use targeted XPath to query specific validation nodes:
 
 ### Querying Sub-Intent Verification Verdict & Blocking Issues
 
@@ -247,5 +251,6 @@ Orchestrators, harness lifecycle runners, and reporting agents query specific va
 
 | Date       | Version | Description                                                                                                                                                                                              | Source                           |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 0.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 0.1.0   | Initial canonical sub-intent validation specification (`sub_intent_verification.html`) defining automated gating verdicts, unit rollups, integration command parsing, boundary compliance audits, and XPath queries. | [Work Item Documents](README.md) |

@@ -1,13 +1,11 @@
 ---
 name: update-work-item-status
-description: >-
-  Transition a single brevio work item to a new lifecycle status (BACKLOG -> PLANNED -> READY ->
-  IN_PROGRESS -> IN_REVIEW -> DONE, plus BLOCKED / CANCELLED), updating the
-  WORK-ITEM-###_*.md file and its record in backlog/backlog.jsonl together (backlog/scripts/backlog.mjs regenerates backlog/backlog.md). Checks that the intent has
-  invariants and evidence before READY and DONE. Warns and asks before a non-standard jump.
-  Use for "move WORK-ITEM-x to ...", "mark work item done/blocked/ready", or
-  /update-work-item-status.
-allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion
+description: "Transition a single brevio work item to a new lifecycle status (BACKLOG -> PLANNED -> READY -> IN_PROGRESS -> IN_REVIEW -> DONE, plus BLOCKED / CANCELLED), updating the WORK-ITEM-###_*.md file and its record in backlog/backlog.jsonl together (backlog/scripts/backlog.mjs regenerates backlog/backlog.md). Checks that the intent has invariants and evidence before READY and DONE. Warns and asks before a non-standard jump. Use for \"move WORK-ITEM-x to ...\", \"mark work item done/blocked/ready\", or /update-work-item-status."
+metadata:
+  node_type: memory
+  allowed-tools: "Read, Glob, Grep, Bash, Edit, AskUserQuestion"
+  originSessionId: 09e260c8-5e25-4d75-a62b-60bdd5d44d1e
+  modified: 2026-11-26T00:03:18.249Z
 ---
 
 # Update Work Item Status Skill (`/update-work-item-status`)
@@ -22,37 +20,37 @@ A work item is the parent of all intent-driven SDLC documents. Its status is the
 1. Find the file with `Glob` (`backlog/WORK-ITEM-*.md`) or `Grep` by ID (for example `WORK-ITEM-001`) or slug.
 2. Read the metadata table and Section 11 (Activity Log).
 3. Extract: current status, title, domain, autonomy tier, target milestone, `Created Date`, `Active Date`, `Last Updated`.
-4. Read the "Work Item Lifecycle and State Machine" section of `backlog/README.md` to confirm the permitted edges.
+4. Read the "Work Item Lifecycle and State Machine" section of `backlog/README.md`. Make sure that you know the permitted edges.
 
 ### 2. Validate the Transition
 Compare the current status (`<old>`) with the requested status (`<new>`).
 
-- **Same status**: If `<old>` equals `<new>`, tell the user and stop. Change no file.
-- **Permitted normal edges**:
+- Same status: If `<old>` equals `<new>`, tell the user and stop. Change no file.
+- Permitted normal edges:
   - `BACKLOG` -> `PLANNED`
   - `PLANNED` -> `READY`
   - `READY` -> `IN_PROGRESS`
   - `IN_PROGRESS` -> `IN_REVIEW`
   - `IN_REVIEW` -> `DONE`
-- **Permitted impediment and recovery edges**:
+- Permitted impediment and recovery edges:
   - `READY` -> `BLOCKED`
   - `IN_PROGRESS` -> `BLOCKED`
   - `BLOCKED` -> `READY`
   - `BLOCKED` -> `IN_PROGRESS`
-- **Permitted cancellation edges**: any active status -> `CANCELLED`.
-- **Non-standard jumps**: Any transition that skips a stage (for example `BACKLOG` -> `DONE` or `PLANNED` -> `DONE`):
+- Permitted cancellation edges: any active status -> `CANCELLED`.
+- Non-standard jumps: Any transition that skips a stage (for example `BACKLOG` -> `DONE` or `PLANNED` -> `DONE`):
   - Warn the user about the skipped stages.
   - Ask with `AskUserQuestion`: `Transitioning WORK-ITEM-### from <old> to <new> skips the standard lifecycle path (<expected progression>). Do you want to proceed with this override?` Options: `Yes, proceed with override`, `No, cancel transition`.
   - If the user does not confirm, stop and change nothing.
   - If the user confirms, record the override in the activity log entry.
 
 ### 3. Check the Intent Gates
-These checks apply to the work item content. Read the work item sections 3 and 5.
+These gates apply to the work item content. Read the work item sections 3 and 5.
 
-- **Entering `READY`** (or any later status through an override): the work item must have at least one invariant row with a real command (not `TBD`) and at least one evidence requirement with a real command (not `TBD`). The Declared Intent section must hold the desired outcome. If a check fails, tell the user which part is missing and ask with `AskUserQuestion` whether to stop or to override. Record any override in the log.
-- **Entering `IN_PROGRESS`**: if `Runtime Directory` is `—`, remind the user that the intent package is not seeded yet. This is a note, not a block.
-- **Entering `DONE`**: every box in the Definition of Done (Section 8) must be checked, or the user must confirm the override. Ask the user to confirm that every invariant holds and every evidence requirement passes.
-- **Entering `CANCELLED`**: ask the user for a one-line reason. Put it in the log entry.
+- Entering `READY` (or any later status through an override): the work item must have at least one invariant row with a real command (not `TBD`). It must also have at least one evidence requirement with a real command (not `TBD`). The Declared Intent section must hold the desired outcome. If a gate fails, tell the user which part is missing. Then ask with `AskUserQuestion` whether to stop or to override. Record any override in the log.
+- Entering `IN_PROGRESS`: if `Runtime Directory` is `—`, tell the user that the intent package is not seeded yet. This is a note, not a block.
+- Entering `DONE`: every box in the Definition of Done (Section 8) must be checked, or the user must confirm the override. Ask the user to confirm that every invariant holds and every evidence requirement passes.
+- Entering `CANCELLED`: ask the user for a one-line reason. Put it in the log entry.
 
 ### 4. Get the Current Date
 Run `date +%Y-%m-%d` with `Bash`.
@@ -71,9 +69,9 @@ Never edit `backlog/backlog.md` by hand. It is generated. Run this with `Bash`:
 ```bash
 node backlog/scripts/backlog.mjs edit --id <N> --status <new>
 ```
-The script updates the record in `backlog/backlog.jsonl`. It sets `updated`, stamps `active` the first time the item leaves `BACKLOG`, and sets `completed` for `DONE` or `CANCELLED`. It then rebuilds `backlog/backlog.md`, including the table placement, the sort order, and the metrics.
+The script updates the record in `backlog/backlog.jsonl`. It sets `updated`. It sets `active` the first time the item leaves `BACKLOG`. It sets `completed` for `DONE` or `CANCELLED`. Then it rebuilds `backlog/backlog.md`, including the table placement, the sort order, and the metrics.
 
 ### 7. Confirm
 Return a short summary: the ID and title, the transition (`<old>` -> `<new>`), the files changed, and the metrics change. Read the metrics from the `Backlog Metrics` table in the regenerated `backlog/backlog.md`.
 
-**Constraint**: Do not invoke any other skills.
+Constraint: Do not invoke any other skills.

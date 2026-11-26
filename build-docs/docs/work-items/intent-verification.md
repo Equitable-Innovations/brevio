@@ -1,54 +1,50 @@
 # Intent Verification Document Definition
 
-The **Intent Verification Document** (`03_intent_verification.html`) is the authoritative Tier 1 master verification contract
-and gating authority in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It establishes the
-exhaustive verification criteria, test suites, deterministic command assertions, and quality standards that must be
-proven in order for the work item to be certified as `settled` and ready for pull request merge. It also checks that
-every declared system invariant holds.
+The Intent Verification Document (`03_intent_verification.html`) belongs to the work item lifecycle of the Token
+Optimized Software Harness (`brevio`). It is the authoritative Tier 1 master verification contract and gating authority
+of that lifecycle. It sets the full verification criteria, test suites, deterministic command assertions, and quality
+standards for the work item. The work item must prove all of them before it is certified as `settled` and ready for the
+pull request merge. The document also makes sure that every declared system invariant holds.
 
-While [`01_solution_strategy.html`](solution-strategy.md)
-defines *what* requirements, invariants, and evidence must be achieved, and [
-`02_intent_decomposition.html`](intent-decomposition.md)
-defines *how* the execution is partitioned into milestones, `03_intent_verification.html` defines *how the implemented code
-will be proven correct*. It guarantees that code delivery is not subjective, but verified through deterministic
-commands, test pyramids, non-functional quality gates, edge-case validations, and explicit manual sign-offs.
+[`01_solution_strategy.html`](solution-strategy.md) defines *what* requirements, invariants, and evidence the work item
+must achieve. [`02_intent_decomposition.html`](intent-decomposition.md) defines *how* the execution is partitioned into
+milestones. `03_intent_verification.html` defines *how the implemented code is proven correct*. Code delivery is thus not
+subjective. Deterministic commands, test pyramids, non-functional quality gates, edge-case validations, and explicit
+manual sign-offs verify it.
 
-`03_intent_verification.html` operates across a **dual-stage lifecycle**:
+`03_intent_verification.html` has a lifecycle with two stages:
 
-1. **Feasibility Stage (Master Verification Plan & Feasibility Gate):** Authored upfront during `formulating`, before any
-   unit converges. It establishes the complete verification strategy, maps 100% of evidence requirements, invariants, and
-   acceptance criteria to deterministic verification commands, defines the multi-level test pyramid, catalogs negative/edge-case
-   tests, and validates that the intent decomposition itself is complete, sound, and fully verifiable before the harness
-   moves the intent to `converging`.
-2. **Completion Stage (Final Completion Gate & Roll-up Audit):** Progressively updated as sub-intents complete, and
-   finalized once all sub-intents finish. It executes work-item-wide end-to-end suites, audits the rollup of all Tier 2 Sub-Intent
-   Validations ([
-   `sub_intent_verification.html`](sub-intent-verification.md))
-   and Tier 3 Unit Verifications ([
-   `verification.html`](unit-verification.md)), verifies
-   evidence and acceptance criteria fulfillment, runs every invariant command, records manual sign-offs, and renders the authoritative completion verdict (`pass` |
-   `fail` | `warn`) authorizing [
-   `04_intent_summary.html`](intent-summary.md)
-   generation and pull request submission.
+1. Feasibility Stage (Master Verification Plan & Feasibility Gate): This stage is written upfront during
+   `formulating`, before any unit converges. It sets the complete verification strategy. It maps 100% of evidence
+   requirements, invariants, and acceptance criteria to deterministic verification commands. It also defines the
+   multi-level test pyramid and catalogs negative/edge-case tests. Before the harness moves the intent to `converging`,
+   this stage makes sure that the intent decomposition itself is complete, sound, and fully verifiable.
+2. Completion Stage (Final Completion Gate & Roll-up Audit): This stage is updated as each sub-intent completes. When all
+   sub-intents finish, the stage is finalized. It executes the work-item-wide end-to-end suites. It audits the rollup of
+   all Tier 2 Sub-Intent Validations ([`sub_intent_verification.html`](sub-intent-verification.md)) and Tier 3 Unit
+   Verifications ([`verification.html`](unit-verification.md)). It makes sure that the evidence and acceptance criteria
+   are fulfilled, runs every invariant command, and records manual sign-offs. Then it gives the authoritative completion
+   verdict (`pass` | `fail` | `warn`). This verdict authorizes [`04_intent_summary.html`](intent-summary.md) generation
+   and pull request submission.
 
-This document fulfills a dual-purpose consumption model:
+This document has two purposes:
 
-1. **Human Interface (Static UI):** Renders as a local, fully interactive, static XHTML web page utilizing Material
-   Design 3 Web Components (`@material/web` / **M3**). Engineering leads, QA specialists, and reviewers inspect test
-   pass gauges, evidence verification matrices, command execution logs, and sign-off checklists directly in any
-   browser without requiring client-side bundlers or runtime servers.
-2. **Agent / Harness Interface (Machine Parseable):** Serves as a deterministic, structured XML document queryable via
-   XPath and the `brevio` CLI. The harness mechanically enforces this document as a hard gate: worker agents cannot
-   start a unit if the feasibility check fails, and the intent cannot reach `settled` in [
-   `03_intent_ledger.json`](intent-ledger.md)
-   until the final completion verdict is `pass` and a named human authorizes the release.
+1. Human Interface (Static UI): The document renders as a local, fully interactive, static XHTML web page with
+   Material Design 3 Web Components (`@material/web` / M3). Engineering leads, QA specialists, and reviewers inspect
+   test pass gauges, evidence verification matrices, command execution logs, and sign-off checklists directly in any
+   browser. The page needs no client-side bundler and no runtime server.
+2. Agent / Harness Interface (Machine Parseable): The document is a deterministic, structured XML document. Agents
+   query it through XPath and the `brevio` CLI. The harness mechanically enforces this document as a hard gate. If the
+   feasibility check fails, worker agents cannot start a unit. The intent cannot reach `settled` in
+   [`03_intent_ledger.json`](intent-ledger.md) until the final completion verdict is `pass` and a named human
+   authorizes the release.
 
 ---
 
 ## Core Paradigm: Applying the Four Dimensions to Intent Verification
 
-In `brevio`, intent verification shifts verification from retrospective, informal human spot-checks to deterministic,
-upfront-defined gating across the four core dimensions:
+In `brevio`, intent verification replaces retrospective, informal human spot-checks with deterministic gating that is
+defined upfront. It applies the four core dimensions:
 
 | Dimension       | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Intent Verification Manifestation                                                                                                                                                        |
 |:----------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -87,8 +83,7 @@ upfront-defined gating across the four core dimensions:
 
 ## 1. File Location & Organization Standard
 
-The intent verification document resides at the root of the work item directory alongside the core Tier 1
-artifacts:
+The intent verification document is at the root of the work item directory, next to the core Tier 1 artifacts:
 
 ```text
 .brevio/
@@ -107,12 +102,12 @@ artifacts:
             └── ...
 ```
 
-- **File Name:** `03_intent_verification.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in modern browsers via local filesystem (`file://`) or served locally via
-  the `brevio` CLI.
-- **Paired Artifacts:**
+- File Name: `03_intent_verification.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in modern browsers from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
+- Paired Artifacts:
     - Intent Specification: [
       `00_intent_spec.html`](intent-specification.md)
     - Solution Strategy: [
@@ -216,25 +211,26 @@ statistics, and the Material Web ES module importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Intent Verification document contains 9 standardized sections combining semantic XHTML elements, Material Design 3 Web
-Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Intent Verification document contains 9 standardized sections. The sections use semantic XHTML elements and
+Material Design 3 Web Components (`md-*`). They also use typography scale classes (`md-typescale-*`) and explicit data
+attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the work item identification, verification stage badge (`feasibility` or
-`final-completion-verdict`), validation verdict chip (`pass`, `fail`, `warn`), test pass gauge, blocking issue counter,
-and navigation links back to [
-`01_solution_strategy.html`](solution-strategy.md) and [
-`02_intent_decomposition.html`](intent-decomposition.md).
+Anchors the document with the work item identification and the verification stage badge (`feasibility` or
+`final-completion-verdict`). It shows the validation verdict chip (`pass`, `fail`, `warn`) and the test pass gauge. It
+also
+shows the blocking issue counter and navigation links back to [`01_solution_strategy.html`](solution-strategy.md) and
+[`02_intent_decomposition.html`](intent-decomposition.md).
 
 
 ### 3.2. Executive Verification Strategy & Completion Definition
 
-Articulates the overarching verification philosophy and establishes the unambiguous, objective definition of what "100%
-complete" means for the work item:
+States the overall verification philosophy. It also sets the clear, objective definition of "100% complete" for the
+work item:
 
-- **Definition of Done (DoD):** Explicit checklist of mandatory conditions that must be met before coding is certified
-  complete:
+- Definition of Done (DoD): Explicit checklist of mandatory conditions. All conditions must be met before coding is
+  certified complete:
     1. 100% of evidence requirements in [
        `01_solution_strategy.html`](solution-strategy.md) and all unit acceptance criteria pass
        automated verification.
@@ -248,60 +244,61 @@ complete" means for the work item:
     5. Every invariant command exits with code `0`, and zero protected "do not touch" file boundaries are violated.
     6. Code quality, linting, formatting, and security vulnerability scans pass with zero errors.
     7. All mandatory manual verification checklist items are formally signed off.
-- **Verification Governance:** Deterministic gating rules executed by the `brevio` harness. A single failing test or
+- Verification Governance: The `brevio` harness executes deterministic gating rules. A single failing test or
   unhandled evidence requirement halts completion and triggers the automated remediation loop.
 
 ### 3.3. Evidence & Acceptance Criteria Verification Matrix
 
-The authoritative 1:1 traceability registry mapping every evidence requirement ID from [
-`01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion to concrete
-verification commands, automated test assertions, and pass/fail evidence:
+The authoritative 1:1 traceability registry. It maps every evidence requirement ID from
+[`01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion to concrete verification
+commands, automated test assertions, and pass/fail evidence:
 
-- **Completeness Invariant:** If any evidence requirement ID from `01_solution_strategy.html` is absent from this matrix,
+- Completeness Invariant: If any evidence requirement ID from `01_solution_strategy.html` is absent from this matrix,
   `03_intent_verification.html` fails the feasibility check with `blocking-issues-count >= 1`.
 
 ### 3.4. Multi-Level Testing Pyramid & Verification Command Suites
 
-Structures verification across the testing pyramid, detailing verbatim terminal commands, execution contexts, and
+Structures verification across the testing pyramid. It details verbatim terminal commands, execution contexts, and
 deterministic output parsing rules:
 
 #### 3.4.1. Tier 3 Unit & Component Verification Suites
 
-- **Purpose:** Verifies atomic functions, domain models, utility classes, and validation logic in total isolation.
-- **Mocking Policy:** External dependencies (database, network, message queues) must be mocked or stubbed.
-- **Verification Command:** Verbatim terminal invocation (e.g., `mvn test -Dtest=*UnitTest`, `pytest tests/unit/`,
+- Purpose: Makes sure that atomic functions, domain models, utility classes, and validation logic are correct in total
+  isolation.
+- Mocking Policy: External dependencies (database, network, message queues) must be mocked or stubbed.
+- Verification Command: Verbatim terminal invocation (for example `mvn test -Dtest=*UnitTest`, `pytest tests/unit/`,
   `npm run test:unit`).
-- **Assertion Criteria:** 100% assertions pass, line coverage meets project threshold (e.g. $\ge 80\%$), zero uncaught
-  exceptions.
+- Assertion Criteria: 100% assertions pass, line coverage meets project threshold (for example $\ge 80\%$), zero
+  uncaught exceptions.
 
 #### 3.4.2. Tier 2 Integration & API Contract Suites
 
-- **Purpose:** Verifies cross-component interaction, database migrations, persistence repositories, and HTTP/REST
-  contract boundaries.
-- **Environment:** Embedded test database (Testcontainers PostgreSQL, H2) or local mock server.
-- **Verification Command:** Verbatim terminal invocation (e.g., `mvn verify -Pintegration-tests`,
+- Purpose: Makes sure that cross-component interaction, database migrations, persistence repositories, and HTTP/REST
+  contract boundaries are correct.
+- Environment: Embedded test database (Testcontainers PostgreSQL, H2) or local mock server.
+- Verification Command: Verbatim terminal invocation (for example `mvn verify -Pintegration-tests`,
   `pytest tests/integration/`).
-- **Assertion Criteria:** HTTP status codes match OpenAPI contracts, database transactions commit/rollback accurately,
+- Assertion Criteria: HTTP status codes match OpenAPI contracts, database transactions commit/rollback accurately,
   schema constraints enforced.
 
 #### 3.4.3. Tier 1 Work-Item-Wide End-to-End (E2E) & System Suites
 
-- **Purpose:** Validates the entire user journey spanning multiple sub-intents, exercising complete end-to-end workflows in
-  an integrated environment.
-- **Verification Command:** Verbatim terminal invocation (e.g., `npm run test:e2e`, `mvn verify -Pe2e-tests`).
-- **Execution Evidence:** Detailed terminal output, assertions passed, and latency metrics:
+- Purpose: Makes sure that the entire user journey across multiple sub-intents is correct. It exercises complete
+  end-to-end workflows in an integrated environment.
+- Verification Command: Verbatim terminal invocation (for example `npm run test:e2e`, `mvn verify -Pe2e-tests`).
+- Execution Evidence: Detailed terminal output, assertions passed, and latency metrics:
 
 ### 3.5. Non-Functional, Security, Invariant & Code Quality Gates
 
-Verifies that the code meets architectural, security, and maintainability baselines, and that every declared invariant
+Makes sure that the code meets architectural, security, and maintainability baselines, and that every declared invariant
 holds:
 
-- **Invariant Monitors:** One row per invariant (`INV-###`) from `01_solution_strategy.html`. Each row lists the shell command,
+- Invariant Monitors: One row per invariant (`INV-###`) from `01_solution_strategy.html`. Each row lists the shell command,
   the enforcement level (`advisory`, `build-gate`, `ci-gate`, `human-gate`), the exit code, and the literal output.
   A non-zero exit code on a `ci-gate` invariant blocks a `pass` verdict. A `human-gate` invariant holds the ledger state
   until the named approver signs.
-- **Evidence from the Toolchain:** The literal output of each command is the evidence. The agent summary is not evidence.
-- **Gate Type:** The gate is `deterministic`, `adversarial`, or `human`. An adversarial gate runs a reviewing agent in a
+- Evidence from the Toolchain: The literal output of each command is the evidence. The agent summary is not evidence.
+- Gate Type: The gate is `deterministic`, `adversarial`, or `human`. An adversarial gate runs a reviewing agent in a
   fresh context.
 
 ### 3.6. Edge Case, Negative & Boundary Verification
@@ -311,22 +308,22 @@ Records verification of the negative paths, error handling, adversarial inputs, 
 
 | Edge Case ID | Category       | Scenario / Adversarial Input                   | Expected System Behavior                                         | Verifying Test Case                         | Verdict |
 |:-------------|:---------------|:-----------------------------------------------|:-----------------------------------------------------------------|:--------------------------------------------|:--------|
-| `EDGE-001`   | Authentication | Replay attack with expired refresh token       | Entire refresh token family revoked; HTTP 401 emitted            | `TokenRotationE2ETest#testReplayAttack`     | `PASS`  |
+| `EDGE-001`   | Authentication | Replay attack with expired refresh token       | Entire refresh token family revoked. HTTP 401 emitted.           | `TokenRotationE2ETest#testReplayAttack`     | `PASS`  |
 | `EDGE-002`   | Input Boundary | Password length = 0 or > 128 characters        | HTTP 400 Bad Request with field-specific validation error        | `UserValidationTest#testPasswordBoundaries` | `PASS`  |
-| `EDGE-003`   | Concurrency    | Simultaneous registration with identical email | Exactly one user record created; second request returns HTTP 409 | `ConcurrencyRegistrationTest#testRace`      | `PASS`  |
-| `EDGE-004`   | Infrastructure | Database connection timeout during auth        | HTTP 503 Service Unavailable; no unhandled stack traces leaked   | `FaultInjectionTest#testDbTimeout`          | `PASS`  |
+| `EDGE-003`   | Concurrency    | Simultaneous registration with identical email | Exactly one user record created. Second request returns HTTP 409. | `ConcurrencyRegistrationTest#testRace`      | `PASS`  |
+| `EDGE-004`   | Infrastructure | Database connection timeout during auth        | HTTP 503 Service Unavailable. No unhandled stack traces leaked.  | `FaultInjectionTest#testDbTimeout`          | `PASS`  |
 
 ### 3.7. Sub-Intent & Unit Verification Roll-up Audit
 
-Evaluates the roll-up integrity across the work item's execution hierarchy. For `03_intent_verification.html` to reach a
-`pass` verdict, all underlying sub-intent and unit verifications must have passed.
+Evaluates the roll-up integrity across the execution hierarchy of the work item. For `03_intent_verification.html` to
+reach a `pass` verdict, all underlying sub-intent and unit verifications must pass.
 
-- **Roll-up Rule:** If any sub-intent verification reports `fail` or `warn`, or any unit verification has exit code $\ne 0$, the
-  intent verification verdict cannot be `pass`.
+- Roll-up Rule: If any sub-intent verification reports `fail` or `warn`, or any unit verification has exit code
+  $\ne 0$, the intent verification verdict cannot be `pass`.
 
 ### 3.8. Manual Verification & Human Sign-Off Protocol
 
-Accommodates verification steps that require human sensory inspection, exploratory testing, UX review, or compliance
+Covers the verification steps that require human sensory inspection, exploratory testing, UX review, or compliance
 sign-off.
 
 - If `manual-verification-required="true"`, any item in `pending` or `rejected` status blocks final intent verification
@@ -334,25 +331,25 @@ sign-off.
 
 ### 3.9. Defect Remediation Log & Gating Verdict
 
-The formal gating verdict authorizing work item transitions, combined with the defect remediation history:
+The formal gating verdict that authorizes work item transitions, together with the defect remediation history:
 
-- **Formal Verdict:** High-visibility chip or banner indicating:
-    - `PASS`: All automated suites, quality gates, invariants, rollups, and manual items passed. The intent can move to `verified`, and a named human can authorize [
-      `04_intent_summary.html`](intent-summary.md)
-      generation and the release.
-    - `FAIL`: One or more blocking issues detected. The harness places a hold with a named human approver and dispatches targeted remediation back to worker
-      agents.
-    - `WARN`: Non-blocking advisories detected (e.g., minor performance deviation or optional warning). Conditional
-      progress allowed upon human acknowledgement.
-- **Defect Remediation History:** Itemizes any defects uncovered during the feasibility or completion stage,
-  detailing root cause, remediation commits, and re-test verification evidence.
+- Formal Verdict: High-visibility chip or banner that shows one of these values:
+    - `PASS`: All automated suites, quality gates, invariants, rollups, and manual items passed. The intent can move to
+      `verified`, and a named human can authorize [`04_intent_summary.html`](intent-summary.md) generation and the
+      release.
+    - `FAIL`: One or more blocking issues detected. The harness places a hold with a named human approver and
+      dispatches targeted remediation back to worker agents.
+    - `WARN`: Non-blocking advisories detected (for example a minor performance deviation or an optional warning).
+      Progress is conditional and allowed upon human acknowledgement.
+- Defect Remediation History: Itemizes any defects found during the feasibility or completion stage, with the root
+  cause, remediation commits, and re-test verification evidence.
 
 ---
 
 ## 4. Token Optimization & XPath Query Patterns
 
 Downstream CI/CD runners, orchestrator agents, and release automation extract verification data from
-`03_intent_verification.html` using targeted XPath queries without loading the entire document into context:
+`03_intent_verification.html` with targeted XPath queries. They do not load the entire document into context:
 
 ### Querying Verification Verdict & Stage
 
@@ -414,42 +411,38 @@ graph TD
     VAL -->|" Final Completion Gate: PASS "| SUM["04_intent_summary.html<br/>(Authorizes PR Submission)"]
 ```
 
-- **Feasibility Gating:** The harness checks `/html/head/meta[@name='validation-verdict']/@content` in
-  `03_intent_verification.html`. If not `pass` (or conditional `warn`), sub-intent convergence is mechanically locked in
-  `03_intent_ledger.json`.
-- **Hierarchical Roll-up:** All Tier 3 unit verifications roll up into their parent Tier 2 sub-intent verifications, and all
+- Feasibility Gating: The harness reads `/html/head/meta[@name='validation-verdict']/@content` in
+  `03_intent_verification.html`. If the value is not `pass` (or a conditional `warn`), sub-intent convergence stays
+  mechanically locked in `03_intent_ledger.json`.
+- Hierarchical Roll-up: All Tier 3 unit verifications roll up into their parent Tier 2 sub-intent verifications. All
   sub-intent verifications roll up into `03_intent_verification.html`.
-- **Final Completion Gate:** Once all sub-intents complete and work-item-wide E2E suites pass, `validation-verdict` is
-  finalized as `pass`, authorizing [
-  `04_intent_summary.html`](intent-summary.md)
-  generation.
+- Final Completion Gate: When all sub-intents complete and the work-item-wide E2E suites pass, `validation-verdict` is
+  finalized as `pass`. This verdict authorizes [`04_intent_summary.html`](intent-summary.md) generation.
 
 ---
 
 ## 6. Rules & Constraints
 
-1. **100% Evidence Coverage Invariant:** Every evidence requirement defined in [
-   `01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion must
-   have a corresponding entry in the Evidence & Acceptance Criteria Verification Matrix. Zero unverified
-   evidence requirements are permitted.
-2. **Deterministic Command Execution:** All automated test entries must specify exact, runnable terminal commands with
+1. 100% Evidence Coverage Invariant: Every evidence requirement defined in
+   [`01_solution_strategy.html`](solution-strategy.md) and every unit acceptance criterion must have a corresponding
+   entry in the Evidence & Acceptance Criteria Verification Matrix. Zero unverified evidence requirements are permitted.
+2. Deterministic Command Execution: All automated test entries must specify exact, runnable terminal commands with
    deterministic expected exit codes (`0`) and stdout/stderr assertions. Generic phrases like "run test suite" are
    strictly forbidden.
-3. **Dual-Stage Lifecycle Preservation:** The document must record both its feasibility baseline and its final
+3. Dual-Stage Lifecycle Preservation: The document must record both its feasibility baseline and its final
    completion verdict. The transition from `feasibility` to `final-completion-verdict` must reflect actual executed test
    runs.
-   3a. **Invariant Coverage:** Every invariant in `01_solution_strategy.html` must have a row in the Invariant Monitors
+   3a. Invariant Coverage: Every invariant in `01_solution_strategy.html` must have a row in the Invariant Monitors
    table.
-   3b. **Evidence Integrity:** Each verdict must cite the literal command output.
-4. **Zero-Tolerance Defect Gating:** Any failing test, unresolved blocker, or unapproved mandatory manual check strictly
+   3b. Evidence Integrity: Each verdict must cite the literal command output.
+4. Zero-Tolerance Defect Gating: Any failing test, unresolved blocker, or unapproved mandatory manual check strictly
    prevents `validation-verdict` from reaching `pass`. A failed gate must name a human approver.
-5. **Strict XHTML Conformance:** `03_intent_verification.html` must parse as valid XML
+5. Strict XHTML Conformance: `03_intent_verification.html` must parse as valid XML
    (`xmlns="http://www.w3.org/1999/xhtml"`), with all tags self-closed or closed, attributes quoted, and ampersands
    escaped (`&amp;`).
-6. **No Deliberative History:** In accordance with repository principles, the document must capture only the
-   authoritative verification criteria, execution commands, and factual outcomes. Deliberative debate belongs
-   exclusively in [
-   `05_intent_conversation_summary.html`](intent-conversation-summary.md).
+6. No Deliberative History: The document must capture only the authoritative verification criteria, execution
+   commands, and factual outcomes. This rule follows the repository principles. Deliberative debate belongs only in
+   [`05_intent_conversation_summary.html`](intent-conversation-summary.md).
 
 ---
 
@@ -457,6 +450,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                                                                     | Source                |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------|
+| 2026-11-25 | 1.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 1.2.0   | Evidence requirements and invariants now come from the solution strategy. Acceptance criteria come from the unit specifications. | TOPIC-007 |
 | 2026-10-31 | 1.1.0   | Renamed to Intent Verification. Replaced the pre-execution stage with the feasibility stage, mapped evidence requirements and invariants to commands, added invariant monitors, gate types, and literal-output evidence. | TOPIC-005 |
 | 2026-09-06 | 1.0.0   | Canonical specification for Intent Verification (`03_intent_verification.html`) establishing the dual-stage lifecycle, 1:1 requirements verification matrix, multi-level testing pyramid, non-functional quality gates, sub-intent/unit roll-up audits, manual sign-off protocols, and XPath query patterns. | Feature Specification |

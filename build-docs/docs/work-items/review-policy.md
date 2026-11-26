@@ -7,13 +7,13 @@ paths that reviewers skip. It applies to every work item in the project.
 The policy makes review the same for every change. Each change receives the same passes, and findings carry a severity
 that a gate can read. Findings do not approve or block a change alone. A named human code owner approves.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human Interface:** Renders as a local, static XHTML web page utilizing Material Design 3 Web Components
-   (`@material/web` / **M3**) without client-side bundlers or build steps. Tech leads read and tune the policy in a
+1. Human Interface: The document renders as a local, static XHTML web page. It uses Material Design 3 Web Components
+   (`@material/web`, M3) and needs no client-side bundler or build step. Tech leads read and tune the policy in a
    browser.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI. Reviewing agents load only the passes and severity rules that they need.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. You can query it with XPath and
+   the `brevio` CLI. Reviewing agents load only the passes and severity rules that they need.
 
 ---
 
@@ -36,7 +36,7 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The review policy resides at the root of `.brevio/work_items/`, beside the work item directories:
+The review policy is at the root of `.brevio/work_items/`, next to the work item directories:
 
 ```text
 .brevio/
@@ -47,19 +47,19 @@ The review policy resides at the root of `.brevio/work_items/`, beside the work 
         └── 07_review_findings.html
 ```
 
-- **File Name:** `review_policy.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Owner:** The tech lead. A named human approves each change to the policy.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `review_policy.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Owner: The tech lead. A named human approves each change to the policy.
+- Runtime: Fully static. The file runs directly in any modern browser from the local file system (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
 ## 2. XHTML Header & Metadata Standard
 
-Every `review_policy.html` begins with the universal baseline `<meta>` tags, policy tags, and the Material Web ES module
-importmap loader:
+Every `review_policy.html` starts with the universal baseline `<meta>` tags, the policy tags, and the Material Web ES
+module importmap loader:
 
 ```xhtml
 
@@ -105,21 +105,22 @@ importmap loader:
 
 ## 3. Required Sections & M3 Component Structure
 
-The Review Policy contains 6 standardized sections. Each section combines semantic XHTML elements with Material Design 3
-Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes (`data-*`).
+The Review Policy contains 6 standardized sections. Each section uses semantic XHTML elements and Material Design 3 Web
+Components (`md-*`). It also uses typography scale classes (`md-typescale-*`) and explicit data attributes (`data-*`).
 
 ### 3.1. Document Header & Metadata Bar
 
-Anchors the document with the policy title, the named approver, the date of the last change, and the pass count.
+This section starts the document. It shows the policy title, the named approver, the date of the last change, and the
+pass count.
 
 ### 3.2. Review Passes
 
 Section id: `review-passes`. Each pass is an `md-elevated-card` with a `data-pass` attribute. Every review runs every
-pass, and tags each finding with its pass. The default passes are:
+pass and tags each finding with its pass. The default passes are:
 
 | Pass         | Scope                                                                                                         |
 |:-------------|:--------------------------------------------------------------------------------------------------------------|
-| `bugs`       | Logic errors, broken edge cases, and subtle regressions.                                                      |
+| `bugs`       | Logic errors, broken edge cases, and small regressions that are hard to see.                                  |
 | `security`   | Injection risks, authentication gaps, and personal data in logs.                                              |
 | `compliance` | The change matches `01_solution_strategy.html`, the plan view in `02_intent_decomposition.html`, the unit target scope, and the design principles. |
 
@@ -127,38 +128,38 @@ The policy can add passes. Each added pass needs a name, a scope, and an owner.
 
 ### 3.3. Severity Definitions
 
-Section id: `severity`. Defines each severity level:
+Section id: `severity`. This section defines each severity level:
 
-- **Important:** A finding that would break behavior, leak data, or breach a policy or a declared invariant.
-- **Nit:** A finding about style, naming, or other preferences that do not change behavior.
+- Important: A finding about a change that breaks behavior, leaks data, or breaches a policy or a declared invariant.
+- Nit: A finding about style, naming, or other preferences that do not change behavior.
 
 Each level has a `data-severity` attribute. `07_review_findings.html` counts findings by these values.
 
 ### 3.4. Nit Cap & Skip List
 
-Section id: `skip-list`. Limits the noise of a review:
+Section id: `skip-list`. This section limits the noise of a review:
 
-- **Nit Cap:** A review reports at most the number of Nit findings in `nit-cap`. It summarizes the rest as a count.
-- **Skip List:** Paths that reviewers do not report on, for example generated files and anything that CI already enforces.
+- Nit Cap: A review reports at most the number of Nit findings in `nit-cap`. It gives the rest as a count.
+- Skip List: Paths that reviewers do not report on, for example generated files and anything that CI already enforces.
   The skip list must not include a path from the Protected Resource Registry in `02_intent_decomposition.html`.
 
 ### 3.5. Human Threshold & Approval Rules
 
-Section id: `approval-rules`. States who decides:
+Section id: `approval-rules`. This section states who decides:
 
 - Findings do not approve or block a change alone.
 - A named human code owner approves each change. Branch protection enforces this approval.
-- A gate can read the severity counts in `07_review_findings.html` and hold a change when `severity-important-count` is
-  greater than `0`.
+- A gate can read the severity counts in `07_review_findings.html`. The gate can hold a change when
+  `severity-important-count` is greater than `0`.
 - Changes to regulated or critical code use the `human-gate` enforcement level.
 - The agent identity that wrote a change cannot approve it.
 
 ### 3.6. Reviewer Identities & Shadow Mode
 
-Section id: `reviewers`. Lists each reviewer identity and its mode:
+Section id: `reviewers`. This section lists each reviewer identity and its mode:
 
-- **`shadow`:** The reviewer posts findings for a human to approve. A new automated reviewer starts in this mode.
-- **`active`:** The reviewer's findings count toward the severity counts. A reviewer moves to `active` after a named
+- `shadow`: The reviewer posts findings for a human to approve. A new automated reviewer starts in this mode.
+- `active`: The findings of the reviewer count toward the severity counts. A reviewer moves to `active` after a named
   human accepts a sampled audit of its findings.
 
 The ledger records a sampled audit of automated approvals.
@@ -185,7 +186,7 @@ The ledger records a sampled audit of automated approvals.
 3. A named human must approve each change to the policy.
 4. The skip list must not remove a protected path from review.
 5. A reviewer in `shadow` mode must not contribute to a gate decision.
-6. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+6. The `## Revisions` table at the bottom of this document is the only record of the revision history.
 
 ---
 
@@ -193,5 +194,6 @@ The ledger records a sampled audit of automated approvals.
 
 | Date       | Version | Description                                                                                                                                       | Source    |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 0.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.2.0   | The compliance pass compares the change with the solution strategy and the plan view. | TOPIC-007 |
 | 2026-10-31 | 0.1.0   | Initial specification of the project-level review policy: passes, severity definitions, nit cap, skip list, approval rules, and reviewer modes. | TOPIC-005 |

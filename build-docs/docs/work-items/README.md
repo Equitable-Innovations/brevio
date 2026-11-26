@@ -1,9 +1,9 @@
 # Work Item Documents Architecture & Specification
 
-> The authoritative master specification for the **Work Item Documents** domain within the **Token Optimized Software
-> Harness (`brevio`)**. This document defines the intent-driven hierarchy, the convergence state machine, invariant
-> enforcement, autonomy tiers, universal XHTML metadata standards, directory conventions, and targeted query patterns
-> that govern feature development from declaration through pull request merge.
+> This is the master specification for the Work Item Documents domain of the Token Optimized Software Harness
+> (`brevio`). It defines the intent-driven hierarchy, the convergence state machine, invariant enforcement, autonomy
+> tiers, the universal XHTML metadata standards, directory conventions, and targeted query patterns. These rules govern
+> feature development from the declaration of an intent to the merge of its pull request.
 
 ---
 
@@ -33,29 +33,30 @@
 
 ## Scope & Architectural Role
 
-Work item documents represent the technical execution core of `brevio`. While project wikis and API references provide
-global context, work item documents drive the direct, tactical delivery of every software feature, bug fix, and
-architectural refactor.
+Work item documents are the technical execution core of `brevio`. Project wikis and API references give global context.
+Work item documents control the direct, tactical delivery of each software feature, bug fix, and architectural
+refactor.
 
-A work item declares an **intent**. An intent states what the system must achieve, which boundaries the system must
+A work item declares an intent. An intent states what the system must achieve, which boundaries the system must
 keep (invariants), and which evidence proves that the intent is satisfied. The work item does not prescribe
 step-by-step edits. The agent chooses how to reach the desired state, and `brevio` checks the result against the
 declared invariants and evidence.
 
-Each work item is self-contained within an isolated directory under `.brevio/work_items/`. The directory holds the intent
+Each work item is self-contained in an isolated directory under `.brevio/work_items/`. The directory holds the intent
 declaration, solution strategy, decomposition, sub-intent specifications, unit specifications, verification runs,
 review findings, conversation transcripts, and token metrics.
 
 ### Dual-Purpose Consumption Model
 
-Every work item document fulfills two simultaneous functions:
+Each work item document has two functions at the same time:
 
-1. **Human Interface (Static UI):** Standalone XHTML documents render natively in standard web browsers using Material
-   Design 3 Web Components (`@material/web` / **M3**). Developers read intents, monitor convergence, inspect diffs, and
-   review verification results in a single-pane visualizer without client-side bundlers or runtime servers.
-2. **Agent / Harness Interface (Machine Parseable):** Strict XHTML 1.0/5 compliance allows XML parsers (DOM, XPath,
-   SAX) to extract granular sub-trees (for example invariants, target files, and verification commands) in
-   microseconds. The harness delivers only these fragments to agentic LLMs.
+1. Human Interface (Static UI): Standalone XHTML documents render natively in standard web browsers with Material
+   Design 3 Web Components (`@material/web` / M3). Developers read intents, monitor convergence, inspect diffs, and
+   review verification results in a single-pane visualizer. The visualizer needs no client-side bundler and no runtime
+   server.
+2. Agent / Harness Interface (Machine Parseable): The documents comply with strict XHTML 1.0/5. Thus XML parsers (DOM,
+   XPath, SAX) can extract granular sub-trees in microseconds, for example invariants, target files, and verification
+   commands. The harness gives only these fragments to agentic LLMs.
 
 ---
 
@@ -88,22 +89,22 @@ Work items decompose execution into a three-tier hierarchy:
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Tier 1 (Intent Package):** Holds three accepted planning documents. The intent specification records the intent in
+- Tier 1 (Intent Package): Holds three accepted planning documents. The intent specification records the intent in
   the originator's words. The solution strategy declares the requirements, invariants, evidence requirements, and design.
   The intent decomposition is the implementation plan. Tier 1 also holds the central ledger, the master verification
   harness, the final summary, the review findings, and the planning conversation telemetry.
-- **Tier 2 (Sub-Intents):** Partitions the intent into verifiable milestones (for example an authentication schema or a
+- Tier 2 (Sub-Intents): Partitions the intent into verifiable milestones (for example an authentication schema or a
   token service). Each sub-intent defines prerequisites, invariant constraints, a manifest of intent units, and a
   verification gate. An intent with one milestone uses the light path and writes no Tier 2 documents. See
   [Light Path](#light-path).
-- **Tier 3 (Intent Units):** The atomic unit of agent execution. Each unit declares a goal, a required target scope,
+- Tier 3 (Intent Units): The atomic unit of agent execution. Each unit declares a goal, a required target scope,
   invariants, reference anchors, and a verification contract. The agent produces a git diff that satisfies the unit.
 
 ---
 
 ## Intent Convergence State Machine
 
-Every intent, sub-intent, and unit progresses through a deterministic lifecycle. `03_intent_ledger.json` and the
+Every intent, sub-intent, and unit goes through a deterministic lifecycle. `03_intent_ledger.json` and the
 `convergence-status` metadata tag record the state.
 
 ```mermaid
@@ -139,33 +140,33 @@ flowchart TD
 | `converging`     | Intent, sub-intent, unit | The agent synthesizes solutions, generates diffs, and tests them against invariants.                    |
 | `verified`       | Intent, sub-intent, unit | The item passed all deterministic verification and invariant checks.                                    |
 | `drift_detected` | Sub-intent, unit       | The output satisfies the tests but violates a declared invariant or boundary, or the diff leaves the target scope. The item returns to `converging` after targeted remediation. |
-| `settled`        | Intent                 | The intent is fully realized, verified, and locked, ready for pull request merge.                         |
+| `settled`        | Intent                 | The intent is fully realized, verified, and locked. It is ready for the pull request merge.               |
 
 ### Execution Gates & State Rules
 
-1. **Feasibility Gate:** No sub-intent or unit may enter `converging` until `03_intent_verification.html` records a
+1. Feasibility Gate: A sub-intent or unit cannot enter `converging` until `03_intent_verification.html` records a
    `validation-verdict` of `pass` for the feasibility check.
-   - **Strategy Acceptance Gate:** The decomposition pass cannot start until `01_solution_strategy.html` is accepted.
+   - Strategy Acceptance Gate: The decomposition pass cannot start until `01_solution_strategy.html` is accepted.
      The strategy cannot be accepted while a flagged concern is `open`.
-   - **Plan Acceptance Gate:** No unit can enter `converging` until `02_intent_decomposition.html` is accepted. The
+   - Plan Acceptance Gate: No unit can enter `converging` until `02_intent_decomposition.html` is accepted. The
      adversarial plan review must pass first.
-2. **Sub-Intent Dependency Guard:** Sub-intent N+1 is blocked until sub-intent N is `verified` and its
+2. Sub-Intent Dependency Guard: Sub-intent N+1 is blocked until sub-intent N is `verified` and its
    `sub_intent_verification.html` records `pass`.
-3. **Unit Dependency Guard:** An agent cannot begin a unit until every unit in its `dependsOn` array is `verified`.
-4. **Failure Isolation:** If a unit fails verification, execution halts for that unit branch. The agent enters
-   targeted remediation without discarding the artifacts of other verified units.
-5. **Scope Drift Guard:** If `intent.diff` changes a file outside the unit Target Scope, the unit enters
+3. Unit Dependency Guard: An agent cannot begin a unit until every unit in its `dependsOn` array is `verified`.
+4. Failure Isolation: If a unit fails verification, execution halts for that unit branch. The agent enters
+   targeted remediation and keeps the artifacts of the other verified units.
+5. Scope Drift Guard: If `intent.diff` changes a file outside the unit Target Scope, the unit enters
    `drift_detected` until the unit spec or the diff changes.
-6. **Parallel Safety:** Two units can converge in parallel only if their Target Scopes do not overlap and neither unit
-   depends on the other. Units whose Target Scopes overlap run one after another.
+6. Parallel Safety: Two units can converge in parallel only under two conditions: their Target Scopes do not overlap,
+   and neither unit depends on the other. Units whose Target Scopes overlap run one after another.
 
 ---
 
 ## Invariants & Enforcement Levels
 
 An invariant is a condition that must hold before, during, and after convergence. Each invariant is a record with an
-identifier, a description, a shell command, and an enforcement level. The command exits with code `0` when the
-invariant holds and with a non-zero code when the invariant is broken.
+identifier, a description, a shell command, and an enforcement level. When the invariant holds, the command exits with
+code `0`. When the invariant is broken, the command exits with a non-zero code.
 
 | Level        | Mechanism                                                                                        | Example                                              |
 |:-------------|:-------------------------------------------------------------------------------------------------|:-----------------------------------------------------|
@@ -230,8 +231,8 @@ Each accepted document records `accepted-by` and `accepted-at`. The ledger recor
 
 A gate sits between stages. A gate is one of two types:
 
-- **Deterministic gate:** A command with an exit code.
-- **Adversarial gate:** A reviewing agent with a fresh context that tries to find defects in the output.
+- Deterministic gate: A command with an exit code.
+- Adversarial gate: A reviewing agent with a fresh context that tries to find defects in the output.
 
 If a gate fails, the ledger records the gate verdict and names a human approver. The output does not continue to the
 next stage until the approver accepts it or the agent corrects it.
@@ -350,11 +351,11 @@ Work items follow strict naming conventions under `.brevio/work_items/`:
 
 ### Naming Conventions
 
-- **Work Item Directory:** `{UTC_TIMESTAMP}_{kebab-case-slug}` (for example `20260830T170936Z_user_auth_service`).
-- **Sequential Root Prefixes:** `00_` through `07_` enforce ordered discovery in file explorers and CLI sorting.
-- **Sub-Intent Directories:** `sub_intent_{NN}_{kebab-case-slug}` with two-digit zero padding (for example
+- Work Item Directory: `{UTC_TIMESTAMP}_{kebab-case-slug}` (for example `20260830T170936Z_user_auth_service`).
+- Sequential Root Prefixes: `00_` through `07_` keep the files in order in file explorers and in CLI sorting.
+- Sub-Intent Directories: `sub_intent_{NN}_{kebab-case-slug}` with two-digit zero padding (for example
   `sub_intent_01_auth_schema`).
-- **Unit Directories:** `unit_{NNN}_{kebab-case-slug}` with three-digit zero padding (for example
+- Unit Directories: `unit_{NNN}_{kebab-case-slug}` with three-digit zero padding (for example
   `unit_001_password_hashing`).
 
 ### Light Path
@@ -383,7 +384,7 @@ sub-intent gate.
 
 ## Intent Ledger (`03_intent_ledger.json`)
 
-The intent ledger is the operational heartbeat of the work item. It is the single source of truth for convergence
+The intent ledger holds the operational state of the work item. It is the single source of truth for convergence
 state, dependency graphs, file pointers, gate verdicts, approver identities, and rolled-up telemetry. Agents read the
 ledger and do not traverse the filesystem.
 
@@ -501,8 +502,8 @@ ledger and do not traverse the filesystem.
 
 ## Unified XHTML Header Metadata Standard
 
-Standardizing `<head>` `<meta>` tags across all `.html` documents establishes direct entity relationships, parent-child
-lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
+All `.html` documents use the same standard `<head>` `<meta>` tags. These tags give direct entity relationships,
+parent-child lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
 
 ```html
 <!DOCTYPE html>
@@ -576,7 +577,7 @@ lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
 </html>
 ```
 
-- See the exhaustive tag definitions and attribute contracts in
+- For the full tag definitions and attribute contracts, see
   [`intent-document-metadata-definition.md`](intent-document-metadata-definition.md).
 
 ---
@@ -597,7 +598,7 @@ lineage, and instant indexing for crawlers, CLI commands, and XPath extractors.
 
 ## Token Optimization & XPath Query Patterns
 
-Instead of loading whole work item documents, agents use targeted XPath queries to extract exact sub-trees. A unit spec
+Agents do not load whole work item documents. They use targeted XPath queries to extract exact sub-trees. A unit spec
 declares goals, scope, invariants, and verification commands, so an agent reads a few hundred tokens and not a
 procedural walkthrough.
 
@@ -655,7 +656,7 @@ procedural walkthrough.
 
 ### Stage Handoffs
 
-Each stage ends when a document is committed and accepted. The accepted document starts the next stage.
+When a document is committed and accepted, its stage ends. The accepted document starts the next stage.
 
 | Stage     | Artifact                                                              | Trigger for the next stage                                                       |
 |:----------|:----------------------------------------------------------------------|:---------------------------------------------------------------------------------|
@@ -666,7 +667,7 @@ Each stage ends when a document is committed and accepted. The accepted document
 | Deploy    | `07_review_findings.html`, release authorization                      | A named human approves the release and moves the intent to `settled`.            |
 | Maintain  | A finding or an alert                                                 | The finding becomes a new intent in state `declared` with an `origin-ref` value. |
 
-- A ledger state change is the trigger. A non-interactive job can run the next stage when the trigger fires.
+- A ledger state change is the trigger. When the trigger fires, a non-interactive job can run the next stage.
 - A human accepts or rejects each artifact at a gate. The ledger records the approver and a timestamp. The risk class
   names the approver role. See [Risk Class & Approvers](#risk-class--approvers).
 - The solution strategy lists flagged concerns, one policy owner per concern. The product owner resolves each concern
@@ -719,7 +720,7 @@ commands. A change that lowers the pass rate needs review before it merges.
 
 ## Traceability & Bi-Directional Lineage
 
-Work item documents establish an unbroken line of custody from declared intent to git commits:
+Work item documents keep an unbroken line of custody from the declared intent to the git commits:
 
 ```mermaid
 graph TD
@@ -734,49 +735,48 @@ graph TD
     SSUM -->|" rolls up to "| ISUM["Intent Summary<br/>(04_intent_summary.html)"]
 ```
 
-- **Downward Pointers:** The intent ledger (`03_intent_ledger.json`) stores relative file paths to every sub-intent and
+- Downward Pointers: The intent ledger (`03_intent_ledger.json`) stores relative file paths to every sub-intent and
   unit document.
-- **Upward Pointers:** Every child document specifies `parent-doc-id` and `intent-id` in its `<head>` metadata,
-  enabling immediate navigation back up the tree.
-- **Lateral Pointers:** Units specify `implements-req` to bind directly to evidence requirement IDs, and `depends-on`
+- Upward Pointers: Every child document specifies `parent-doc-id` and `intent-id` in its `<head>` metadata. These tags
+  give immediate navigation back up the tree.
+- Lateral Pointers: Units specify `implements-req` to bind directly to evidence requirement IDs, and `depends-on`
   to enforce sequencing.
-- **Origin Pointers:** `origin-ref` binds an intent to the finding or alert that created it. `external-ref` binds a
+- Origin Pointers: `origin-ref` binds an intent to the finding or alert that created it. `external-ref` binds a
   document to a record in a legacy tracking system.
 
 ---
 
 ## Rules & Constraints
 
-1. **Current State Design:** This specification and the current-state sections of generated documents describe only the
+1. Current State Design: This specification and the current-state sections of generated documents describe only the
    active design. They must not contain references to past iterations, rejected alternatives, or deprecated decisions.
    Historical deliberations about this specification are recorded in [`topics/`](../../../topics/README.md). Two
    sections of generated documents are exempt: the micro-ADRs in `01_solution_strategy.html` and the plan interrogation
    in `02_intent_decomposition.html`. Both record the options not chosen.
-2. **Strict XHTML Conformance:** All `.html` files must parse as valid XML (`xmlns="http://www.w3.org/1999/xhtml"`).
+2. Strict XHTML Conformance: All `.html` files must parse as valid XML (`xmlns="http://www.w3.org/1999/xhtml"`).
    Self-closing tags (`<meta .../>`, `<input .../>`), escaped entities (`&amp;`), and quoted attributes are mandatory.
-3. **Mandatory Universal Baseline:** Every XHTML document must contain the universal baseline metadata tags (`doc-id`,
+3. Mandatory Universal Baseline: Every XHTML document must contain the universal baseline metadata tags (`doc-id`,
    `doc-type`, `schema-version`, `domain`, `status`, `created-at`, `updated-at`).
-4. **Zero Runtime Bundling:** Pages must render directly in modern browsers via standard ES module importmaps without
-   requiring Webpack, Vite, or client-side build tools.
-5. **Atomic Commit Synchronization:** State changes in `03_intent_ledger.json` must be committed atomically with code
-   modifications to prevent drift.
-6. **Declarative Specifications:** Intent unit specifications declare goals, scope, invariants, and verification
+4. Zero Runtime Bundling: Pages must render directly in modern browsers through standard ES module importmaps. They
+   must not require Webpack, Vite, or client-side build tools.
+5. Atomic Commit Synchronization: State changes in `03_intent_ledger.json` must be committed atomically with the code
+   changes. This prevents drift.
+6. Declarative Specifications: Intent unit specifications declare goals, scope, invariants, and verification
    commands. They must not contain step-by-step edit instructions.
-7. **Required Target Scope:** Every intent unit specification must list a Target Scope. A unit without a Target Scope
+7. Required Target Scope: Every intent unit specification must list a Target Scope. A unit without a Target Scope
    cannot enter `converging`.
-8. **Executable Invariants:** Every invariant must have a shell command and an enforcement level.
-9. **Measurable Evidence:** Every verification assertion must be a command with a pass or fail result. The
+8. Executable Invariants: Every invariant must have a shell command and an enforcement level.
+9. Measurable Evidence: Every verification assertion must be a command with a pass or fail result. The
    `verification.html` document must store the literal command output as evidence. An agent summary is not evidence.
-10. **Separation of Duties:** The identity that writes a unit and the identity that approves it must differ.
-11. **Protected Verification:** An agent that fixes code must not edit the tests that verify that code during the same
-    fix. A `build-gate` hook enforces this rule when the unit declares the constraint.
-12. **Production Gate:** An agent must not release to production. A named human authorizes each production release.
-13. **Revision Tracking:** Document revision history is tracked exclusively in the `## Revisions` table at the bottom
-    of each document.
-14. **Frozen Intent:** After acceptance, `00_intent_spec.html` does not change. A change needs a new acceptance record.
-15. **Accepted Planning Documents:** Each of `00`, `01`, and `02` records `accepted-by` and `accepted-at`. The approvers
+10. Separation of Duties: The identity that writes a unit and the identity that approves it must differ.
+11. Protected Verification: An agent that fixes code must not edit the tests for that code during the same fix. When the unit declares the constraint, a `build-gate` hook enforces this rule.
+12. Production Gate: An agent must not release to production. A named human authorizes each production release.
+13. Revision Tracking: Each document tracks its revision history only in the `## Revisions` table at the bottom of
+    the document.
+14. Frozen Intent: After acceptance, `00_intent_spec.html` does not change. A change needs a new acceptance record.
+15. Accepted Planning Documents: Each of `00`, `01`, and `02` records `accepted-by` and `accepted-at`. The approvers
     match the risk class.
-16. **Plan Matches Units:** The `plan-files` list in `02_intent_decomposition.html` equals the union of the unit Target
+16. Plan Matches Units: The `plan-files` list in `02_intent_decomposition.html` equals the union of the unit Target
     Scopes. The merged diff is compared against it.
 
 ---
@@ -785,6 +785,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                                                                                                     | Source                           |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.5.0   | Aligned the planning documents with the intent, spec, and plan artifacts: the intent is the originator's proto-spec and is frozen at acceptance, the solution strategy is the requirements and design spec, and the decomposition is the implementation plan with a plan view and interrogation. Added the `closed` state, risk class approvers, strategy and plan acceptance gates, the light path, and the rule 1 exemption. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Rebuilt the domain around declarative intent: intent-driven hierarchy, convergence state machine, invariant enforcement levels, autonomy tiers, confidence gates, review and lessons documents, intent ledger schema, metadata tags, and renamed document catalog (20 types). | TOPIC-005                        |
 | 2026-09-06 | 0.3.0   | Integrated Task Diff (`task.diff` / `task-diff.md`) into Tier 3 catalog, ledger paths, metadata matrix, and traceability graph.                                                                                                                                                 | Work Item Architecture Alignment |

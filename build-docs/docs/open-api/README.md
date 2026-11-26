@@ -539,9 +539,9 @@ provides matching tools. Both surfaces call the same code.
 
 | Command                                                                                     | Effect                                                                                                    |
 |:--------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------|
-| `brevio open-api add --role <service\|client> --api-id <id> --source <file> [--major <n>]`    | Copies the source into a new version directory, validates it, and generates the documents.                |
-| `brevio open-api update --api-id <id> --major <n> --source <file>`                            | Replaces the source of an existing version, validates it, and generates the documents.                    |
-| `brevio open-api generate [--api-id <id>] [--major <n>]`                                      | Validates the sources and regenerates the documents. With no flags, it regenerates every `stale` version. |
+| `brevio open-api add --role <service\|client> --api-id <id> --source <file> [--major <n>]`    | Copies the source into a new version directory, makes sure that it is valid, and generates the documents. |
+| `brevio open-api update --api-id <id> --major <n> --source <file>`                            | Replaces the source of an existing version, makes sure that it is valid, and generates the documents.     |
+| `brevio open-api generate [--api-id <id>] [--major <n>]`                                      | Makes sure that the sources are valid and regenerates the documents. With no flags, it regenerates every `stale` version. |
 | `brevio open-api check`                                                                       | Reports every `stale` or `invalid` version. It changes nothing. It exits with code `5` on a difference.   |
 | `brevio open-api list [--role <service\|client>]`                                             | Prints the APIs and versions from `catalog.json`.                                                         |
 | `brevio open-api operation --api-id <id> --major <n> (--slug <slug> \| --method <m> --path <p>)` | Prints the operation document fragment that the `--section` flag selects. The default is all sections.  |
@@ -657,8 +657,8 @@ graph LR
 
 ## Rules & Constraints
 
-1. Current state design: this document represents the current state of the design. Historical deliberations are
-   recorded in [`topics/`](../../../topics/README.md).
+1. Current state design: this document represents the current state of the design. The
+   [`topics/`](../../../topics/README.md) directory records the historical deliberations.
 2. Single source of truth: the OpenAPI source file is the contract. No person and no agent edits a generated document.
    Only `brevio open-api` commands write generated documents and `catalog.json`.
 3. Supported versions: the source must be OpenAPI 3.0.x or 3.1.x. Swagger 2.0 sources are not valid.
@@ -677,7 +677,7 @@ graph LR
     copy examples verbatim and git stores them.
 12. Client contracts are reference: a unit does not change a `client` source unless the intent of the unit is a vendor
     contract update.
-13. Revision tracking: document revision history is tracked only in the `## Revisions` table at the bottom of each
+13. Revision tracking: each document tracks its revision history only in the `## Revisions` table at the bottom of the
     document.
 
 ---
@@ -686,6 +686,7 @@ graph LR
 
 | Date       | Version | Description                                                                                                                                                                                                 | Source    |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 0.2.2   | Rewrote the prose in plain English. No change to the design.                                                                                                                                                | User request |
 | 2026-11-04 | 0.2.1   | Removed the link to the SDK & Code API domain from the scope exclusions.                                                                                                                                    | TOPIC-004 |
 | 2026-11-04 | 0.2.0   | Full domain specification. It adds the generation model, API roles, version directories, the lifecycle, and the document catalog. It also adds `catalog.json`, metadata, body sections, UI rules, commands, XPath patterns, and traceability. | TOPIC-003 |
 | 2026-08-30 | 0.1.0   | Initial placeholder.                                                                                                                                                                                        | Initial Document |

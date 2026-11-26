@@ -31,7 +31,7 @@ The CLI covers these items:
 
 - The command tree and the flags that all commands share.
 - The output format and the exit codes.
-- Commands that read, validate, and query documents.
+- Commands that read and query documents, and make sure that documents are valid.
 - Commands that change work items, the backlog, and project management documents.
 - Commands that add OpenAPI sources and generate OpenAPI documents.
 - The command that starts the MCP server.
@@ -262,6 +262,7 @@ The file `.brevio/brevio.config.json` holds the project configuration. This vers
 
 | Date | Version | Description | Source |
 | :--- | :--- | :--- | :--- |
+| 2026-11-25 | 0.4.1 | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-04 | 0.4.0 | Added the `brevio wiki` command group and the rule for hand edits of wiki pages. | TOPIC-002 |
 | 2026-11-04 | 0.3.0 | Added the `brevio open-api` command group. | TOPIC-003 |
 | 2026-11-04 | 0.2.0 | Removed the `brevio serve` command and the `serve.host` and `serve.port` configuration keys. | Removal of the REST API |

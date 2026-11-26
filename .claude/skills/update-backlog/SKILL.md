@@ -1,17 +1,16 @@
 ---
 name: update-backlog
-description: >-
-  Audit backlog/backlog.jsonl against every backlog/WORK-ITEM-###_*.md, report drift, regenerate
-  backlog/backlog.md with backlog/scripts/backlog.mjs, and apply bulk edits to non-status fields
-  (priority, domain, autonomy tier, assignee, target milestone). Use for "reconcile/groom the
-  backlog", "the backlog looks out of sync", bulk field changes, removing a work item, or
-  /update-backlog. Does not change any work item's status.
-allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion
+description: "Audit backlog/backlog.jsonl against every backlog/WORK-ITEM-###_*.md, report drift, regenerate backlog/backlog.md with backlog/scripts/backlog.mjs, and apply bulk edits to non-status fields (priority, domain, autonomy tier, assignee, target milestone). Use for \"reconcile/groom the backlog\", \"the backlog looks out of sync\", bulk field changes, removing a work item, or /update-backlog. Does not change any work item's status."
+metadata:
+  node_type: memory
+  allowed-tools: "Read, Glob, Grep, Bash, Edit, AskUserQuestion"
+  originSessionId: 09e260c8-5e25-4d75-a62b-60bdd5d44d1e
+  modified: 2026-11-26T00:02:58.230Z
 ---
 
 # Update Backlog Skill (`/update-backlog`)
 
-`backlog/backlog.jsonl` is the index of all work items. `backlog/backlog.md` is generated from it by `backlog/scripts/backlog.mjs` using `backlog/backlog.template.md`. Never edit `backlog/backlog.md` by hand. This skill finds drift, applies bulk edits to non-status fields, removes work items, and regenerates the Markdown.
+`backlog/backlog.jsonl` is the index of all work items. `backlog/scripts/backlog.mjs` generates `backlog/backlog.md` from the index and `backlog/backlog.template.md`. Never edit `backlog/backlog.md` by hand. This skill finds drift, applies bulk edits to non-status fields, removes work items, and regenerates the Markdown.
 
 A work item is the parent of all intent-driven SDLC documents. Each `WORK-ITEM-###_*.md` file holds one declared intent. The jsonl holds only the index fields.
 
@@ -23,13 +22,13 @@ A work item is the parent of all intent-driven SDLC documents. Each `WORK-ITEM-#
    - A work item file with no record.
    - A file status that differs from the record status.
    - A file name that does not match the record slug.
-2. Read each work item file that has a status of `READY` or later, and report:
+2. Read each work item file that has a status of `READY` or later. Report these problems:
    - No invariant row or no evidence row.
    - An `Autonomy Tier` outside `observe`, `propose`, `change-with-review`, `scoped-automation`.
    - A `Runtime Directory` path that does not exist while the status is `IN_REVIEW` or `DONE`.
 3. Fixes for drift:
-   - Record is missing for a file: ask the user, then run `backlog.mjs add --id <N> ...` with the file values.
-   - Field differs between file and record: ask the user which side is right, then fix that side (`backlog.mjs edit` for the record, `Edit` for the file).
+   - If a file has no record, ask the user. Then run `backlog.mjs add --id <N> ...` with the file values.
+   - If a field differs between the file and the record, ask the user which side is correct. Then fix that side (`backlog.mjs edit` for the record, `Edit` for the file).
    - Report intent drift (invariants, evidence, tier). Do not fix it.
 
 ### 2. Apply Bulk Non-Status Edits (If Requested)
@@ -39,13 +38,13 @@ For each targeted work item:
 3. Append to Section 11 of the work item file: `- **YYYY-MM-DD** (@user): Bulk edit applied — <field changes>`
 4. If `--slug` changed, rename the file to `WORK-ITEM-###_{new-slug}.md`.
 
-**Invariant**: Never pass `--status` in this skill. If the user asks for a status change, tell them to run `/update-work-item-status`. If the user asks to change the intent content (invariants, evidence, scope), tell them to edit the work item file.
+Invariant: Never pass `--status` in this skill. If the user asks for a status change, tell them to run `/update-work-item-status`. If the user asks to change the intent content (invariants, evidence, scope), tell them to edit the work item file.
 
 ### 3. Remove a Work Item (If Requested)
-Removal deletes the record and the work item file. Confirm first with `AskUserQuestion`: `Remove WORK-ITEM-### "<title>"? This deletes backlog.jsonl record and the file (git keeps the history).` Options: `Yes, remove`, `No, keep`. If the user says yes, run `node backlog/scripts/backlog.mjs remove --id <N>`. Add `--keep-file` only if the user wants to keep the file.
+Removal deletes the record and the work item file. First, get confirmation from the user with `AskUserQuestion`: `Remove WORK-ITEM-### "<title>"? This deletes backlog.jsonl record and the file (git keeps the history).` Options: `Yes, remove`, `No, keep`. If the user says yes, run `node backlog/scripts/backlog.mjs remove --id <N>`. If the user wants to keep the file, add `--keep-file`. Otherwise, do not add it.
 
 ### 4. Regenerate
-Run `node backlog/scripts/backlog.mjs generate` with `Bash` if no earlier step already rebuilt the file. Then run `check` again to confirm that no drift remains.
+If no earlier step rebuilt the file, run `node backlog/scripts/backlog.mjs generate` with `Bash`. Then run `check` again to make sure that no drift remains.
 
 ### 5. Report
 Return a short summary:
@@ -55,4 +54,4 @@ Return a short summary:
 - Intent drift found in Step 1.
 - A statement that no status value changed.
 
-**Constraint**: Do not invoke any other skills.
+Constraint: Do not invoke any other skills.

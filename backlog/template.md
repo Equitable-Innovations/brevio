@@ -12,13 +12,14 @@
 | **Target Milestone** | `v0.1.0` |
 | **Related Topic(s)** | [`TOPIC-###`](../topics/TOPIC-###_slug.md) |
 | **Target Build-Doc(s)** | [`build-docs/...`](../build-docs/README.md) |
-| **Runtime Directory** | — | <!-- Set to .brevio/work_items/{timestamp}_{slug}/ when the intent package is seeded -->
+| **Runtime Directory** | — | <!-- When the intent package is seeded, set to .brevio/work_items/{timestamp}_{slug}/ -->
 | **Created Date** | YYYY-MM-DD |
-| **Active Date** | — | <!-- Stamped on first activation (transition out of BACKLOG to PLANNED or later); never changed afterward -->
+| **Active Date** | — | <!-- Set on first activation (transition out of BACKLOG to PLANNED or later). Never changed after that. -->
 | **Last Updated** | YYYY-MM-DD |
 
 > A work item is the parent of all intent-driven SDLC documents. This file holds the intent. The runtime intent
-> package (`00_intent_spec.html` through `07_review_findings.html`, sub-intents, and intent units) is seeded from it.
+> package (`00_intent_spec.html` through `07_review_findings.html`, sub-intents, and intent units) gets its initial
+> content from this file.
 
 ---
 
@@ -35,16 +36,16 @@ State the intent in the originator's own words. Describe the outcome, not the st
 ## 2. Context & Background
 
 ### 2.1 Problem Description
-What problem or deficiency does this intent address?
+What problem or gap does this intent correct?
 
 ### 2.2 Background & Motivation
-Link to originating design topics from [`topics/`](../topics/README.md) or canonical definitions from [`build-docs/`](../build-docs/README.md).
+Link to the source design topics in [`topics/`](../topics/README.md) or to the canonical definitions in [`build-docs/`](../build-docs/README.md).
 
 ---
 
 ## 3. System Invariants
 
-Conditions that must hold before, during, and after convergence. Each command exits with code `0` when the invariant holds.
+Conditions that must stay true before, during, and after convergence. If an invariant is true, its command exits with code `0`.
 
 | ID | Class | Description | Command | Enforcement |
 | :--- | :--- | :--- | :--- | :--- |
@@ -72,7 +73,7 @@ Conditions that must hold before, during, and after convergence. Each command ex
 ## 5. Evidence Requirements
 
 > [!NOTE]
-> Each requirement is an observable outcome with a command that returns pass or fail. The intent settles only when every requirement passes.
+> Each requirement is an observable outcome with a command that returns pass or fail. If every requirement passes, the intent settles. Otherwise, it does not settle.
 
 | ID | Observable Outcome | Verification Command |
 | :--- | :--- | :--- |
@@ -85,7 +86,7 @@ Conditions that must hold before, during, and after convergence. Each command ex
 
 ### 6.1 Architecture & References
 - **Specifications**: Refer to [`build-docs/...`](../build-docs/README.md) for target contracts and schemas.
-- **Affected Packages / Files**: Target paths, modules, or directories. These seed the Target Scope of the intent units.
+- **Affected Packages / Files**: Target paths, modules, or directories. These give the initial Target Scope of the intent units.
 - **Data Models / Schemas**: XHTML tags, JSON structures, or CLI commands affected.
 
 ### 6.2 Token Optimization & Performance
@@ -95,7 +96,7 @@ How does this intent keep token use low and local parsing fast?
 
 ## 7. Candidate Sub-Intents
 
-Verifiable milestones that seed `02_intent_decomposition.html`. List dependencies between them.
+Verifiable milestones that give the initial content of `02_intent_decomposition.html`. List the dependencies between them.
 
 - [ ] **SI-1**: [Milestone name]
   - Depends on: none
@@ -108,7 +109,7 @@ Verifiable milestones that seed `02_intent_decomposition.html`. List dependencie
 
 - [ ] Every invariant holds (`INV-001`, ...).
 - [ ] Every evidence requirement passes (`EV-001`, ...).
-- [ ] Documentation is updated to reflect the changes.
+- [ ] Documentation is updated for the changes.
 - [ ] Pull request is reviewed, approved, and merged.
 - [ ] Status in this file is `DONE` and reflected in [`backlog.md`](backlog.md).
 

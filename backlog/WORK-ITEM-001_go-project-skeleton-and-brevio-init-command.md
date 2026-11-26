@@ -17,7 +17,8 @@
 | **Active Date** | 2026-11-04 |
 | **Last Updated** | 2026-11-04 |
 > A work item is the parent of all intent-driven SDLC documents. This file holds the intent. The runtime intent
-> package (`00_intent_spec.html` through `07_review_findings.html`, sub-intents, and intent units) is seeded from it.
+> package (`00_intent_spec.html` through `07_review_findings.html`, sub-intents, and intent units) gets its initial
+> content from this file.
 
 ---
 
@@ -41,7 +42,7 @@ The [CLI specification](../build-docs/cli/README.md) defines the command tree, t
 
 ## 3. System Invariants
 
-Conditions that must hold before, during, and after convergence. Each command exits with code `0` when the invariant holds.
+Conditions that must stay true before, during, and after convergence. If an invariant is true, its command exits with code `0`.
 
 | ID | Class | Description | Command | Enforcement |
 | :--- | :--- | :--- | :--- | :--- |
@@ -82,7 +83,7 @@ Conditions that must hold before, during, and after convergence. Each command ex
 ## 5. Evidence Requirements
 
 > [!NOTE]
-> Each requirement is an observable outcome with a command that returns pass or fail. The intent settles only when every requirement passes.
+> Each requirement is an observable outcome with a command that returns pass or fail. If every requirement passes, the intent settles. Otherwise, it does not settle.
 
 | ID | Observable Outcome | Verification Command |
 | :--- | :--- | :--- |
@@ -119,7 +120,7 @@ Conditions that must hold before, during, and after convergence. Each command ex
 
 - [x] Every invariant holds (`INV-001` to `INV-003`).
 - [x] Every evidence requirement passes (`EV-001` to `EV-003`).
-- [x] Documentation is updated to reflect the changes.
+- [x] Documentation is updated for the changes.
 - [x] Pull request is reviewed, approved, and merged.
 - [x] Status in this file is `DONE` and reflected in [`backlog.md`](backlog.md).
 

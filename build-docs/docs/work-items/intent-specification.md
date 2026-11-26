@@ -8,12 +8,12 @@ design decisions. Those belong to the [Solution Strategy](solution-strategy.md) 
 The product owner accepts or closes the intent. After acceptance, the document is frozen, and the solution strategy pass
 starts.
 
-This document serves a dual purpose:
+This document has two purposes:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page that uses Material Design 3 Web
-   Components (`@material/web` / **M3**) without requiring any client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for token-efficient agent ingestion.
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) and needs no client-side bundler and no build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Agents query it through XPath
+   and the `brevio` CLI, and they read it with few tokens.
 
 ---
 
@@ -38,7 +38,7 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The intent specification resides at the root of the work item directory:
+The intent specification is at the root of the work item directory:
 
 ```text
 .brevio/
@@ -47,11 +47,11 @@ The intent specification resides at the root of the work item directory:
         └── 00_intent_spec.html
 ```
 
-- **File Name:** `00_intent_spec.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `00_intent_spec.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
@@ -171,8 +171,8 @@ reviews and corrects it before acceptance.
 
 ## 5. Token Optimization & XPath Query Patterns
 
-Agents operating in `brevio` query specific subsections using standard XPath 1.0/2.0 without loading entire documents,
-preserving LLM context and minimizing costs.
+Agents in `brevio` query specific subsections with standard XPath 1.0/2.0. They do not load entire documents. This
+keeps the LLM context small and the costs low.
 
 | Extraction Objective      | XPath Query Pattern                                            |
 |:--------------------------|:---------------------------------------------------------------|
@@ -195,7 +195,7 @@ preserving LLM context and minimizing costs.
    `accepted-by` and `accepted-at`.
 4. Every open question must have a `data-question-id` and an owner.
 5. A `closed` intent is terminal. To restart the idea, the originator declares a new intent.
-6. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+6. This document tracks its revision history only in the `## Revisions` table at the bottom of this document.
 
 ---
 
@@ -203,6 +203,7 @@ preserving LLM context and minimizing costs.
 
 | Date       | Version | Description                                                                                                                                                                                       | Source                           |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.5.0   | Reduced the intent specification to the originator's proto-spec: separate problem, proposed outcome, affected users and systems, constraints, and open question sections. Added the acceptance record, `risk-class`, and the `closed` outcome. Moved invariants, evidence requirements, the boundary envelope, and the autonomy tier to the solution strategy. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Replaced the requirements document with the intent specification: declared intent, system invariants with enforcement levels, boundary envelope, evidence requirements, autonomy tier, and origin tags. | TOPIC-005                        |
 | 2026-09-05 | 0.3.0   | Removed the XHTML snippets as the UI defined ones generated in the initial draft were junk.                                                                                                       | [Work Item Documents](README.md) |

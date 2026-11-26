@@ -1,7 +1,7 @@
 # Intent Decomposition Document Definition
 
-The Intent Decomposition (`02_intent_decomposition.html`) is the implementation plan of a `brevio` work item. It bridges
-the accepted Solution Strategy (`01_solution_strategy.html`) and the units that agents converge. It is the reviewed plan
+The Intent Decomposition (`02_intent_decomposition.html`) is the implementation plan of a `brevio` work item. It connects
+the accepted Solution Strategy (`01_solution_strategy.html`) to the units that agents converge. It is the reviewed plan
 that the build stage checks the diff against.
 
 This document holds the engineering detail that the solution strategy leaves out: component and module changes, data
@@ -11,19 +11,19 @@ Protected Resource Registry and catalogs risks and failure modes. A plan view gi
 the risks, and the proof in one section. A plan interrogation records what the change can break, the riskiest step, and
 the options not chosen.
 
-This document serves a dual purpose:
+This document has two purposes:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page that uses Material Design 3 Web
-   Components (`@material/web` / **M3**) and inline DAG diagrams without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for token-efficient DAG scheduling and sub-intent orchestration.
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) and inline DAG diagrams, and needs no client-side bundler and no build
+   step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Agents query it through XPath
+   and the `brevio` CLI for DAG scheduling and sub-intent orchestration, and they read it with few tokens.
 
 ---
 
 ## Core Decomposition Paradigm: Human Engineer vs. AI Coding Tool
 
-In `brevio`, decomposition bridges the gap between human engineering conventions and AI agent requirements across four
-dimensions:
+In `brevio`, decomposition connects human engineering conventions to AI agent requirements in four dimensions:
 
 | Dimension      | Human Engineer Focus                                                                  | AI Coding Tool Focus                                                                              | `brevio` Decomposition Manifestation                                                                                                     |
 |:---------------|:--------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
@@ -65,8 +65,7 @@ dimensions:
 
 ## 1. File Location & Organization Standard
 
-The intent decomposition document resides at the root of the work item directory, immediately following the solution
-strategy:
+The intent decomposition document is at the root of the work item directory, directly after the solution strategy:
 
 ```text
 .brevio/
@@ -77,11 +76,11 @@ strategy:
         └── 02_intent_decomposition.html
 ```
 
-- **File Name:** `02_intent_decomposition.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `02_intent_decomposition.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
@@ -172,8 +171,8 @@ metrics, agent tooling tags, and the Material Web ES module importmap loader:
 ## 3. Required Sections & M3 Component Structure
 
 The Intent Decomposition document contains 12 standardized sections. Each section combines semantic XHTML elements with
-Material Design 3 Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes
-(`data-*`) for targeted XPath queries.
+Material Design 3 Web Components (`md-*`) and typography scale classes (`md-typescale-*`). Each section also has
+explicit data attributes (`data-*`) for targeted XPath queries.
 
 ### 3.1. Document Header & Metadata Bar
 
@@ -185,11 +184,11 @@ shows the total sub-intents, the estimated unit count, the parent solution strat
 Section id: `plan-view`. The one-read summary of the plan. A reviewer accepts the plan from this section. It has four
 parts:
 
-- **Files That Change** (`plan-files`): Each path or glob with its change type (`create`, `modify`, `delete`) and the
+- Files That Change (`plan-files`): Each path or glob with its change type (`create`, `modify`, `delete`) and the
   unit that owns it. The list is the union of the Target Scopes of all units, and it matches the `plan-files` tag.
-- **Order of Work** (`plan-order`): The sub-intents and units in convergence order, with the parallel waves marked.
-- **Risks** (`plan-risks`): The high and critical entries from the Risk Catalog, one line each.
-- **Proof** (`plan-proof`): For each evidence requirement (`EV-###`), the command or test that proves it and the unit
+- Order of Work (`plan-order`): The sub-intents and units in convergence order, with the parallel waves marked.
+- Risks (`plan-risks`): The high and critical entries from the Risk Catalog, one line each.
+- Proof (`plan-proof`): For each evidence requirement (`EV-###`), the command or test that proves it and the unit
   that delivers it.
 
 ### 3.3. Component & Module Changes
@@ -209,44 +208,46 @@ Section id: `ai-components`. The plan treats the AI agent ecosystem as a first-c
 specifies the AI agents, skills, and coding tools that take part in the convergence. It also specifies any new AI
 components that must be built or configured to deliver the change.
 
-Unit workers query this section via XPath to configure workers, provision skills, and bind MCP servers. The plan
+Unit workers query this section through XPath to configure workers, provision skills, and bind MCP servers. The plan
 schedules units that create new AI assets before the units that depend on them.
 
 #### 3.5.1. Assigned & Required Agents
 
-Specifies each agent type participating in the convergence, its architectural role, model tier, and operational bounds:
+Specifies each agent type that takes part in the convergence, with its architectural role, model tier, and operational
+bounds:
 
-- **Agent Identifier & Role:** Formal agent designation (for example `agent:backend-engineer`,
+- Agent Identifier & Role: Formal agent designation (for example `agent:backend-engineer`,
   `agent:database-specialist`, `agent:security-auditor`, `agent:code-reviewer`).
-- **Topology & Delegation:** Hierarchy position (primary worker, verification subagent, or orchestrator) and inter-agent
+- Topology & Delegation: Hierarchy position (primary worker, verification subagent, or orchestrator) and inter-agent
   communication permissions.
-- **Model Tier & Reasoning Profile:** Model tier requirement (`pro` for complex refactoring and ADRs, `flash` for
-  targeted file edits, `flash_lite` for quick searches), temperature settings, and reasoning effort.
-- **Permissions & Workspace Mode:** Workspace isolation mode (`inherit`, `branch`, `share`), allowed file modification
+- Model Tier & Reasoning Profile: Model tier requirement (`pro` for complex refactoring and ADRs, `flash` for
+  targeted file edits, `flash_lite` for quick searches), temperature configuration, and reasoning effort.
+- Permissions & Workspace Mode: Workspace isolation mode (`inherit`, `branch`, `share`), allowed file modification
   paths, and command execution privileges. Each agent holds the least permissions that it needs.
-- **Identity Role:** Whether the agent writes units or approves units. The writer identity and the approver identity of a
+- Identity Role: Whether the agent writes units or approves units. The writer identity and the approver identity of a
   unit must differ.
 
 #### 3.5.2. Required Skills & Knowledge Packages
 
 Specifies the existing skill packages and domain instructions that agents must load before converging units:
 
-- **Skill Identifier:** Canonical skill name (for example `skill:spring-boot-jwt-auth`, `skill:owasp-verification`).
-- **Source Location:** Path to the skill bundle (for example `.agents/skills/jwt-auth/SKILL.md` or harness builtin).
-- **Activation Scope & Triggers:** The sub-intents or unit categories that require this skill.
-- **Key Provided Procedures:** Concrete guidelines, code patterns, or validation steps loaded into the agent context.
-- **Enforcement Note:** A skill is advisory. A policy that must always hold also needs a `build-gate` or `ci-gate`
+- Skill Identifier: Canonical skill name (for example `skill:spring-boot-jwt-auth`, `skill:owasp-verification`).
+- Source Location: Path to the skill bundle (for example `.agents/skills/jwt-auth/SKILL.md` or harness builtin).
+- Activation Scope & Triggers: The sub-intents or unit categories that require this skill.
+- Key Provided Procedures: Concrete guidelines, code patterns, or validation steps that the skill loads into the agent
+  context.
+- Enforcement Note: A skill is advisory. A policy that must always hold also needs a `build-gate` or `ci-gate`
   invariant in the solution strategy.
 
 #### 3.5.3. AI Coding Tools & MCP Servers
 
 Details the Model Context Protocol (MCP) servers, CLI tools, AST analyzers, and testing sidecars available to agents:
 
-- **Server / Tool Identifier:** Formal tool provider (for example `mcp:db-inspector`, `mcp:ast-grep`, `cli:brevio`,
+- Server / Tool Identifier: Formal tool provider (for example `mcp:db-inspector`, `mcp:ast-grep`, `cli:brevio`,
   `tool:mvn-test`).
-- **Available Operations:** Specific functions exposed to the agent (for example `inspect_schema`, `execute_query`,
-  `find_references`).
-- **Access Level & Guardrails:** Read-only versus mutating commands, token budget limits, output truncation policies, and
+- Available Operations: Specific functions that the tool exposes to the agent (for example `inspect_schema`,
+  `execute_query`, `find_references`).
+- Access Level & Guardrails: Read-only or mutating commands, token budget limits, output truncation policies, and
   XPath filter rules.
 
 #### 3.5.4. New AI Components Specification
@@ -254,54 +255,54 @@ Details the Model Context Protocol (MCP) servers, CLI tools, AST analyzers, and 
 When the change introduces new AI capabilities, or needs new AI components to converge or maintain the feature, this
 subsection specifies them. New AI components must converge in prerequisite units before downstream units rely on them:
 
-1. **New Custom Subagents:**
-    - **Name & Purpose:** Unique subagent name (for example `agent:auth-regression-tester`) and target problem domain.
-    - **System Prompt Specification:** Core instruction persona, behavioral rules, forbidden actions, and structured
+1. New Custom Subagents:
+    - Name & Purpose: Unique subagent name (for example `agent:auth-regression-tester`) and target problem domain.
+    - System Prompt Specification: Core instruction persona, behavioral rules, forbidden actions, and structured
       output contract.
-    - **Tool Access Manifest:** Explicit array of permitted tools and MCP capabilities.
-    - **Model Tier & Workspace Mode:** Execution model profile and workspace isolation mode (`inherit`, `branch`,
+    - Tool Access Manifest: Explicit array of permitted tools and MCP capabilities.
+    - Model Tier & Workspace Mode: Execution model profile and workspace isolation mode (`inherit`, `branch`,
       `share`).
 
-2. **New Custom Skills:**
-    - **Skill Identifier & Directory:** Path under `.agents/skills/{skill-slug}/`.
-    - **`SKILL.md` Specification:** YAML frontmatter (`name`, `description`), procedural instructions, and execution
+2. New Custom Skills:
+    - Skill Identifier & Directory: Path under `.agents/skills/{skill-slug}/`.
+    - `SKILL.md` Specification: YAML frontmatter (`name`, `description`), procedural instructions, and execution
       checklists.
-    - **Bundled Resources:** Associated helper scripts in `scripts/`, reference templates in `references/`, and asset
+    - Bundled Resources: Associated helper scripts in `scripts/`, reference templates in `references/`, and asset
       files.
-    - **Target Consumer Agents:** Which agents invoke the new skill and under what conditions.
+    - Target Consumer Agents: The agents that invoke the new skill, and the conditions for each.
 
-3. **New MCP Tools & Sidecars:**
-    - **Tool Name & Namespace:** Unique MCP tool identifier.
-    - **JSON Schema Contract:** Exact input argument schemas with property types, descriptions, and required fields.
-    - **Output Format:** Return MIME type and structured response schema.
-    - **Handler Implementation File:** Source file path implementing the tool logic.
+3. New MCP Tools & Sidecars:
+    - Tool Name & Namespace: Unique MCP tool identifier.
+    - JSON Schema Contract: Exact input argument schemas with property types, descriptions, and required fields.
+    - Output Format: Return MIME type and structured response schema.
+    - Handler Implementation File: Path of the source file that implements the tool logic.
 
-4. **New Hook Templates, Guardrails & Evaluation Rubrics:**
+4. New Hook Templates, Guardrails & Evaluation Rubrics:
     - Hook templates that enforce `build-gate` invariants, with the hook scope (project settings or managed settings).
     - Automated LLM-as-a-judge evaluation prompts, scoring rubrics, and invariant assertions for unit verification in
       `verification.html`.
 
 ### 3.6. Decomposition Principles
 
-Sets the operating rules for converging agents and human reviewers. Articulates how the four dimensions are enforced:
+Sets the operating rules for converging agents and human reviewers. States how the plan enforces the four dimensions:
 
-- **Context:** Every unit receives exact file paths and referenced patterns and does not rely on tacit conventions.
-- **Granularity:** Every unit is bounded, single-responsibility, and declares a required Target Scope.
-- **Verification:** Every stage is verified through explicit terminal commands with deterministic output parsing.
-- **Edge Cases:** Known edge cases are addressed in the unit specifications and not discovered by trial and error.
+- Context: Every unit receives exact file paths and referenced patterns and does not rely on tacit conventions.
+- Granularity: Every unit is bounded, single-responsibility, and declares a required Target Scope.
+- Verification: Every stage is verified through explicit terminal commands with deterministic output parsing.
+- Edge Cases: The unit specifications address the known edge cases. Agents do not discover them by trial and error.
 
 ### 3.7. Sub-Intent DAG & Milestone Roadmap
 
 Section id: `sub-intent-breakdown`. Decomposes the intent into sequentially numbered sub-intents. For each sub-intent,
 the document records:
 
-- **Sub-Intent Identifier:** For example `sub_intent_01_auth_schema`, `sub_intent_02_jwt_token_service`.
-- **Milestone Intent:** A concise statement of the verifiable outcome. The statement declares the outcome and does not
+- Sub-Intent Identifier: For example `sub_intent_01_auth_schema`, `sub_intent_02_jwt_token_service`.
+- Milestone Intent: A short statement of the verifiable outcome. The statement declares the outcome and does not
   list implementation steps.
-- **Assigned Agent Roles:** Primary converging agent and verification subagents.
-- **Estimated Unit Count:** Projected number of intent units.
-- **Target Subsystems & Code Boundaries:** Affected modules and source packages.
-- **Entrance & Exit Conditions:** Prerequisites to start and verification conditions to finish.
+- Assigned Agent Roles: Primary converging agent and verification subagents.
+- Estimated Unit Count: Projected number of intent units.
+- Target Subsystems & Code Boundaries: Affected modules and source packages.
+- Entrance & Exit Conditions: Prerequisites to start and verification conditions to finish.
 
 For the light path, this section holds the unit manifest directly. See
 [Light Path for a One-Milestone Intent](#4-light-path-for-a-one-milestone-intent).
@@ -310,61 +311,61 @@ For the light path, this section holds the unit manifest directly. See
 
 Section id: `dependency-graph`. Visualizes and specifies the sub-intent topology:
 
-- **Directed Acyclic Graph (DAG):** Sub-intent dependencies (for example sub-intent 2 depends on sub-intent 1).
-- **Parallel Branches:** Branches that can converge concurrently. Two units can run in parallel only if their Target
-  Scopes do not overlap and neither unit depends on the other. Units whose Target Scopes overlap run one after another in
-  one session. Each parallel branch converges in its own git worktree.
-- **Critical Path Nodes:** The sub-intents that set the minimum convergence time.
+- Directed Acyclic Graph (DAG): Sub-intent dependencies (for example sub-intent 2 depends on sub-intent 1).
+- Parallel Branches: Branches that can converge concurrently. Two units can run in parallel only under two conditions:
+  their Target Scopes do not overlap, and neither unit depends on the other. Units whose Target Scopes overlap run one
+  after another in one session. Each parallel branch converges in its own git worktree.
+- Critical Path Nodes: The sub-intents that set the minimum convergence time.
 
 ### 3.9. Protected Resource Registry
 
 Section id: `protected-resources`. Records the repository-wide boundaries that safeguard the codebase against
 unchecked drift:
 
-- **Strictly Protected Files:** Paths and packages that agents must not create, modify, or delete (for example core
+- Strictly Protected Files: Paths and packages that agents must not create, modify, or delete (for example core
   infrastructure, generated code, shared schema configuration, and security baseline policies). The list includes every
   `do-not-touch` invariant from the solution strategy, and it also appears in the `protected-files` tag.
-- **Frozen Contracts:** Public interfaces, REST API contracts, or DTO structures that must stay backwards-compatible.
-- **Resource Limits:** Maximum number of files that one unit can change and token ceilings.
-- **Enforcement:** The enforcement level of each protected path. A `build-gate` hook blocks edits to protected paths.
+- Frozen Contracts: Public interfaces, REST API contracts, or DTO structures that must stay backwards-compatible.
+- Resource Limits: Maximum number of files that one unit can change and token ceilings.
+- Enforcement: The enforcement level of each protected path. A `build-gate` hook blocks edits to protected paths.
 
 ### 3.10. Risk, Failure-Mode & Edge Case Catalog
 
-Section id: `risk-catalog`. Pre-empts naive happy-path convergence by cataloging failure modes:
+Section id: `risk-catalog`. Catalogs the failure modes, so that convergence does not follow only the naive happy path:
 
-- **Data Integrity & Migration Risks:** Data loss, migration failures, or schema locking during deployment.
-- **System Concurrency & Race Conditions:** Hazards under parallel convergence or high-throughput usage.
-- **Agent Drift & Hallucination Vectors:** Code areas prone to subtle syntax or semantic drift, with the invariant that
+- Data Integrity & Migration Risks: Data loss, migration failures, or schema locking during deployment.
+- System Concurrency & Race Conditions: Hazards under parallel convergence or high-throughput usage.
+- Agent Drift & Hallucination Vectors: Code areas prone to subtle syntax or semantic drift, with the invariant that
   guards each area.
-- **Rollback & Recovery Procedures:** The rollback command and the conditions that trigger it. The rollback path must be
+- Rollback & Recovery Procedures: The rollback command and the conditions that trigger it. The rollback path must be
   rehearsed in a non-production environment before an agent needs it.
 
 ### 3.11. Plan Interrogation
 
 Section id: `plan-interrogation`. Records the answers to three questions that the reviewer asks before acceptance:
 
-- **What Can Break** (`data-question="breakage"`): The existing behavior, contracts, and consumers that the change can
+- What Can Break (`data-question="breakage"`): The existing behavior, contracts, and consumers that the change can
   break, with the invariant or test that guards each one.
-- **Riskiest Step** (`data-question="riskiest-step"`): The one unit or sub-intent with the highest risk, the reason, and
+- Riskiest Step (`data-question="riskiest-step"`): The one unit or sub-intent with the highest risk, the reason, and
   the mitigation.
-- **Options Not Chosen** (`data-question="alternatives"`): Each implementation option that the plan did not choose, with
+- Options Not Chosen (`data-question="alternatives"`): Each implementation option that the plan did not choose, with
   the reason.
 
 ### 3.12. Gating & Orchestration Strategy
 
 Section id: `gating-strategy`. Defines the gates that govern transitions:
 
-- **Plan Acceptance Gate:** An adversarial gate first. A reviewing agent with a fresh context reads only this document
+- Plan Acceptance Gate: An adversarial gate first. A reviewing agent with a fresh context reads only this document
   and the solution strategy. It reports whether an engineer who never saw the planning conversation can implement the
   change from the plan alone. Then a human accepts the plan. If `risk-class` is `routine`, an engineer accepts. If
   `risk-class` is `high`, a tech lead or an architect accepts.
-- **Feasibility Gate:** `03_intent_verification.html` must record a `pass` verdict for the feasibility check before any
+- Feasibility Gate: `03_intent_verification.html` must record a `pass` verdict for the feasibility check before any
   unit enters `converging`.
-- **Sub-Intent Gate:** Sub-intent N+1 unlocks in `03_intent_ledger.json` only when sub-intent N is `verified`, all
-  units are `verified`, and `sub_intent_verification.html` records `pass`.
-- **Confidence Gates:** The gate type (`deterministic` or `adversarial`) between stages in unattended runs and the named
+- Sub-Intent Gate: Sub-intent N+1 unlocks in `03_intent_ledger.json` only under three conditions: sub-intent N is
+  `verified`, all its units are `verified`, and `sub_intent_verification.html` records `pass`.
+- Confidence Gates: The gate type (`deterministic` or `adversarial`) between stages in unattended runs and the named
   human approver for a failed gate.
-- **Automated Verification Harness:** The commands that the harness runs between sub-intents.
+- Automated Verification Harness: The commands that the harness runs between sub-intents.
 
 ---
 
@@ -404,7 +405,7 @@ If a second milestone appears during planning, the plan changes to the `full` la
 1. The acceptance of `01_solution_strategy.html` starts the decomposition pass. The engineer starts the session in a
    read-only planning mode, gives the agent the intent and the strategy, and asks for the plan.
 2. The agent reads the codebase and writes the decomposition, the unit specifications, and the plan view.
-3. The engineer interrogates the plan and the agent records the answers in `plan-interrogation`.
+3. The engineer interrogates the plan, and the agent records the answers in `plan-interrogation`.
 4. The engineer iterates until the plan acceptance gate passes.
 5. The approver that `risk-class` names accepts the plan. `brevio` records `accepted-by` and `accepted-at`.
 6. When the work departs from the plan, the agent updates the plan in the same commit as the change. The plan view and
@@ -414,8 +415,8 @@ If a second milestone appears during planning, the plan changes to the `full` la
 
 ## 6. Token Optimization & XPath Query Patterns
 
-Orchestrators, subagent workers, and the `brevio` CLI extract targeted execution data using exact XPath expressions
-without ingesting the full document.
+Orchestrators, subagent workers, and the `brevio` CLI extract targeted execution data with exact XPath expressions. They
+do not read the full document.
 
 ### Extracting the Plan View
 
@@ -492,7 +493,7 @@ without ingesting the full document.
 8. The plan cannot be accepted until the adversarial plan acceptance gate passes.
 9. The acceptance record must name an engineer. If `risk-class` is `high`, it must name a tech lead or an architect.
 10. A `light` layout must have exactly one sub-intent.
-11. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+11. This document tracks its revision history only in the `## Revisions` table at the bottom of this document.
 
 ---
 
@@ -500,6 +501,7 @@ without ingesting the full document.
 
 | Date       | Version | Description                                                                                                                                                                                                  | Source                           |
 |:-----------|:--------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.3.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.3.0   | Made the decomposition the implementation plan. Added the plan view, plan interrogation, plan acceptance gate, `plan-files`, `risk-class`, `layout`, and the acceptance record. Took component, schema, and agent tooling detail from the solution strategy. Added the light path for a one-milestone intent. | TOPIC-007                        |
 | 2026-10-31 | 0.2.0   | Replaced the implementation plan with the intent decomposition: sub-intent DAG, parallel branch rules, Protected Resource Registry, confidence gates, and rehearsed rollback.                                  | TOPIC-005                        |
 | 2026-09-06 | 0.1.0   | Initial canonical implementation plan specification (`02_implementation_plan.html`) establishing the 4-dimension planning paradigm (Context, Granularity, Validation, Edge Cases), milestone roadmap, global constraints, and XPath extraction patterns. | [Work Item Documents](README.md) |

@@ -1,12 +1,11 @@
 # Static User Interface Specification
 
-This directory (`build-docs/static-ui/`) documents and specifies everything related to the rendering of the user
-interface for `brevio`. It is dedicated exclusively to technical documentation, design requirements, component
-specifications, and template definitions for what will be built.
+This directory (`build-docs/static-ui/`) specifies how `brevio` renders its user interface. It holds only technical
+documentation, design requirements, component specifications, and template definitions for the product to build.
 
 > [!NOTE]
 > This directory does not contain the final product code, runtime assets, or production application bundles. It contains
-the canonical specifications, design rules, and prototype examples guiding the development of the `brevio` static UI.
+the canonical specifications, design rules, and prototype examples that guide the development of the `brevio` static UI.
 
 ---
 
@@ -27,47 +26,46 @@ the canonical specifications, design rules, and prototype examples guiding the d
 
 ## Scope & Purpose
 
-The specifications in this directory define how `brevio` will render local documentation as a rich, interactive, and
-completely static user interface:
+The specifications in this directory define how `brevio` will render local documentation as an interactive and fully
+static user interface:
 
-- **Specification of UI Rendering:** Details how structured XHTML documents will be parsed, styled, and presented to
+- Specification of UI Rendering: Describes how `brevio` will parse and style structured XHTML documents and show them to
   developers in a web browser.
-- **UI Component Catalog:** Documents the standardized custom web components (Material Design 3) specified for composing
-  UI views.
-- **Template Definitions:** Defines the precise layout, structure, and component composition of the templates used to
-  render each document domain defined under [`build-docs/docs`](../docs/README.md).
-- **Prototyping & Reference Examples:** Houses standalone reference examples (such as [
-  `static-with-m3-example.html`](static-with-m3-example.html)) to validate layout patterns, web component behavior, and
-  styling rules before implementation.
+- UI Component Catalog: Documents the standard custom web components (Material Design 3) that compose the UI views.
+- Template Definitions: Defines the layout, structure, and component composition of the templates that render each
+  document domain under [`build-docs/docs`](../docs/README.md).
+- Prototyping & Reference Examples: Holds standalone reference examples (such as [
+  `static-with-m3-example.html`](static-with-m3-example.html)). The examples make sure that layout patterns, web
+  component behavior, and styling rules work before implementation.
 
 ---
 
 ## Target UI Architecture
 
-The planned user interface built by `brevio` must adhere to the following architectural model:
+The planned user interface that `brevio` builds must follow this architecture model:
 
-- **Completely Static:** The UI requires zero client-side compilation or bundlers at runtime. Pages are standard
-  browser-executable XHTML files that can be opened directly via the `file://` protocol.
-- **Single-Pane Visualizer:** One interface for navigation across all documentation domains: work items, the
-  project manager, the project wiki, and OpenAPI contracts.
-- **Parseable Document Viewer:** Documents act as dual-purpose artifacts: fully styled visual web pages for developers
-  and structured, queryable XML/XHTML documents for LLM agents and the `brevio` CLI.
+- Completely Static: The UI needs no client-side compilation and no bundler at runtime. Pages are standard XHTML files
+  that a browser runs. A user can open them directly through the `file://` protocol.
+- Single-Pane Visualizer: One interface for navigation across all documentation domains. The domains are work items,
+  the project manager, the project wiki, and OpenAPI contracts.
+- Parseable Document Viewer: Each document has two purposes. It is a fully styled web page for developers. It is also a
+  structured XML/XHTML document that LLM agents and the `brevio` CLI can query.
 
 ---
 
 ## Design System Specification
 
-The user interface will be built using the Material Design 3 (M3) design system:
+The user interface will use the Material Design 3 (M3) design system:
 
-- **Design System:** [Material Design 3 (M3)](https://m3.material.io/)
-- **Component Implementation:** [Material Web (`@material/web`)](https://material-web.dev/)
-- **Typography:** [Roboto](https://fonts.google.com/specimen/Roboto) font family and standard M3 typescales
+- Design System: [Material Design 3 (M3)](https://m3.material.io/)
+- Component Implementation: [Material Web (`@material/web`)](https://material-web.dev/)
+- Typography: [Roboto](https://fonts.google.com/specimen/Roboto) font family and standard M3 typescales
   (`md-typescale-display-*`, `md-typescale-headline-*`, `md-typescale-title-*`, `md-typescale-body-*`,
   `md-typescale-label-*`).
-- **Icons:** [Material Symbols Outlined](https://fonts.google.com/icons).
-- **Color Roles & Theming:** Standard M3 CSS custom properties (`--md-sys-color-surface`, `--md-sys-color-primary`,
+- Icons: [Material Symbols Outlined](https://fonts.google.com/icons).
+- Color Roles & Theming: Standard M3 CSS custom properties (`--md-sys-color-surface`, `--md-sys-color-primary`,
   `--md-sys-color-outline`, and the other `--md-sys-color-*` roles) with dark and light themes.
-- **Context7 Library ID:** `/material-components/material-web`
+- Context7 Library ID: `/material-components/material-web`
 
 ---
 
@@ -78,77 +76,76 @@ each documentation view uses each component:
 
 ### 1. Navigation & Structural Components
 
-- **Top App Bar (`md-elevation`):** Anchors the document view, displaying the active work item ID, document title,
-  breadcrumbs, search trigger, and theme switcher.
-- **Navigation Rail & Drawer (`md-navigation-rail`, `md-navigation-drawer`):** Left-hand navigation hierarchy enabling
-  top-level domain switching (Work Items, Project Manager, Wiki, OpenAPI).
-- **Tabs (`md-tabs`, `md-primary-tab`, `md-secondary-tab`):** Horizontal switcher for multi-sub-intent workflows, unit
-  suites, or switching between visual rendered view and raw XHTML source.
+- Top App Bar (`md-elevation`): Anchors the document view. It shows the active work item ID, the document title,
+  breadcrumbs, a search trigger, and a theme switcher.
+- Navigation Rail & Drawer (`md-navigation-rail`, `md-navigation-drawer`): Left-hand navigation hierarchy. It switches
+  between the top-level domains (Work Items, Project Manager, Wiki, OpenAPI).
+- Tabs (`md-tabs`, `md-primary-tab`, `md-secondary-tab`): Horizontal switcher for multi-sub-intent workflows and unit
+  suites. It also switches between the rendered view and the raw XHTML source.
 
 ### 2. Containers & Data Display
 
-- **Cards (`md-elevated-card`, `md-outlined-card`, `md-filled-card`):** Primary building blocks for encapsulating
-  intents, strategy sections, unit goals, and metric blocks.
-- **Lists (`md-list`, `md-list-item`):** Displays invariant lists, dependency hierarchies, target scope lists, and
-  sub-intent unit breakdowns.
-- **Dividers (`md-divider`):** Clean separation between specification sections.
+- Cards (`md-elevated-card`, `md-outlined-card`, `md-filled-card`): Primary building blocks that hold intents, strategy
+  sections, unit goals, and metric blocks.
+- Lists (`md-list`, `md-list-item`): Show invariant lists, dependency hierarchies, target scope lists, and sub-intent
+  unit breakdowns.
+- Dividers (`md-divider`): Separate the specification sections.
 
 ### 3. Metadata & Status Chips
 
-- **Chips & Chip Sets (`md-chip-set`, `md-assist-chip`, `md-filter-chip`):** Visually exposes document header metadata
-  for rapid inspection:
-    - **Status:** `pending`, `in-progress`, `completed`, `failed`, `blocked`
-    - **Convergence:** `declared`, `formulating`, `converging`, `verified`, `drift_detected`, `settled`
-    - **Autonomy tier:** `observe`, `propose`, `change-with-review`, `scoped-automation`
-    - **Enforcement level:** `advisory`, `build-gate`, `ci-gate`, `human-gate`
-    - **Priority:** `critical`, `high`, `medium`, `low`
-    - **Verdicts:** `pass`, `fail`
-    - **Classification:** `intent-spec`, `solution-strategy`, `intent-unit-spec`, `unit-verification`, and the other `doc-type` values.
+- Chips & Chip Sets (`md-chip-set`, `md-assist-chip`, `md-filter-chip`): Show the document header metadata for fast
+  inspection:
+    - Status: `pending`, `in-progress`, `completed`, `failed`, `blocked`
+    - Convergence: `declared`, `formulating`, `converging`, `verified`, `drift_detected`, `settled`
+    - Autonomy tier: `observe`, `propose`, `change-with-review`, `scoped-automation`
+    - Enforcement level: `advisory`, `build-gate`, `ci-gate`, `human-gate`
+    - Priority: `critical`, `high`, `medium`, `low`
+    - Verdicts: `pass`, `fail`
+    - Classification: `intent-spec`, `solution-strategy`, `intent-unit-spec`, `unit-verification`, and the other `doc-type` values.
 
 ### 4. Interactive Controls
 
-- **Buttons (`md-filled-button`, `md-outlined-button`, `md-text-button`, `md-icon-button`):** Actions for copying code
-  snippets, jumping to section anchors, expanding collapsible blocks, and triggering diff inspections.
-- **Checkboxes (`md-checkbox`):** Renders acceptance criteria and verification checklists.
-- **Dialogs (`md-dialog`):** Modal overlays for inspecting raw telemetry data, conversation JSONL transcripts, or full
-  git diffs.
+- Buttons (`md-filled-button`, `md-outlined-button`, `md-text-button`, `md-icon-button`): Actions to copy code snippets,
+  jump to section anchors, expand collapsible blocks, and open diff inspections.
+- Checkboxes (`md-checkbox`): Render acceptance criteria and verification checklists.
+- Dialogs (`md-dialog`): Modal overlays to inspect raw telemetry data, conversation JSONL transcripts, or full git diffs.
 
 ### 5. Progress Indicators
 
-- **Progress Bars (`md-linear-progress`, `md-circular-progress`):** Displays convergence completion percentages for
-  sub-intents, units, and test suites.
+- Progress Bars (`md-linear-progress`, `md-circular-progress`): Show convergence completion percentages for sub-intents,
+  units, and test suites.
 
 ---
 
 ## Document Domain Integration (`build-docs/docs`)
 
-The documents displayed within the user interface are defined and governed under the [
-`build-docs/docs`](../docs/README.md) directory. The UI specification maps each document domain to its corresponding
-presentation mode:
+The [
+`build-docs/docs`](../docs/README.md) directory defines and governs the documents that the user interface shows. The UI
+specification maps each document domain to its presentation mode:
 
 | Document Domain            | Source Path in `build-docs/docs`                       | UI Presentation Specification                                                                                                                                                    |
 |:---------------------------|:-------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Work Items**             | [`docs/work-items/`](../docs/work-items/README.md) | Multi-stage execution views covering intents and invariants, solution strategies, decompositions, sub-intent and unit specifications, verification outputs, review findings, the lessons log, conversation logs, and telemetry. |
-| **Project Manager**        | [`project-mgr/`](../project-mgr/README.md)             | Planning views for the PRD, the FSD, initiatives, epics, and milestones. Also the traceability matrix, the work item dependency graph, and the release gate results. |
-| **Project Wiki**           | [`docs/wiki/`](../docs/wiki/README.md)                 | Structured documentation reader for team knowledge: project setup, coding standards, architecture decisions, and risk registries.                                                |
-| **OpenAPI Specifications** | [`docs/open-api/`](../docs/open-api/README.md)         | Interactive endpoint explorer: HTTP method badges (for example `GET` and `POST`), path parameters, payload schemas, and response definitions.                                             |
+| Work Items             | [`docs/work-items/`](../docs/work-items/README.md) | Multi-stage execution views for intents and invariants, solution strategies, decompositions, sub-intent and unit specifications, verification outputs, review findings, the lessons log, conversation logs, and telemetry. |
+| Project Manager        | [`project-mgr/`](../project-mgr/README.md)             | Planning views for the PRD, the FSD, initiatives, epics, and milestones. Also the traceability matrix, the work item dependency graph, and the release gate results. |
+| Project Wiki           | [`docs/wiki/`](../docs/wiki/README.md)                 | Structured documentation reader for team knowledge: project setup, coding standards, architecture decisions, and risk registries.                                                |
+| OpenAPI Specifications | [`docs/open-api/`](../docs/open-api/README.md)         | Interactive endpoint explorer: HTTP method badges (for example `GET` and `POST`), path parameters, payload schemas, and response definitions.                                             |
 
 ---
 
 ## Document Templates Specification
 
-Each document type defined under [`build-docs/docs`](../docs/README.md) will be generated and rendered using a specific,
-standardized XHTML template.
+`brevio` will generate and render each document type under [`build-docs/docs`](../docs/README.md) with a specific,
+standard XHTML template.
 
 ### 1. Universal Base Shell Specification
 
 All document templates inherit a standard XHTML shell:
 
-- **XML / XHTML Prolog:** Strict XML declaration and XHTML namespace (`xmlns="http://www.w3.org/1999/xhtml"`).
-- **Standardized Metadata Header:** The mandatory 7 baseline `<meta>` tags (`doc-id`, `doc-type`, `schema-version`,
+- XML / XHTML Prolog: Strict XML declaration and XHTML namespace (`xmlns="http://www.w3.org/1999/xhtml"`).
+- Standardized Metadata Header: The mandatory 7 baseline `<meta>` tags (`doc-id`, `doc-type`, `schema-version`,
   `domain`, `status`, `created-at`, `updated-at`) plus domain-specific metadata.
-- **Component Loader:** Standard `<script type="importmap">` and ES module script importing `@material/web/all.js`.
-- **Semantic Structure:** Semantic landmarks (`<header>`, `<nav>`, `<main>`, `<aside>`, `<footer>`) styled with M3
+- Component Loader: Standard `<script type="importmap">` and an ES module script that imports `@material/web/all.js`.
+- Semantic Structure: Semantic landmarks (`<header>`, `<nav>`, `<main>`, `<aside>`, `<footer>`) styled with M3
   typography and layout tokens.
 
 ```xhtml
@@ -196,92 +193,92 @@ All document templates inherit a standard XHTML shell:
 
 #### A. Intent Specification Template (`00_intent_spec.html`)
 
-- **Header Section:** Displays convergence status, risk class, priority, author, and the acceptance record via chips.
-- **Intent Cards:** One card each for the problem, the proposed outcome, and the affected users and systems, in the
-  originator's words.
-- **Constraint List:** One `md-list-item` per constraint, with an out-of-scope chip where it applies.
-- **Open Question List:** One `md-list-item` per question with its owner.
+- Header Section: Shows the convergence status, risk class, priority, author, and acceptance record as chips.
+- Intent Cards: One card each for the problem, the proposed outcome, and the affected users and systems, in the words
+  of the originator.
+- Constraint List: One `md-list-item` per constraint, with an out-of-scope chip where it applies.
+- Open Question List: One `md-list-item` per question with its owner.
 
 #### B. Solution Strategy Template (`01_solution_strategy.html`)
 
-- **Header Section:** Displays autonomy tier, risk class, open concern count, and the acceptance record via chips.
-- **Solution Hypothesis:** Visual diagrams, topology overviews, and component interaction maps.
-- **Requirement List:** One `md-list-item` per requirement with its source section.
-- **Invariant List:** One `md-list-item` per invariant with its shell command, enforcement level chip, and protective
+- Header Section: Shows the autonomy tier, risk class, open concern count, and acceptance record as chips.
+- Solution Hypothesis: Visual diagrams, topology overviews, and component interaction maps.
+- Requirement List: One `md-list-item` per requirement with its source section.
+- Invariant List: One `md-list-item` per invariant with its shell command, enforcement level chip, and protective
   mechanism.
-- **Evidence Cards:** One `<md-outlined-card>` per evidence requirement ID with its verification command and verdict.
-- **Open Question Resolution:** Each question from the intent with a `resolved` or `carried-forward` chip.
-- **Interface Specifications:** Endpoint and contract cards.
-- **Flagged Concerns:** Concern list with policy owner and status chips.
-- **Decision Records:** Micro-ADR cards, including the options not chosen.
+- Evidence Cards: One `<md-outlined-card>` per evidence requirement ID with its verification command and verdict.
+- Open Question Resolution: Each question from the intent with a `resolved` or `carried-forward` chip.
+- Interface Specifications: Endpoint and contract cards.
+- Flagged Concerns: Concern list with policy owner and status chips.
+- Decision Records: Micro-ADR cards, which include the options not chosen.
 
 #### C. Intent Decomposition & Ledger Template (`02_intent_decomposition.html`, `03_intent_ledger.json`)
 
-- **Plan View:** Files that change, order of work, risks, and proof in one panel.
-- **Component & Schema Models:** Entity relationship tables, schema definitions, and module change cards.
-- **Plan Interrogation:** Cards for what can break, the riskiest step, and the options not chosen.
-- **Convergence Overview:** Sub-intent DAG, overall progress bar (`md-linear-progress`), and parallel branches. For the
+- Plan View: Files that change, order of work, risks, and proof in one panel.
+- Component & Schema Models: Entity relationship tables, schema definitions, and module change cards.
+- Plan Interrogation: Cards for what can break, the riskiest step, and the options not chosen.
+- Convergence Overview: Sub-intent DAG, overall progress bar (`md-linear-progress`), and parallel branches. For the
   `light` layout, the unit list replaces the DAG.
-- **Sub-Intent Roadmap Table:** Sequence, gating criteria, estimates, and unit summaries.
-- **Protected Resource Registry:** List of protected paths and frozen contracts.
-- **Ledger Tree View:** Interactive state machine showing real-time unit state, holds, gate verdicts, approver names, and
-  relative file links.
+- Sub-Intent Roadmap Table: Sequence, gating criteria, estimates, and unit summaries.
+- Protected Resource Registry: List of protected paths and frozen contracts.
+- Ledger Tree View: Interactive state machine view. It shows the real-time unit state, holds, gate verdicts, approver
+  names, and relative file links.
 
 #### D. Sub-Intent Templates (`sub_intent_spec.html`, `sub_intent_verification.html`, `sub_intent_summary.html`)
 
-- **Sub-Intent Specification:** Scope boundaries, prerequisite checks, and the unit manifest.
-- **Sub-Intent Verification:** Test suite outputs, cross-component invariant checks, and pass/fail verdict badges.
-- **Sub-Intent Summary:** Verified milestones, execution duration, and roll-up metrics.
+- Sub-Intent Specification: Scope boundaries, prerequisite checks, and the unit manifest.
+- Sub-Intent Verification: Test suite outputs, cross-component invariant checks, and pass/fail verdict badges.
+- Sub-Intent Summary: Verified milestones, execution duration, and roll-up metrics.
 
 #### E. Unit Templates (`intent_unit_spec.html`, `verification.html`, `summary.html`)
 
-- **Intent Unit Specification:** Unit goal, target scope chips, invariants, protected paths, and the verification
+- Intent Unit Specification: Unit goal, target scope chips, invariants, protected paths, and the verification
   contract.
-- **Unit Verification:** Literal command output, exit codes, invariant audit, scope audit, and the verifier result.
-- **Unit Summary:** Modified files manifest, git diff viewer, and pull request references.
+- Unit Verification: Literal command output, exit codes, invariant audit, scope audit, and the verifier result.
+- Unit Summary: Modified files manifest, git diff viewer, and pull request references.
 
 #### F. Review & Lessons Templates (`07_review_findings.html`, `review_policy.html`, `lessons.html`)
 
-- **Review Findings:** Severity summary and finding cards grouped by pass, with severity and status chips.
-- **Review Policy:** Pass cards, severity definitions, nit cap, and reviewer modes.
-- **Lessons Log:** Entry cards with the outcome chip and the eval case list.
+- Review Findings: Severity summary and finding cards grouped by pass, with severity and status chips.
+- Review Policy: Pass cards, severity definitions, nit cap, and reviewer modes.
+- Lessons Log: Entry cards with the outcome chip and the eval case list.
 
 #### G. Conversation & Metrics Templates (`conversation.jsonl`, `metrics.json`)
 
-- **Conversation Transcript Viewer:** Structured dialogue stream highlighting user prompts, model reasoning, and tool
+- Conversation Transcript Viewer: Structured dialogue stream. It highlights user prompts, model reasoning, and tool
   calls.
-- **Telemetry Dashboard:** Metric cards for token usage (input/output/cached), latency, and model execution costs.
+- Telemetry Dashboard: Metric cards for token usage (input/output/cached), latency, and model execution costs.
 
 #### H. Project Manager Templates (`prd.html`, `fsd.html`, `initiatives/*.html`, `epics/*.html`, `milestones/*.html`, `traceability.html`)
 
-- **PRD and FSD Layout:** Two-column reading layout with a sticky list of requirement identifiers. Each requirement is a
+- PRD and FSD Layout: Two-column reading layout with a sticky list of requirement identifiers. Each requirement is a
   `<section>` with an `id` equal to its identifier, such as `FSD-FR-204`.
-- **Epic and Initiative Layout:** Header chips for status, parent, and milestone. A list of child work items with status
+- Epic and Initiative Layout: Header chips for status, parent, and milestone. A list of child work items with status
   chips.
-- **Milestone Board:** Gate result cards for Completion, Convergence, Findings, Coverage, and Authorization, each with a
+- Milestone Board: Gate result cards for Completion, Convergence, Findings, Coverage, and Authorization, each with a
   pass or fail chip.
-- **Traceability Matrix:** Table that shows each requirement with its epic, work items, and state chip (`unmapped`,
+- Traceability Matrix: Table that shows each requirement with its epic, work items, and state chip (`unmapped`,
   `in-progress`, `verified`, `failing`).
-- **Dependency Graph:** Diagram of `blocks` edges between work items. The diagram marks the work items that can start
+- Dependency Graph: Diagram of `blocks` edges between work items. The diagram marks the work items that can start
   now.
 
 #### I. Wiki Template (`wiki/*.html`)
 
-- **Documentation Layout:** Two-column reading layout with a sticky table-of-contents navigation drawer and main article
+- Documentation Layout: Two-column reading layout with a sticky table-of-contents navigation drawer and a main article
   container with styled callouts.
-- **Navigation Tree:** The drawer groups pages into Core, Decisions, Risks, and Pages. The template builds the drawer in
+- Navigation Tree: The drawer groups pages into Core, Decisions, Risks, and Pages. The template builds the drawer in
   the browser from `.brevio/wiki/index.json`, so the page markup holds no navigation.
-- **State Display:** Chips show a draft page and the status of an ADR. Banners show a page that needs a review and a
+- State Display: Chips show a draft page and the status of an ADR. Banners show a page that needs a review and a
   superseded ADR. The [wiki specification](../docs/wiki/README.md#static-ui-rendering) defines the full rules.
 
 #### J. OpenAPI Template (`open-api/*.html`)
 
-- **OpenAPI Layout:** Endpoint cards grouped by tag with HTTP method chips (for example `GET` and `POST`), request schema tables,
+- OpenAPI Layout: Endpoint cards grouped by tag with HTTP method chips (for example `GET` and `POST`), request schema tables,
   and response code accordions.
 
 #### K. Report Template (`report/*.html`)
 
-- **Analytics Layout:** KPI summary cards, test execution grids, token burn-down charts, and audit tables.
+- Analytics Layout: KPI summary cards, test execution grids, token burn-down charts, and audit tables.
 
 ---
 
@@ -313,7 +310,7 @@ Rendering needs no build-time compilation, because all templates specify an ES m
 
 ### Component Composition Example
 
-An intent unit specification template layout using Material Web components:
+This example shows the layout of an intent unit specification template with Material Web components:
 
 ```xhtml
 
@@ -353,14 +350,14 @@ An intent unit specification template layout using Material Web components:
 
 ## Directory Content & Artifact Guidelines
 
-The `build-docs/static-ui/` directory is scoped strictly to documentation, specifications, and reference prototypes:
+The `build-docs/static-ui/` directory holds only documentation, specifications, and reference prototypes:
 
 | File / Artifact                | Purpose                                                                                                  |
 |:-------------------------------|:---------------------------------------------------------------------------------------------------------|
 | `README.md`                    | Authoritative specification for the static UI architecture, components, and templates.                   |
-| `static-with-m3-example.html`  | Minimal standalone reference prototype demonstrating M3 loading and rendering in static XHTML.           |
+| `static-with-m3-example.html`  | Minimal standalone reference prototype. It shows how M3 loads and renders in static XHTML.                |
 | `*.md` specifications          | Additional detailed specifications for layout shells, theme tokens, and template contracts.              |
-| `*.xhtml` prototypes / mockups | Reference mockups validating template layouts against XHTML and XSD constraints prior to implementation. |
+| `*.xhtml` prototypes / mockups | Reference mockups. They make sure that template layouts meet the XHTML and XSD constraints before implementation. |
 
 > [!IMPORTANT]
 > The final product code lives in the product codebase, not in this specification directory. Examples are the CLI code
@@ -370,17 +367,15 @@ that builds or serves templates, the bundled distribution assets, and the produc
 
 ## Rules & Constraints
 
-1. **Strict XHTML Compliance:** All HTML documents must be well-formed XHTML (`xmlns="http://www.w3.org/1999/xhtml"`).
-2. **XML Parser Interoperability:** All documents must be parseable by standard XML parsers without requiring a web
-   browser environment.
-3. **XPath Queryable:** All metadata, checklists, and document nodes must be addressable via XPath expressions.
-4. **XSD Conformance:** Document structures must conform to their corresponding XML Schema Definitions (XSDs).
-5. **Zero Compile-Time Dependency:** The UI must render directly in modern browsers without requiring client-side
-   bundlers, for example webpack or vite.
-6. **Local-First & Offline Capable:** The UI must support offline viewing through local file
-   access.
-7. **Current State Design:** All documentation in this directory represents the current active specification and
-   contains no historical deliberations or references to superseded decisions.
+1. Strict XHTML Compliance: All HTML documents must be well-formed XHTML (`xmlns="http://www.w3.org/1999/xhtml"`).
+2. XML Parser Interoperability: A standard XML parser must parse every document with no web browser environment.
+3. XPath Queryable: All metadata, checklists, and document nodes must be addressable with XPath expressions.
+4. XSD Conformance: Document structures must conform to their XML Schema Definitions (XSDs).
+5. Zero Compile-Time Dependency: The UI must render directly in modern browsers with no client-side bundler, for
+   example webpack or vite.
+6. Local-First & Offline Capable: The UI must support offline viewing through local file access.
+7. Current State Design: All documentation in this directory represents the current active specification. It contains
+   no historical deliberations and no references to superseded decisions.
 
 ---
 
@@ -388,6 +383,7 @@ that builds or serves templates, the bundled distribution assets, and the produc
 
 | Date       | Version | Description                                                                                                                                                         | Source                                  |
 |:-----------|:--------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------|
+| 2026-11-25 | 0.7.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-04 | 0.7.0   | Added the navigation tree and the state display rules to the Wiki template. | TOPIC-002 |
 | 2026-11-04 | 0.6.0   | Removed the SDK & API domain from the navigation rail, the domain integration table, and the template list. | TOPIC-004 |
 | 2026-11-04 | 0.5.0   | Removed the local server from the static page statement and the offline viewing principle. | Removal of the REST API |

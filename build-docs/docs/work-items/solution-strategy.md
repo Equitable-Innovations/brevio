@@ -11,12 +11,12 @@ The product owner reviews and accepts the strategy, but does not write it. The s
 or schema statements. That detail belongs to the [Intent Decomposition](intent-decomposition.md)
 (`02_intent_decomposition.html`), which engineers plan against the accepted strategy.
 
-This document serves a dual purpose:
+This document has two purposes:
 
-1. **Human Interface:** Renders as a local, fully interactive, static XHTML web page that uses Material Design 3 Web
-   Components (`@material/web` / **M3**) and inline diagrams without requiring client-side bundlers or build steps.
-2. **Agent / Harness Interface:** Serves as a deterministic, structured XML document queryable via XPath and the `brevio`
-   CLI for token-efficient decomposition and convergence agents.
+1. Human Interface: The document renders as a local, fully interactive, static XHTML web page. The page uses Material
+   Design 3 Web Components (`@material/web` / M3) and inline diagrams, and needs no client-side bundler and no build step.
+2. Agent / Harness Interface: The document is a deterministic, structured XML document. Decomposition and convergence
+   agents query it through XPath and the `brevio` CLI, and they read it with few tokens.
 
 ---
 
@@ -45,8 +45,7 @@ This document serves a dual purpose:
 
 ## 1. File Location & Organization Standard
 
-The solution strategy document resides at the root of the work item directory, immediately following the intent
-specification:
+The solution strategy document is at the root of the work item directory, directly after the intent specification:
 
 ```text
 .brevio/
@@ -56,11 +55,11 @@ specification:
         └── 01_solution_strategy.html
 ```
 
-- **File Name:** `01_solution_strategy.html`
-- **Format:** Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
-- **Encoding:** UTF-8.
-- **Runtime:** Fully static, runnable directly in any modern browser via local filesystem (`file://`) or served locally
-  via the `brevio` CLI.
+- File Name: `01_solution_strategy.html`
+- Format: Strict XHTML (`application/xhtml+xml` compliant, standard XML syntax).
+- Encoding: UTF-8.
+- Runtime: Fully static. The file runs directly in any modern browser from the local filesystem (`file://`), or the
+  `brevio` CLI serves it locally.
 
 ---
 
@@ -138,8 +137,8 @@ and the Material Web ES module importmap loader:
 ## 3. Required Sections & M3 (Material Web) Component Structure
 
 The Solution Strategy document contains 11 standardized sections. Each section combines semantic XHTML elements with
-Material Design 3 Web Components (`md-*`), typography scale classes (`md-typescale-*`), and explicit data attributes
-(`data-*`) for targeted XPath queries.
+Material Design 3 Web Components (`md-*`) and typography scale classes (`md-typescale-*`). Each section also has
+explicit data attributes (`data-*`) for targeted XPath queries.
 
 ### 3.1. Document Header & Metadata Bar
 
@@ -148,8 +147,8 @@ the autonomy tier, the risk class, the open concern count, the evidence count, a
 
 ### 3.2. Solution Hypothesis & Architecture Diagram
 
-Section id: `solution-hypothesis`. Outlines the high-level approach and the module interaction flow, using an inline SVG
-or Mermaid diagram. Shows the boundary between new components, changed services, external integrations, and AI agent
+Section id: `solution-hypothesis`. Outlines the high-level approach and the module interaction flow in an inline SVG or
+Mermaid diagram. Shows the boundary between new components, changed services, external integrations, and AI agent
 touchpoints. It names components and services, not files or classes.
 
 ### 3.3. Requirements
@@ -214,8 +213,7 @@ the product owner resolves each concern with its policy owner.
 
 ### 3.10. Technical Decisions & Trade-offs (Micro-ADRs)
 
-Section id: `technical-decisions`. Documents isolated architectural and technical decisions made specifically for this
-work item. Each micro-ADR is an `md-outlined-card` with a `data-adr-id` attribute (for example `ADR-001`) and records:
+Section id: `technical-decisions`. Documents the isolated architectural and technical decisions for this work item only. Each micro-ADR is an `md-outlined-card` with a `data-adr-id` attribute (for example `ADR-001`) and records:
 
 - Context and problem statement.
 - Decision taken.
@@ -253,8 +251,9 @@ invariants, interfaces, and micro-ADRs in this document:
 
 ## 5. Token Optimization & XPath Query Patterns
 
-Decomposition agents (`02_intent_decomposition.html`) and unit workers query specific sections using exact XPath 1.0/2.0
-expressions. This eliminates full-document ingestion, minimizing token overhead and reducing model hallucinations.
+Decomposition agents (`02_intent_decomposition.html`) and unit workers query specific sections with exact XPath 1.0/2.0
+expressions. Thus they do not read the full document. This keeps the token overhead low and reduces model
+hallucinations.
 
 | Extraction Objective            | XPath Query Pattern                                                                 |
 |:--------------------------------|:------------------------------------------------------------------------------------|
@@ -282,7 +281,7 @@ expressions. This eliminates full-document ingestion, minimizing token overhead 
 7. The strategy names components, services, and contracts. It must not name source files, classes, symbols, or schema
    statements, and it must not contain step-by-step edit instructions.
 8. The acceptance record must name the product owner. If `risk-class` is `high`, it must also name a tech lead.
-9. Revision history is tracked exclusively in the `## Revisions` table at the bottom of this document.
+9. This document tracks its revision history only in the `## Revisions` table at the bottom of this document.
 
 ---
 
@@ -290,6 +289,7 @@ expressions. This eliminates full-document ingestion, minimizing token overhead 
 
 | Date       | Version | Description                                                                                                                                                                                                                                                          | Source                           |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 2026-11-25 | 0.5.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 0.5.0   | Made the strategy the requirements and design specification. Added requirements, open question resolution, `prompt-ref`, `risk-class`, and the acceptance record. Took the invariants, boundary envelope, evidence requirements, and autonomy tier from the intent specification. Moved component, schema, and agent tooling detail to the intent decomposition. Concerns now block acceptance. Micro-ADRs record options not chosen. | TOPIC-007                        |
 | 2026-10-31 | 0.4.0   | Replaced the technical design with the solution strategy: solution hypothesis, invariant preservation strategy, flagged concerns, hook templates, writer and approver identity roles, and evidence traceability matrix.                                              | TOPIC-005                        |
 | 2026-09-06 | 0.3.0   | Added AI Components & Agent Tooling specification (assigned agents, required skills, AI coding tools/MCP servers, and new AI components architecture), updated header metadata contract, traceability matrix, XPath patterns, and complete XHTML reference template. | Work Item Architecture Alignment |

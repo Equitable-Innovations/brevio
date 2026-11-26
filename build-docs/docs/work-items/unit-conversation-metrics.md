@@ -1,28 +1,28 @@
 # Unit Conversation Metrics Document Definition
 
-The **Unit Conversation Metrics Document** (`units/{unit_id}/metrics.json`) is the authoritative Tier 3 telemetry record
-in the **Token Optimized Software Harness (`brevio`)** work item lifecycle. It records exact token consumption, model
-usage, prompt caching efficiency, tool execution trajectories, diff churn, and verification outcomes for an atomic
-engineering unit.
+The Unit Conversation Metrics Document (`units/{unit_id}/metrics.json`) is the authoritative Tier 3 telemetry record
+for one atomic engineering unit. It is part of the work item lifecycle of `brevio` (Token Optimized Software Harness).
+It records the exact token use, model use, prompt caching efficiency, tool execution trajectories, diff churn, and
+verification outcomes of the unit.
 
-In `brevio`, token optimization cannot be evaluated in isolation. Token savings achieved by withholding file context,
-stripping type definitions, or aggressively truncating compiler errors frequently backfires into multi-turn repair
-loops, premature failure, and bloated diff churn that exponentially increases aggregate compute.
+In `brevio`, you cannot evaluate token optimization in isolation. Some token savings come from withholding file
+context, removing type definitions, or cutting compiler errors too short. These savings often cause multi-turn repair
+loops, early failure, and bloated diff churn. The result is an exponential increase in total compute.
 
-This document serves a dual purpose:
+This document has two uses:
 
-1. **Human & Platform Interface:** Enables platform engineers, engineering managers, and developers to audit unit-level
-   token expenditure, diagnose runaway agent repair loops, compare model cost-to-performance ratios, and inspect
-   surgical diff efficiency.
-2. **Agent / Harness Interface:** Serves as a deterministic JSON machine artifact queryable by the `brevio` CLI and
-   evaluators for automated unit gating, ledger state synchronization, and dynamic prompt-cache tuning.
+1. Human & Platform Interface: Platform engineers, engineering managers, and developers use the document to audit token
+   costs at the unit level and to diagnose runaway agent repair loops. They also compare the cost-to-performance ratios
+   of models and inspect how surgical the diffs are.
+2. Agent / Harness Interface: The document is a deterministic JSON artifact for machines. The `brevio` CLI and
+   evaluators query it for automated unit gating, ledger state synchronization, and dynamic tuning of the prompt cache.
 
 ---
 
 ## Core Execution Paradigm: The 4-Layer Unit Telemetry Framework
 
-To extract actionable signals from raw unit session logs (`conversation.jsonl`), `brevio` organizes unit-level telemetry
-across four operational layers:
+`brevio` organizes unit-level telemetry in four operational layers. These layers give signals from raw unit session
+logs (`conversation.jsonl`) that teams can act on:
 
 ```mermaid
 flowchart TD
@@ -82,7 +82,7 @@ flowchart TD
 
 ## 1. File Location & Organization Standard
 
-Each unit conversation metrics document resides directly inside its isolated unit directory within its parent sub-intent:
+Each unit conversation metrics document is directly inside its isolated unit directory, in its parent sub-intent:
 
 ```text
 .brevio/
@@ -100,15 +100,12 @@ Each unit conversation metrics document resides directly inside its isolated uni
                         └── metrics.json            # Authoritative Unit Conversation Metrics
 ```
 
-- **File Name:** `metrics.json`
-- **Format:** Strict JSON (UTF-8, 2-space indentation).
-- **Paired Log:** Session turns captured in [
-  `conversation.jsonl`](unit-conversation.md).
-- **Paired Documents:**
-    - Instructions: [
-      `intent_unit_spec.html`](intent-unit-specification.md)
-    - Verification: [
-      `verification.html`](unit-verification.md)
+- File Name: `metrics.json`
+- Format: Strict JSON (UTF-8, 2-space indentation).
+- Paired Log: [`conversation.jsonl`](unit-conversation.md) records the session turns.
+- Paired Documents:
+    - Instructions: [`intent_unit_spec.html`](intent-unit-specification.md)
+    - Verification: [`verification.html`](unit-verification.md)
     - Diff: [intent.diff](intent-diff.md)
     - Outcome: [`summary.html`](unit-summary.md)
 
@@ -118,66 +115,67 @@ Each unit conversation metrics document resides directly inside its isolated uni
 
 ### 2.1. Layer 1: Token & Cost Efficiency Metrics
 
-These metrics track token burn rate, prompt caching performance, and the economic efficiency of code implementation.
+These metrics track the token burn rate, the prompt caching performance, and the economic efficiency of the code
+implementation.
 
 | Metric Name                                 | Formula / Measurement                                                                                   | Target Range                         | Purpose & Harness Improvement Area                                                                                                                                                                      |
 |:--------------------------------------------|:--------------------------------------------------------------------------------------------------------|:-------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Context Accumulation Rate**               | $\Delta\text{Tokens} / \text{Turn} = \frac{\text{Prompt Tokens}_{N} - \text{Prompt Tokens}_{1}}{N - 1}$ | Linear slope ($< 1,200$ tokens/turn) | Measures input token expansion per repair turn. Steep quadratic growth indicates the harness is naively dumping entire build logs or raw file dumps into prompts instead of surgical diffs.             |
-| **Prompt-to-Completion Ratio**              | $\frac{\text{Prompt Tokens}}{\text{Completion Tokens}}$                                                 | $80:20$ to $92:8$                    | Coding agents are inherently input-heavy. If the ratio exceeds $98:2$, system prompts are bloated, or the model is making microscopic edits across excessive round-trips.                               |
-| **Token Cost per Resolved Unit**            | Total unit tokens consumed                                                                              | $< 15,000$ tokens/unit               | The primary benchmark for prompt compression, tool schema ergonomics, and harness efficiency.                                                                                                           |
-| **Cache Read Hit Rate**                     | $\frac{\text{Cache Read Tokens}}{\text{Total Prompt Tokens}} \times 100\%$                              | $> 75\%$                             | Percentage of input tokens served by prefix caching during multi-turn test/repair cycles. Identifies whether prefix ordering (system prompt $\to$ tools $\to$ static specs $\to$ history) is preserved. |
-| **Retry Token Tax** *(Suggested)*           | $\frac{\text{Tokens Consumed in Repair Turns}}{\text{Total Unit Tokens}} \times 100\%$                  | $\le 20\%$                           | Measures the token penalty incurred after the first test failure. High values highlight unstable initial implementations or poor compiler error diagnostics.                                            |
-| **Cost per Net Accepted LOC** *(Suggested)* | $\frac{\text{Total Cost (USD)}}{\text{Net Accepted Lines of Code}}$                                     | $<\$0.005$ / line                    | Evaluates direct financial cost per accepted line of production code.                                                                                                                                   |
+| Context Accumulation Rate                   | $\Delta\text{Tokens} / \text{Turn} = \frac{\text{Prompt Tokens}_{N} - \text{Prompt Tokens}_{1}}{N - 1}$ | Linear slope ($< 1,200$ tokens/turn) | Measures how much input tokens grow for each repair turn. Steep quadratic growth shows that the harness dumps full build logs or raw file dumps into prompts, not surgical diffs. |
+| Prompt-to-Completion Ratio                  | $\frac{\text{Prompt Tokens}}{\text{Completion Tokens}}$                                                 | $80:20$ to $92:8$                    | Coding agents are input-heavy by nature. If the ratio exceeds $98:2$, the system prompts are bloated, or the model makes very small edits across too many round trips.                                 |
+| Token Cost per Resolved Unit                | Total unit tokens consumed                                                                              | $< 15,000$ tokens/unit               | The main benchmark for prompt compression, tool schema ergonomics, and harness efficiency.                                                                                                              |
+| Cache Read Hit Rate                         | $\frac{\text{Cache Read Tokens}}{\text{Total Prompt Tokens}} \times 100\%$                              | $> 75\%$                             | Percentage of input tokens that prefix caching serves during multi-turn test/repair cycles. Shows whether the prefix order (system prompt $\to$ tools $\to$ static specs $\to$ history) stays intact. |
+| Retry Token Tax *(Suggested)*               | $\frac{\text{Tokens Consumed in Repair Turns}}{\text{Total Unit Tokens}} \times 100\%$                  | $\le 20\%$                           | Measures the token cost after the first test failure. High values show unstable first implementations or poor compiler error diagnostics.                                                              |
+| Cost per Net Accepted LOC *(Suggested)*     | $\frac{\text{Total Cost (USD)}}{\text{Net Accepted Lines of Code}}$                                     | $<\$0.005$ / line                    | Evaluates the direct cost for each accepted line of production code.                                                                                                                                   |
 
 ---
 
 ### 2.2. Layer 2: Agentic Trajectory & Tool Optimization
 
-Agentic execution waste manifests as redundant tool executions, dead-end repair cycles, and oversized tool payloads.
+Waste in agent execution shows as redundant tool executions, dead-end repair cycles, and oversized tool payloads.
 
 | Metric Name                                      | Formula / Measurement                                                                  | Target Range                                              | Purpose & Harness Improvement Area                                                                                                                                                                        |
 |:-------------------------------------------------|:---------------------------------------------------------------------------------------|:----------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tool Call Redundancy Rate**                    | $\frac{\text{Duplicate Tool Invocations}}{\text{Total Tool Invocations}}$              | $\le 5\%$                                                 | Frequency of an agent calling the exact same tool with identical arguments (e.g., reading the same unmodified file twice, re-running `git status` repeatedly). Remedied by in-memory tool result caching. |
-| **Tool Payload Efficiency**                      | $\frac{\text{Tokens Referenced in Subsequent Action}}{\text{Tokens Returned by Tool}}$ | $\ge 40\%$                                                | Ratio of tokens returned by tools (e.g., terminal test output, file contents) to tokens actually acted upon. Requires output truncation, targeted AST viewers, and line-bounded reads.                    |
-| **Turns-to-Success (Step Efficiency)**           | Total LLM round-trips to complete unit                                                 | $\le 5$ turns                                             | Round-trips required from unit specification load to passing `verification.html`. Detects agent hesitation or underspecified unit instructions.                                                             |
-| **Dead-End & Self-Correction Depth**             | Consecutive turns spent recovering from errors                                         | $\le 2$ turns                                             | Turns spent in unbroken failure loops (compiler errors, failing tests, invalid tool calls). High depth indicates unrecoverable code drift requiring early circuit breaking.                               |
-| **Terminal Command Success Ratio** *(Suggested)* | $\frac{\text{Commands with Exit Code 0}}{\text{Total Commands Executed}}$              | $\ge 70\%$                                                | Measures terminal command precision. Excessively low ratios signal guesswork in build or test commands.                                                                                                   |
-| **Tool Action Distribution** *(Suggested)*       | Turn breakdown: Read vs Edit vs Exec vs Thinking                                       | Balanced (e.g., 20% Read, 30% Edit, 30% Test, 20% Verify) | Detects imbalanced agent behavior (e.g., spending 80% of turns reading without editing).                                                                                                                  |
+| Tool Call Redundancy Rate                        | $\frac{\text{Duplicate Tool Invocations}}{\text{Total Tool Invocations}}$              | $\le 5\%$                                                 | How often an agent calls the same tool with identical arguments (for example, it reads the same unmodified file twice, or runs `git status` again and again). In-memory caching of tool results corrects this. |
+| Tool Payload Efficiency                          | $\frac{\text{Tokens Referenced in Subsequent Action}}{\text{Tokens Returned by Tool}}$ | $\ge 40\%$                                                | Ratio of the tokens that tools return (for example, terminal test output, file contents) to the tokens that the agent actually acts on. This metric needs output truncation, targeted AST viewers, and line-bounded reads. |
+| Turns-to-Success (Step Efficiency)               | Total LLM round trips to complete the unit                                             | $\le 5$ turns                                             | Round trips needed from loading the unit specification until `verification.html` passes. Detects agent hesitation or underspecified unit instructions.                                                   |
+| Dead-End & Self-Correction Depth                 | Consecutive turns spent to recover from errors                                         | $\le 2$ turns                                             | Turns spent in unbroken failure loops (compiler errors, failing tests, invalid tool calls). A high depth shows code drift that the agent cannot recover from. That drift needs an early circuit break. |
+| Terminal Command Success Ratio *(Suggested)*     | $\frac{\text{Commands with Exit Code 0}}{\text{Total Commands Executed}}$              | $\ge 70\%$                                                | Measures how precise terminal commands are. A very low ratio shows guesswork in build or test commands.                                                                                                   |
+| Tool Action Distribution *(Suggested)*           | Turn breakdown: Read vs Edit vs Exec vs Thinking                                       | Balanced (for example, 20% Read, 30% Edit, 30% Test, 20% Verify) | Detects unbalanced agent behavior (for example, 80% of turns spent reading, with no edits).                                                                                                        |
 
 ---
 
 ### 2.3. Layer 3: Verification & Execution Quality
 
-Token savings are worthless if the generated code fails to compile, breaks regression tests, or generates sprawling
+Token savings have no value if the generated code does not compile, breaks regression tests, or generates sprawling
 churn.
 
 | Metric Name                                 | Formula / Measurement                                                          | Target Range    | Purpose & Harness Improvement Area                                                                                                                                               |
 |:--------------------------------------------|:-------------------------------------------------------------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **First-Pass Success Rate (FPSR)**          | Passing lint, build, and tests on attempt 1                                    | $1.0$ ($100\%$) | Percentage of units that succeed on the very first execution attempt without entering a self-correction repair loop.                                                             |
-| **Diff Churn Ratio**                        | $\frac{\text{Generated Lines Changed}}{\text{Net Accepted Lines}}$             | $1.0 - 1.25$    | Detects full-file rewrites versus surgical unified diffs. A ratio $> 2.0$ indicates sloppy refactors, deleted comments, or unnecessary whitespace reformatting.                  |
-| **Syntax & Lint Failure Rate**              | $\frac{\text{Syntax/Lint Errors}}{\text{Total Verification Attempts}}$         | $0\%$           | Frequency of edits failing due to parse errors, missing imports, invalid regex, or linter complaints. High rates justify pre-LLM linting or AST patch validators in the harness. |
-| **Boundary Violation Rate** *(Suggested)*   | $\frac{\text{Edits Attempted on Protected Files}}{\text{Total Edit Attempts}}$ | $0\%$ ($0.0$)   | Strict compliance with "do not touch" manifests defined in `intent_unit_spec.html`. Any non-zero value indicates prompt boundary leakage.                                               |
-| **Regression Induction Rate** *(Suggested)* | Existing passing tests broken by unit                                          | $0$             | Measures code safety. High regression counts suggest inadequate pre-context or missing integration test checks.                                                                  |
+| First-Pass Success Rate (FPSR)              | Lint, build, and tests pass on attempt 1                                       | $1.0$ ($100\%$) | Percentage of units that succeed on the first execution attempt, with no self-correction repair loop.                                                                            |
+| Diff Churn Ratio                            | $\frac{\text{Generated Lines Changed}}{\text{Net Accepted Lines}}$             | $1.0 - 1.25$    | Tells full-file rewrites apart from surgical unified diffs. A ratio $> 2.0$ shows sloppy refactors, deleted comments, or unnecessary whitespace reformatting.                    |
+| Syntax & Lint Failure Rate                  | $\frac{\text{Syntax/Lint Errors}}{\text{Total Verification Attempts}}$         | $0\%$           | How often edits fail because of parse errors, missing imports, invalid regex, or linter complaints. High rates justify pre-LLM linting or AST patch validators in the harness.   |
+| Boundary Violation Rate *(Suggested)*       | $\frac{\text{Edits Attempted on Protected Files}}{\text{Total Edit Attempts}}$ | $0\%$ ($0.0$)   | Measures strict compliance with the "do not touch" manifests in `intent_unit_spec.html`. Any non-zero value shows that the prompt boundary leaks.                                |
+| Regression Induction Rate *(Suggested)*     | Existing passing tests that the unit breaks                                    | $0$             | Measures code safety. High regression counts point to inadequate pre-context or missing integration test checks.                                                                |
 
 ---
 
 ### 2.4. Layer 4: Context & Retrieval Precision
 
-Coding agents must work with surgically scoped context. Ingesting whole repositories degrades reasoning and wastes
-tokens.
+Coding agents must work with context that has a narrow, exact scope. If an agent ingests whole repositories, its
+reasoning gets worse and it wastes tokens.
 
 | Metric Name                                       | Formula / Measurement                                                                      | Target Range            | Purpose & Harness Improvement Area                                                                                                    |
 |:--------------------------------------------------|:-------------------------------------------------------------------------------------------|:------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
-| **Context Utilization Rate**                      | $\frac{\text{Injected Snippets Referenced/Modified}}{\text{Total Injected File Snippets}}$ | $\ge 75\%$              | Percentage of retrieved workspace context files or interfaces actually referenced, imported, or modified in the final patch.          |
-| **Context Rot Threshold**                         | Token depth where recall degrades                                                          | $> 85\%$ of window      | Point during multi-turn debugging where agent forgets earlier instructions, drops edge cases, or violates "do not touch" constraints. |
-| **Error Output Pruning Efficiency** *(Suggested)* | $\frac{\text{Sanitized Error Hunk Tokens}}{\text{Raw Terminal stderr Tokens}}$             | $\le 20\%$ (80% pruned) | Harness efficiency in stripping verbose stack traces, dependency notices, and ANSI codes down to actionable failure lines.            |
-| **Active Scratchpad Volatility** *(Suggested)*    | $\Delta\text{Scratchpad Tokens} / \text{Turn}$                                             | Stable ($\pm 15\%$)     | Tracks whether unit memory remains focused or accumulates obsolete debug notes.                                                       |
+| Context Utilization Rate                          | $\frac{\text{Injected Snippets Referenced/Modified}}{\text{Total Injected File Snippets}}$ | $\ge 75\%$              | Percentage of retrieved workspace context files or interfaces that the final patch actually references, imports, or modifies.         |
+| Context Rot Threshold                             | Token depth at which recall becomes worse                                                  | $> 85\%$ of window      | The point during multi-turn debugging at which the agent forgets earlier instructions, drops edge cases, or violates "do not touch" constraints. |
+| Error Output Pruning Efficiency *(Suggested)*     | $\frac{\text{Sanitized Error Hunk Tokens}}{\text{Raw Terminal stderr Tokens}}$             | $\le 20\%$ (80% pruned) | Measures how well the harness reduces verbose stack traces, dependency notices, and ANSI codes to the failure lines that matter.      |
+| Active Scratchpad Volatility *(Suggested)*        | $\Delta\text{Scratchpad Tokens} / \text{Turn}$                                             | Stable ($\pm 15\%$)     | Tracks whether unit memory stays focused or collects obsolete debug notes.                                                            |
 
 ---
 
 ## 3. JSON Schema Specification (`units/{unit_id}/metrics.json`)
 
-The following JSON Schema governs the structure and validation of `units/{unit_id}/metrics.json`:
+This JSON Schema defines the structure and validation of `units/{unit_id}/metrics.json`:
 
 ```json
 {
@@ -586,7 +584,7 @@ Every LLM exchange during unit execution writes an immutable telemetry record in
 
 ### 4.1. Lifecycle Turn Flow Example
 
-A typical passing atomic unit generates a tight, deterministic sequence of entries:
+A typical passing atomic unit generates a short, deterministic sequence of entries:
 
 ```mermaid
 sequenceDiagram
@@ -612,8 +610,7 @@ sequenceDiagram
 
 ## 5. Token Optimization, Analysis Patterns & CLI / jq Queries
 
-Filter `.jsonl` and `.json` logs to isolate runaway sessions, identify prefix cache breakage, and spot surgical diff
-failures:
+Filter `.jsonl` and `.json` logs to find runaway sessions, breaks in the prefix cache, and surgical diff failures:
 
 ### 5.1. Finding High-Cost / High-Step Outliers (Edge Cases)
 
@@ -658,7 +655,7 @@ jq -r '
 
 ## 6. Lineage, Rollup & Ledger Integration
 
-The unit metrics file acts as the atomic sensor feeding upward telemetry into the sub-intent and work item layers:
+The unit metrics file is the atomic sensor that feeds telemetry up into the sub-intent and work item layers:
 
 ```mermaid
 graph TD
@@ -671,32 +668,28 @@ graph TD
     PSUM -->|" Rollup to Intent "| WISUM["Intent Summary<br/>(04_intent_summary.html)"]
 ```
 
-- **Direct Ledger Sync:** Upon unit completion, `brevio` writes the unit's execution duration, token count, and USD cost
-  directly into `sub-intents[].units[].metrics` of
-  [
-  `03_intent_ledger.json`](intent-ledger.md).
-- **Sub-Intent Milestone Rollup:** [
-  `sub_intent_summary.html`](sub-intent-summary.md)
-  aggregates all unit `metrics.json` records to report cumulative sub-intent tokens, cache hit rates, and total cost.
-- **Root Rollup:** [
-  `04_intent_summary.html`](intent-summary.md)
-  computes the global project metrics rollup across all sub-intents.
+- Direct Ledger Sync: When a unit completes, `brevio` writes the execution duration, token count, and USD cost of the
+  unit directly into `sub-intents[].units[].metrics` of [`03_intent_ledger.json`](intent-ledger.md).
+- Sub-Intent Milestone Rollup: [`sub_intent_summary.html`](sub-intent-summary.md) collects all unit `metrics.json`
+  records. It reports the total sub-intent tokens, cache hit rates, and total cost.
+- Root Rollup: [`04_intent_summary.html`](intent-summary.md) computes the global project metrics rollup across all
+  sub-intents.
 
 ---
 
 ## 7. Rules & Constraints
 
-1. **Deterministic Verification:** Every completed unit must record passing test assertions (`testAssertionsPassed > 0`,
-   `testAssertionsFailed == 0`) from
-   [`verification.html`](unit-verification.md).
-2. **Zero Boundary Violations:** `boundaryViolationsCount` must be strictly `0`. Any write to a file outside
-   `targetScope` or listed in "do not touch" halts unit promotion.
-3. **Atomic Generation:** `metrics.json` is generated deterministically by the harness from `conversation.jsonl` upon
-   unit completion; it must never be handwritten or modified manually.
-4. **Stable Prefix Ordering:** The harness must assemble prompts in strict order: System Instructions $\to$ Tool
-   Definitions $\to$ Static Unit Spec $\to$ Ephemeral Conversation History to preserve high `cacheReadHitRatePct`.
-5. **Circuit Breaker on Dead-Ends:** If an agent reaches `deadEndTurnsCount >= 4` without passing verification, the
-   harness must halt execution and trigger human intervention rather than burning unbounded tokens.
+1. Deterministic Verification: Every completed unit must record passing test assertions (`testAssertionsPassed > 0`,
+   `testAssertionsFailed == 0`) from [`verification.html`](unit-verification.md).
+2. Zero Boundary Violations: `boundaryViolationsCount` must be exactly `0`. Any write to a file outside `targetScope`,
+   or to a file in the "do not touch" list, stops the promotion of the unit.
+3. Atomic Generation: When the unit completes, the harness generates `metrics.json` deterministically from
+   `conversation.jsonl`. The file must never be written or changed by hand.
+4. Stable Prefix Ordering: The harness must assemble prompts in this strict order: System Instructions $\to$ Tool
+   Definitions $\to$ Static Unit Spec $\to$ Ephemeral Conversation History. This order keeps `cacheReadHitRatePct`
+   high.
+5. Circuit Breaker on Dead-Ends: If an agent reaches `deadEndTurnsCount >= 4` without passing verification, the
+   harness must stop execution and trigger human intervention. It must not burn unbounded tokens.
 
 ---
 
@@ -704,6 +697,7 @@ graph TD
 
 | Date       | Version | Description                                                                                                                                                                                           | Source                 |
 |:-----------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------|
+| 2026-11-25 | 1.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-10-31 | 1.2.0 | Moved to the intent-based document set: intent, sub-intent, and unit terminology, convergence states, required target scope, and evidence requirement IDs. | TOPIC-005 |
 | 2026-09-06 | 1.1.0   | Added `intent.diff` to unit directory layout, paired documents list, and traceability graph.                                                                                                            | Feature Specification  |
 | 2026-09-06 | 1.0.0   | Authoritative specification for Unit Conversation Metrics (`units/{unit_id}/metrics.json`) establishing the 4-layer telemetry framework, JSON schema, session log contract, and jq analysis patterns. | Feature Specification  |

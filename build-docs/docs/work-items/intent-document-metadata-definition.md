@@ -34,8 +34,8 @@ type adds to the universal baseline.
 
 ## Mandatory Universal Baseline (All Documents)
 
-Every XHTML document must contain these 7 baseline tags so that any crawler, agent, or XPath query can establish
-identity, schema version, and the root work item:
+Every XHTML document must contain these 7 baseline tags. With these tags, any crawler, agent, or XPath query can
+establish identity, schema version, and the root work item:
 
 | Tag              | Definition                                                                                          |
 |:-----------------|:----------------------------------------------------------------------------------------------------|
@@ -291,11 +291,11 @@ These tags can appear on any document in the work item. The document tables belo
 
 ### Intent Diff (`.../units/{unit}/intent.diff`)
 
-Raw unified git diff file capturing code modifications created during unit convergence. Standard unified diff
+Raw unified git diff file that holds the code changes from unit convergence. The file uses the standard unified diff
 (`diff -u`) format with file paths relative to the repository root.
 
-- **Format:** Unified Diff (`text/x-diff`, UTF-8).
-- **Referenced In:** `03_intent_ledger.json` (`subIntents[].units[].paths.diff`), `summary.html`
+- Format: Unified Diff (`text/x-diff`, UTF-8).
+- Referenced In: `03_intent_ledger.json` (`subIntents[].units[].paths.diff`), `summary.html`
   (`<meta name="diff-ref" content="intent.diff"/>`), `conversation.jsonl` (`paths.diff`).
 
 ### Unit Summary (`.../units/{unit}/summary.html`)
@@ -369,5 +369,6 @@ Raw unified git diff file capturing code modifications created during unit conve
 
 | Date       | Version | Description                                                                                                                                                                                        | Source    |
 |:-----------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|
+| 2026-11-25 | 1.2.1   | Rewrote the prose in plain English. No change to the design. | User request |
 | 2026-11-25 | 1.2.0   | Added `risk-class`, `accepted-by`, `accepted-at`, and the `closed` status. Moved the autonomy tier and the invariant and evidence counts from the intent specification to the solution strategy. Moved the agent tooling tags to the intent decomposition. Added `prompt-ref`, `layout`, and `plan-files`. | TOPIC-007 |
 | 2026-10-31 | 1.1.0   | Renamed the metadata set to the intent-based document set. Added cross-cutting intent tags, evidence and invariant tags, gate and identity tags, review findings, review policy, and lessons log tags. | TOPIC-005 |
